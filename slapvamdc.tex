@@ -1,0 +1,124 @@
+\documentclass[11pt,a4paper]{ivoa}
+\input tthdefs
+
+\title{Mapping VAMDC spectral line data to SLAP}
+
+% see ivoatexDoc for what group names to use here
+\ivoagroup{???? group ????}
+
+\author{Margarida Castro Neves}
+
+\editor{????Alfred Usher Thor????}
+
+% \previousversion[????URL????]{????Funny Label????}
+\previousversion{This is the first public release}
+       
+
+\begin{document}
+\begin{abstract}
+VAMDC contains  a great ammount of spectral line data, that could be made more
+accessible from VO Applications with  VO protocols. This document proposes a mapping
+between VAMDC metadata and SSLDM (Simple Spectral Line Data Model) metadata.
+\end{abstract}
+
+
+\section*{Acknowledgments}
+
+???? Or remove the section header ????
+
+\section*{Conformance-related definitions}
+
+The words ``MUST'', ``SHALL'', ``SHOULD'', ``MAY'', ``RECOMMENDED'', and
+``OPTIONAL'' (in upper or lower case) used in this document are to be
+interpreted as described in IETF standard RFC2119 \citep{std:RFC2119}.
+
+The \emph{Virtual Observatory (VO)} is a
+general term for a collection of federated resources that can be used
+to conduct astronomical research, education, and outreach.
+The \href{http://www.ivoa.net}{International
+Virtual Observatory Alliance (IVOA)} is a global
+collaboration of separately funded projects to develop standards and
+infrastructure that enable VO applications.
+
+
+\section{Introduction}
+
+SLAP (Simple Line Access Protocol) is the VO standard for Spectral Line querying. 
+SSLDM (Simple Spectral Line Access Protocol) is the VO data model for spectral lines.
+There are very few working services in the VO that use this protocols, meaning that the
+amount of spectral line data in the VO is small. 
+On the other side, VAMDC services offer a great amount of spectral line data, and 
+so it's desirable to access this data in a VO-way (simple). 
+The queries to the VAMDC services might be simple, however, the data returned is much more
+than the necessary data for simple use.
+A proposed mapping would translate the VAMDC output into the  VO data model (SSLDM). Some metadata that are not contained in SSLDM can also be retrieved, if useful. 
+Which parameters  will be mapped are defined by the use cases.
+
+\section{Use Cases}
+
+In most use cases, the goal is to search for spectral lines within a wavelength range:
+
+\begin{itemize}
+\item all spectral lines 
+\item spectral lines from a specific atom (or molecule)
+\item spectral lines from a specific ionisation level
+\item spectral lines with specific (other) parameter
+
+\end{itemize}
+
+\section{Service discovery and Queries}
+TO DO
+
+discovery -> VAMDC registry queries
+querying ->  SLAP queries / VAMDC queries
+What is done in the Client, what is done in the server, how it would work
+How could slap clients use vamdc data
+
+\section{Mapping}
+
+The following parameters have been mapped. This mapping is implemented in SPLAT-VO.
+
+\small
+\begin{table}[htp]
+\begin{center}
+%\resizebox{\textwidth}{!}{%
+\begin{tabular}{| p{2.5cm} |l| l|}%{|l|l|l|}
+\hline
+Name & SSLDM Utype & VAMDC &
+\hline
+title  &  ssldm:line.title  & --- &
+element  & ssldm:line.species  & ElementSymbol &
+wavelength  & ssldm:line.wavelength.value &  EnergyWavelength &
+air wavelength & ssldm:line.airWavelength.value  & EnergyWavelength &
+initial energy  & ssldm:line.initialLevel.energy.value & (AtomicState) IonizationEnergy &
+final energy &  ssldm:line.finalLevel.energy.value  & (AtomicState) IonizationEnergy &
+ionisation level & ---  & IonCharge &
+einsteinA & ssldm:line.einsteinA.value  & TransitionProbabilityA&
+initial level & ssldm:line.initialLevel  &  (AtomicState) Description &
+final level & ssldm:line.finalalLevel  &  (AtomicState) Description &
+oscillator strength & ssldm:line.oscillatorStrength & ProbabilityOscillatorStrength &
+weighted oscillator strength & ssldm:line.weightedOscillatorStrength & ProbabilityWeightedOscillatorStrength&
+\hline
+\end{tabular}
+%}
+\end{center}
+%\label{default}
+\end{table}
+
+
+\section{Server-side or Application-side translation}
+This mapping is implemented in SPLAT-VO
+
+
+\appendix
+\section{Changes from Previous Versions}
+
+No previous versions yet.  
+% these would be subsections "Changes from v. WD-..."
+% Use itemize environments.
+
+
+\bibliography{ivoatex/ivoabib,ivoatex/docrepo}
+
+
+\end{document}
