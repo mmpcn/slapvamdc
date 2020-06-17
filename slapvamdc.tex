@@ -1,5 +1,7 @@
 \documentclass[11pt,a4paper]{ivoa}
 \input tthdefs
+\usepackage{float}
+
 
 \title{Mapping VAMDC spectral line data to SLAP}
 
@@ -16,7 +18,7 @@
 
 \begin{document}
 \begin{abstract}
-VAMDC contains  a great ammount of spectral line data, that could be made more
+VAMDC contains  a great amount of spectral line data, that could be made more
 accessible from VO Applications with  VO protocols. This document proposes a mapping
 between VAMDC metadata and SSLDM (Simple Spectral Line Data Model) metadata.
 \end{abstract}
@@ -76,38 +78,72 @@ How could slap clients use vamdc data
 
 \section{Mapping}
 
-The following parameters have been mapped. This mapping is implemented in SPLAT-VO.
+\subsection{First mapping SSLDM - VAMDC}
+For SPLAT-VO, a mapping between SSLDM and VAMDC data model has been defined and implemented:
 
+\begin{table}[H]
 \small
-\begin{table}[htp]
-\begin{center}
-%\resizebox{\textwidth}{!}{%
-\begin{tabular}{| p{2.5cm} |l| l|}%{|l|l|l|}
+%\begin{center}
+\begin{tabular}{ |p{0.2\linewidth}  |p{0.4\linewidth} | p{0.4\linewidth}| }
 \hline
-Name & SSLDM Utype & VAMDC &
+
+Name & SSLDM Utype & VAMDC \\
 \hline
-title  &  ssldm:line.title  & --- &
-element  & ssldm:line.species  & ElementSymbol &
-wavelength  & ssldm:line.wavelength.value &  EnergyWavelength &
-air wavelength & ssldm:line.airWavelength.value  & EnergyWavelength &
-initial energy  & ssldm:line.initialLevel.energy.value & (AtomicState) IonizationEnergy &
-final energy &  ssldm:line.finalLevel.energy.value  & (AtomicState) IonizationEnergy &
-ionisation level & ---  & IonCharge &
-einsteinA & ssldm:line.einsteinA.value  & TransitionProbabilityA&
-initial level & ssldm:line.initialLevel  &  (AtomicState) Description &
-final level & ssldm:line.finalalLevel  &  (AtomicState) Description &
-oscillator strength & ssldm:line.oscillatorStrength & ProbabilityOscillatorStrength &
-weighted oscillator strength & ssldm:line.weightedOscillatorStrength & ProbabilityWeightedOscillatorStrength&
+title  &  (ssldm:)line.title  & ---  \\
+element  & line.species  & ElementSymbol  \\
+wavelength  & line.wavelength.value &  EnergyWavelength  \\
+air wavelength & line.airWavelength.value  & EnergyWavelength  \\
+initial energy  & line.initialLevel.energy.value & (AtomicState) IonizationEnergy  \\
+final energy &  line.finalLevel.energy.value  & (AtomicState) IonizationEnergy  \\
+ionisation level & ---  & IonCharge  \\
+einsteinA & line.einsteinA.value  & TransitionProbabilityA \\
+initial level & line.initialLevel  &  (AtomicState) Description \\
+final level & line.finalalLevel  &  (AtomicState) Description \\
+oscillator strength & line.oscillatorStrength & ProbabilityOscillatorStrength  \\
+weighted oscillator strength & line.weightedOscillatorStrength & ProbabilityWeightedOscillator- Strength \\
 \hline
 \end{tabular}
 %}
-\end{center}
+%\end{center}
 %\label{default}
 \end{table}
 
 
+\normalsize
+
+\subsection{Proposed parameters to me mapped}
+
+Relevant parameters have to be chosen based on IVOA use cases. Listed below are selected elements from the XSAMSVAMDC Data Model. \textit{XSAMSData.Species.Atoms.Atom} (molecules are not considered in this first version) and
+\textit{XSAMSData.Processes.Radiative.RadiativeTransition} have been used.
+
+
+
+\begin{description}
+
+	
+\item [Wavelength] (in vacuum)\hfill\\
+	XSAMSData.Processes.Radiative.RadiativeTransition.EnergyWavelength.Wavelength\\
+	(if XSAMSData.Processes.Radiative.RadiativeTransition.EnergyWavelength.Wavelength.Vacuum = false,
+	then the the value in \\XSAMSData.Processes.Radiative.RadiativeTransition.EnergyWavelength.Wavelength.AirToVacuum 
+	is used).
+	
+\item [ElementSymbol]\hfill\\
+	Species.Atoms.Atom.ChemicalElement.ElementSymbol\\
+	(Species where XSAMSData.Processes.Radiative.RadiativeTransition.SpeciesRef equals to 
+	Species.Atoms.Atom.Isotope.Ion.SpeciesID)
+	
+\item [IonCharge]\hfill\\
+	Species.Atoms.Atom.Isotope.Ion.IonCharge\\
+	(Species where XSAMSData.Processes.Radiative.RadiativeTransition.SpeciesRef equals to 
+	Species.Atoms.Atom.Isotope.Ion.SpeciesID )
+
+
+\item [Title]\hfill\\
+	can be composed from element symbol and ion charge
+\end{description}
+
+
 \section{Server-side or Application-side translation}
-This mapping is implemented in SPLAT-VO
 
 
 \appendix
