@@ -10,7 +10,7 @@
 
 \author{Margarida Castro Neves}
 
-\editor{????Alfred Usher Thor????}
+\editor{Margarida Castro Neves}
 
 % \previousversion[????URL????]{????Funny Label????}
 \previousversion{This is the first public release}
@@ -19,14 +19,16 @@
 \begin{document}
 \begin{abstract}
 VAMDC contains  a great amount of spectral line data, that could be made more
-accessible from VO Applications with  VO protocols. This document proposes a mapping
-between VAMDC metadata and SSLDM (Simple Spectral Line Data Model) metadata.
+accessible from VO Applications with VO protocols. This document proposes a mapping 
+between relevant VAMDCXSAMS Data Model and SSLDM (Simple Spectral Line Data Model) metadata,
+and in order to define a spectral line protocol to access this information.
+
+
 \end{abstract}
 
 
-\section*{Acknowledgments}
+%\section*{Acknowledgments}
 
-???? Or remove the section header ????
 
 \section*{Conformance-related definitions}
 
@@ -45,106 +47,131 @@ infrastructure that enable VO applications.
 
 \section{Introduction}
 
-SLAP (Simple Line Access Protocol) is the VO standard for Spectral Line querying. 
-SSLDM (Simple Spectral Line Access Protocol) is the VO data model for spectral lines.
-There are very few working services in the VO that use this protocols, meaning that the
-amount of spectral line data in the VO is small. 
-On the other side, VAMDC services offer a great amount of spectral line data, and 
-so it's desirable to access this data in a VO-way (simple). 
-The queries to the VAMDC services might be simple, however, the data returned is much more
-than the necessary data for simple use.
-A proposed mapping would translate the VAMDC output into the  VO data model (SSLDM). Some metadata that are not contained in SSLDM can also be retrieved, if useful. 
-Which parameters  will be mapped are defined by the use cases.
+SLAP (Simple Line Access Protocol) is the VO standard for Spectral Line querying. SSLDM (Simple Spectral Line Access Protocol) is the VO data model for spectral lines.
+Currently there are very few working services in the VO that use this protocols, meaning that the amount of spectral line data in the VO is small. 
+On the other side, VAMDC services offer a great amount of spectral line data, and  so it's desirable to access this data in a VO-way (simple). 
+The queries to the VAMDC services might be simple, however, the data returned is much more than the necessary data for the common use cases in VO, besides the XSAMS \cite{XSAMS:Docs}output format being quite complex.
+This document proposes a simple way to access VAMDC data through a VO service. The data returned is a selection of the common used spectral line metadata that will be mapped from the VAMDC-XSAMS Data Model \cite{XSAMS:ecosystem} into an easy accessible format. A query protocol is used  to retrieve this data,  that will be returned in a VOTABLE format, easily readable by VO client applications.
 
 \section{Use Cases}
 
 In most use cases, the goal is to search for spectral lines within a wavelength range:
 
 \begin{itemize}
-\item all spectral lines 
+
+\item selecting  spectral lines that fit the ones in the spectrum.
+Normally when searching for lines within a wavelength range, a great quantity of lines are returned, with very similar wavelengths. It's necessary to select the one that really represents the transition that caused the line in the spectrum.
+
+\item calculating redshift
+\item comparing theoretical spectra to observed spectra
+\item classify the star type according to spectral lines?
 \item spectral lines from a specific atom (or molecule)
 \item spectral lines from a specific ionisation level
 \item spectral lines with specific (other) parameter
 
 \end{itemize}
 
-\section{Service discovery and Queries}
-TO DO
+\section{Protocol, Service discovery and queries - (need better title)}
+TO DO -> Markus
 
-discovery -> VAMDC registry queries
-querying ->  SLAP queries / VAMDC queries
+discovery -> VO Registry
+querying ->  TAP ? (ObsCore?)
 What is done in the Client, what is done in the server, how it would work
-How could slap clients use vamdc data
+
 
 \section{Mapping}
 
-\subsection{First mapping SSLDM - VAMDC}
-For SPLAT-VO, a mapping between SSLDM and VAMDC data model has been defined and implemented:
+
+
+\subsection{Proposed quantities to be retrieved}\label{quantities}
+
+Relevant quantities are to be chosen based on IVOA use cases. We define the following quantities (based on use cases) to be mapped from VAMDCXSAMS \textit{returnables needed:}
 
 \begin{table}[H]
-\small
-%\begin{center}
-\begin{tabular}{ |p{0.2\linewidth}  |p{0.4\linewidth} | p{0.4\linewidth}| }
-\hline
+%\small
+\begin{center}
+\begin{tabular}{l l}% p{0.4\linewidth}}
+\texttt{title} & the title of the line \\
+\texttt{wavelength} & wavelength in vacuum \\
+\texttt{element\_symbol} & symbol describing the chemical element \\
+\texttt{ion\_charge} & ionisation level\\
+\texttt{upper\_energy} & energy of the upper state \\
+\texttt{lower\_energy} & energy of the lower state\\
+\texttt{einstein\_a} & Einstein A coefficient\\
+\texttt{oscillator\_strength} & \\
+\texttt{weighted\_oscillator\_strength} & \\
+\texttt{line\_strength} &
 
-Name & SSLDM Utype & VAMDC \\
-\hline
-title  &  (ssldm:)line.title  & ---  \\
-element  & line.species  & ElementSymbol  \\
-wavelength  & line.wavelength.value &  EnergyWavelength  \\
-air wavelength & line.airWavelength.value  & EnergyWavelength  \\
-initial energy  & line.initialLevel.energy.value & (AtomicState) IonizationEnergy  \\
-final energy &  line.finalLevel.energy.value  & (AtomicState) IonizationEnergy  \\
-ionisation level & ---  & IonCharge  \\
-einsteinA & line.einsteinA.value  & TransitionProbabilityA \\
-initial level & line.initialLevel  &  (AtomicState) Description \\
-final level & line.finalalLevel  &  (AtomicState) Description \\
-oscillator strength & line.oscillatorStrength & ProbabilityOscillatorStrength  \\
-weighted oscillator strength & line.weightedOscillatorStrength & ProbabilityWeightedOscillator- Strength \\
-\hline
 \end{tabular}
-%}
-%\end{center}
-%\label{default}
+
+\end{center}
 \end{table}
 
+\subsection{Mapping from VAMDCXSAMS}
 
-\normalsize
+The quantities used in the mapping belong to the following branches of VAMDCXSAMS:\\\\
+\textit{XSAMSData.Species.Atoms.Atom}  referred as ATOM,\\
+\textit{XSAMSData.Species.Atoms.AtomicState}  referred as ATOMICSTATE,\\
+\textit{XSAMSData.Species.Molecules.Molecule}, referred as MOLECULE,\\
+\textit{XSAMSData.Processes.Radiative.RadiativeTransition}, referred as RADTRANS.\\
 
-\subsection{Proposed parameters to me mapped}
+The VAMDC-TAP query language defines a list of keywords, called Returnables\cite{XSAMS:returnables}, listing the quantities that can be returned by a service.They correspond to an element in the XSAMS data model. The returnables supported by a service are declared by a service manager when he deploys the software on its database, and saved in the VAMDC registry. \\
 
-Relevant parameters have to be chosen based on IVOA use cases. Listed below are selected elements from the XSAMSVAMDC Data Model. \textit{XSAMSData.Species.Atoms.Atom} (molecules are not considered in this first version) and
-\textit{XSAMSData.Processes.Radiative.RadiativeTransition} have been used.
+Listed below are the mappings for the atomic quantities defined in \ref{quantities} (at the moment only atoms, not molecules):
 
-
-
+\renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\texttt{#1}}
 \begin{description}
-
+		
+\item [wavelength] (in vacuum)\hfill\\
+        \textit{data model:} RADTRANS.EnergyWavelength\\
+	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, RadTransWavelengthAirToVac\\
+	\textit{constraints:} RadTransWavelengthVacuum = true; else use RadTransWavelengthAirToVac.\\
 	
-\item [Wavelength] (in vacuum)\hfill\\
-	XSAMSData.Processes.Radiative.RadiativeTransition.EnergyWavelength.Wavelength\\
-	(if XSAMSData.Processes.Radiative.RadiativeTransition.EnergyWavelength.Wavelength.Vacuum = false,
-	then the the value in \\XSAMSData.Processes.Radiative.RadiativeTransition.EnergyWavelength.Wavelength.AirToVacuum 
-	is used).
+\item [element\_symbol] \hfill\\
+	\textit{data model:} ATOM.ChemicalElement.ElementSymbol\\
+	\textit{returnables needed:} RadTransSpeciesRef, Atom.SpeciesID, Atom.Symbol
+	\textit{constraints:}  RadTransSpeciesRef = Atom.SpeciesID 
+		
+\item [ion\_charge]\hfill\\
+	\textit{data model:} ATOM.Isotope.Ion.IonCharge\\
+	\textit{returnables needed:} RadTransSpeciesRef, AtomSpeciesID, AtomIonCharge\\
+	\textit{constraints:}  RadTransSpeciesRef = Atom.SpeciesID 
 	
-\item [ElementSymbol]\hfill\\
-	Species.Atoms.Atom.ChemicalElement.ElementSymbol\\
-	(Species where XSAMSData.Processes.Radiative.RadiativeTransition.SpeciesRef equals to 
-	Species.Atoms.Atom.Isotope.Ion.SpeciesID)
+\item [upper\_energy]\hfill\\
+	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy\\
+	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID\\
+	\textit{constraints:}  RadTransUpperStateRef = AtomStateID 
+
+\item [lower\_energy]\hfill\\
+	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy\\
+	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID\\
+	\textit{constraints:}  RadTransLowerStateRef = AtomStateID
+
+\item [einstein\_a]\hfill\\
+	\textit{data model:}  RADTRANS.Probabilitty.TransitionProbabilityA\\
+	\textit{returnables needed:} RadTransProbabilityA\\
+         \textit{constraints:} 
+         
+\item [oscillator\_strength]\hfill\\
+	\textit{data model:}  RADTRANS.Probabilitty.TransitionOscillatorStrength\\
+	\textit{returnables needed:} RadTransProbabilityOscillatorStrength\\
+         \textit{constraints:} 
+
+\item [weighted\_oscillator\_strength]\hfill\\
+	\textit{data model:}  RADTRANS.Probabilitty.TransitionWeightedOscillatorStrength\\
+	\textit{returnables needed:} RadTransProbabilityWeightedOscillatorStrength\\
+         \textit{constraints:} 
+
+\item [line\_strength]\hfill\\
+	\textit{data model:} RadTrans.Probabilitty.TransitionLineStrength\\
+	returnables needed: RadTransProbabilityLineStrength\\
+         \textit{constraints:} 	
+         
+\item [title]\hfill\\
+	a string composed by the values of  \texttt{element\_symbol} and \texttt{ion\_charge}
 	
-\item [IonCharge]\hfill\\
-	Species.Atoms.Atom.Isotope.Ion.IonCharge\\
-	(Species where XSAMSData.Processes.Radiative.RadiativeTransition.SpeciesRef equals to 
-	Species.Atoms.Atom.Isotope.Ion.SpeciesID )
 
-
-\item [Title]\hfill\\
-	can be composed from element symbol and ion charge
 \end{description}
-
-
-\section{Server-side or Application-side translation}
-
 
 \appendix
 \section{Changes from Previous Versions}
@@ -154,7 +181,6 @@ No previous versions yet.
 % Use itemize environments.
 
 
-\bibliography{ivoatex/ivoabib,ivoatex/docrepo}
-
+\bibliography{ivoatex/ivoabib,ivoatex/docrepo, localrefs}
 
 \end{document}
