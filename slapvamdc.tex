@@ -20,8 +20,8 @@
 \begin{abstract}
 VAMDC contains  a great amount of spectral line data, that could be made more
 accessible from VO Applications with VO protocols. This document proposes a mapping 
-between relevant VAMDCXSAMS Data Model and SSLDM (Simple Spectral Line Data Model) metadata,
-and in order to define a spectral line protocol to access this information.
+between relevant VAMDCXSAMS Data Model and a new set of selected parameters  in 
+order to define a spectral line protocol to access this information.
 
 
 \end{abstract}
@@ -49,9 +49,9 @@ infrastructure that enable VO applications.
 
 SLAP (Simple Line Access Protocol) is the VO standard for Spectral Line querying. SSLDM (Simple Spectral Line Access Protocol) is the VO data model for spectral lines.
 Currently there are very few working services in the VO that use this protocols, meaning that the amount of spectral line data in the VO is small. 
-On the other side, VAMDC services offer a great amount of spectral line data, and  so it's desirable to access this data in a VO-way (simple). 
-The queries to the VAMDC services might be simple, however, the data returned is much more than the necessary data for the common use cases in VO, besides the XSAMS \cite{XSAMS:Docs}output format being quite complex.
-This document proposes a simple way to access VAMDC data through a VO service. The data returned is a selection of the common used spectral line metadata that will be mapped from the VAMDC-XSAMS Data Model \cite{XSAMS:ecosystem} into an easy accessible format. A query protocol is used  to retrieve this data,  that will be returned in a VOTABLE format, easily readable by VO client applications.
+On the other side, VAMDC services offer a great amount of spectral line data, and  so it's desirable to access this data in a VO-way. 
+The queries to the VAMDC services might be simple, however, the data returned is much more than the necessary data for the common use cases in VO, besides the XSAMS \citep{XSAMS:Docs} output format being quite complex.
+This document proposes a simple way to access VAMDC data through a VO service. The data returned is a selection of the common used spectral line metadata that will be mapped from the \href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS Data Model} into an easy accessible format. A query protocol is used  to retrieve this data,  that will be returned in a VOTABLE format, easily readable by VO client applications.
 
 \section{Use Cases}
 
@@ -115,7 +115,7 @@ The quantities used in the mapping belong to the following branches of VAMDCXSAM
 \textit{XSAMSData.Species.Molecules.Molecule}, referred as MOLECULE,\\
 \textit{XSAMSData.Processes.Radiative.RadiativeTransition}, referred as RADTRANS.\\
 
-The VAMDC-TAP query language defines a list of keywords, called Returnables\cite{XSAMS:returnables}, listing the quantities that can be returned by a service.They correspond to an element in the XSAMS data model. The returnables supported by a service are declared by a service manager when he deploys the software on its database, and saved in the VAMDC registry. \\
+The VAMDC-TAP query language defines a list of keywords, called \href{https://standards.vamdc.eu/dictionary/returnables.html}{Returnables}, listing the quantities that can be returned by a service.They correspond to an element in the XSAMS data model. The returnables supported by a service are declared by a service manager when he deploys the software on its database, and saved in the VAMDC registry. \\
 
 Listed below are the mappings for the atomic quantities defined in \ref{quantities} (at the moment only atoms, not molecules):
 
