@@ -47,7 +47,7 @@ infrastructure that enable VO applications.
 
 \section{Introduction}
 
-SLAP (Simple Line Access Protocol) is the VO standard for Spectral Line querying. SSLDM (Simple Spectral Line Access Protocol) is the VO data model for spectral lines.
+SLAP (Simple Line Access Protocol)\citep{2010ivoa.specQ1209O} is the VO standard for Spectral Line querying. SSLDM (Simple Spectral Line Access Protocol)\citep{2010ivoa.spec.1209O} is the VO data model for spectral lines.
 Currently there are very few working services in the VO that use this protocols, meaning that the amount of spectral line data in the VO is small. 
 On the other side, VAMDC services offer a great amount of spectral line data, and  so it's desirable to access this data in a VO-way. 
 The queries to the VAMDC services might be simple, however, the data returned is much more than the necessary data for the common use cases in VO, besides the XSAMS \citep{XSAMS:Docs} output format being quite complex.
@@ -61,7 +61,7 @@ In most use cases, the goal is to search for spectral lines within a wavelength 
 
 \item selecting  spectral lines that fit the ones in the spectrum.
 Normally when searching for lines within a wavelength range, a great quantity of lines are returned, with very similar wavelengths. It's necessary to select the one that really represents the transition that caused the line in the spectrum.
-
+\item areas: Stars, galaxies, ISM, planets?
 \item calculating redshift
 \item comparing theoretical spectra to observed spectra
 \item classify the star type according to spectral lines?
