@@ -8,19 +8,18 @@
 % see ivoatexDoc for what group names to use here
 \ivoagroup{???? group ????}
 
-\author{Margarida Castro Neves}
+\author{Margarida Castro Neves, Nicolas Moreau}
 
-\editor{Margarida Castro Neves}
+\editor{Margarida Castro Neves, Nicolas Moreau}
 
 % \previousversion[????URL????]{????Funny Label????}
 \previousversion{This is the first public release}
-       
 
 \begin{document}
 \begin{abstract}
 VAMDC contains  a great amount of spectral line data, that could be made more
-accessible from VO Applications with VO protocols. This document proposes a mapping 
-between relevant VAMDCXSAMS Data Model and a new set of selected parameters  in 
+accessible from VO Applications with VO protocols. This document proposes a mapping
+between relevant VAMDCXSAMS Data Model and a new set of selected parameters  in
 order to define a spectral line protocol to access this information.
 
 
@@ -68,8 +67,13 @@ Normally when searching for lines within a wavelength range, a great quantity of
 \item spectral lines from a specific atom (or molecule)
 \item spectral lines from a specific ionisation level
 \item spectral lines with specific (other) parameter
-
 \end{itemize}
+
+Another use case to consider is to get a list of all available chemical species 
+from a service, as a first step before looking for spectral lines.
+
+For any retrieved spectral line, the reference of the source article where it was published
+should always be provided if available.
 
 \section{Protocol, Service discovery and queries - (need better title)}
 TO DO -> Markus
@@ -93,15 +97,21 @@ Relevant quantities are to be chosen based on IVOA use cases. We define the foll
 \begin{tabular}{l l}% p{0.4\linewidth}}
 \texttt{title} & the title of the line \\
 \texttt{wavelength} & wavelength in vacuum \\
+\texttt{inchi} & chemical species inchi \\
+\texttt{inchikey} & chemical species inchikey \\
 \texttt{element\_symbol} & symbol describing the chemical element \\
 \texttt{ion\_charge} & ionisation level\\
+\texttt{atom\_mass\_number} & atom mass number\\
+\texttt{upper\_state\_description} & upper state description\\
+\texttt{lower\_state\_description} & lower state description\\
 \texttt{upper\_energy} & energy of the upper state \\
 \texttt{lower\_energy} & energy of the lower state\\
 \texttt{einstein\_a} & Einstein A coefficient\\
-\texttt{oscillator\_strength} & \\
-\texttt{weighted\_oscillator\_strength} & \\
-\texttt{line\_strength} &
-
+\texttt{oscillator\_strength} & oscillator strength of radiative transition \\
+\texttt{weighted\_oscillator\_strength} &  Weighted oscillator strength of radiative transition \\
+\texttt{line\_strength} & Total absorption by a spectra line \\
+\texttt{line\_reference\_doi} & Digital Object Identifier of bibliography source \\
+\texttt{line\_reference\_uri} & Web link to the publication\\
 \end{tabular}
 
 \end{center}
@@ -121,26 +131,51 @@ Listed below are the mappings for the atomic quantities defined in \ref{quantiti
 
 \renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\texttt{#1}}
 \begin{description}
-		
+
 \item [wavelength] (in vacuum)\hfill\\
-        \textit{data model:} RADTRANS.EnergyWavelength\\
+    \textit{data model:} RADTRANS.EnergyWavelength\\
 	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, RadTransWavelengthAirToVac\\
 	\textit{constraints:} RadTransWavelengthVacuum = true; else use RadTransWavelengthAirToVac.\\
-	
+
+	\item [inchi] \hfill\\
+	\textit{data model:} ATOM.Isotope.Ion.InChi\\
+    \textit{returnables needed:} AtomInchi\\
+	\textit{constraints:} \\
+
+	\item [inchikey] \hfill\\
+	\textit{data model:} ATOM.Isotope.Ion.InChiKey\\
+    \textit{returnables needed:} AtomInchiKey\\
+    \textit{constraints:} \\
+
 \item [element\_symbol] \hfill\\
 	\textit{data model:} ATOM.ChemicalElement.ElementSymbol\\
 	\textit{returnables needed:} RadTransSpeciesRef, Atom.SpeciesID, Atom.Symbol
-	\textit{constraints:}  RadTransSpeciesRef = Atom.SpeciesID 
-		
+	\textit{constraints:}  RadTransSpeciesRef = Atom.SpeciesID
+
 \item [ion\_charge]\hfill\\
 	\textit{data model:} ATOM.Isotope.Ion.IonCharge\\
 	\textit{returnables needed:} RadTransSpeciesRef, AtomSpeciesID, AtomIonCharge\\
-	\textit{constraints:}  RadTransSpeciesRef = Atom.SpeciesID 
-	
+	\textit{constraints:}
+
+	\item [atom\_mass\_number]\hfill\\
+	\textit{data model:} ATOM.Isotope.IsotopParameters.MassNumber\\
+	\textit{returnables needed:} AtomMassNumber\\
+	\textit{constraints:}
+
+	\item [upper\_state\_description]\hfill\\
+	\textit{data model:} ATOMICSTATE.Description\\
+	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID\\
+	\textit{constraints:}  
+
+\item [lower\_state\_description]\hfill\\
+	\textit{data model:} ATOMICSTATE.Description\\
+	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID\\
+	\textit{constraints:}  
+
 \item [upper\_energy]\hfill\\
 	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy\\
 	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID\\
-	\textit{constraints:}  RadTransUpperStateRef = AtomStateID 
+	\textit{constraints:}  RadTransUpperStateRef = AtomStateID
 
 \item [lower\_energy]\hfill\\
 	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy\\
@@ -150,33 +185,43 @@ Listed below are the mappings for the atomic quantities defined in \ref{quantiti
 \item [einstein\_a]\hfill\\
 	\textit{data model:}  RADTRANS.Probabilitty.TransitionProbabilityA\\
 	\textit{returnables needed:} RadTransProbabilityA\\
-         \textit{constraints:} 
-         
+	\textit{constraints:}
+
 \item [oscillator\_strength]\hfill\\
 	\textit{data model:}  RADTRANS.Probabilitty.TransitionOscillatorStrength\\
 	\textit{returnables needed:} RadTransProbabilityOscillatorStrength\\
-         \textit{constraints:} 
+    \textit{constraints:}
 
 \item [weighted\_oscillator\_strength]\hfill\\
 	\textit{data model:}  RADTRANS.Probabilitty.TransitionWeightedOscillatorStrength\\
 	\textit{returnables needed:} RadTransProbabilityWeightedOscillatorStrength\\
-         \textit{constraints:} 
+    \textit{constraints:}
+
+\item [line\_reference\_doi]\hfill\\
+	\textit{data model:} SOURCES.Source.DigitalObjectIdentifier\\
+	\textit{returnables needed:} SourceDOI\\
+	\textit{constraints:}
+
+\item [line\_reference\_uri]\hfill\\
+	\textit{data model:} SOURCES.Source.UniformResourceIdentifier\\
+	\textit{returnables needed:} SourceURI\\
+	\textit{constraints:}
 
 \item [line\_strength]\hfill\\
 	\textit{data model:} RadTrans.Probabilitty.TransitionLineStrength\\
-	returnables needed: RadTransProbabilityLineStrength\\
-         \textit{constraints:} 	
-         
+	\textit{returnables needed:} RadTransProbabilityLineStrength\\
+    \textit{constraints:}
+
 \item [title]\hfill\\
 	a string composed by the values of  \texttt{element\_symbol} and \texttt{ion\_charge}
-	
+
 
 \end{description}
 
 \appendix
 \section{Changes from Previous Versions}
 
-No previous versions yet.  
+No previous versions yet.
 % these would be subsections "Changes from v. WD-..."
 % Use itemize environments.
 
