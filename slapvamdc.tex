@@ -117,6 +117,14 @@ Relevant quantities are to be chosen based on IVOA use cases. We define the foll
 \end{center}
 \end{table}
 
+Returnables corresponding to a "DataType" in the XSAMS schema (numerical values) have additional categories, besides the value. Following categories will be also used in the mapping, \textit{Keyword} being the returnable keyword:
+
+ \begin{itemize}
+\item \textit{Keyword}Unit  - the units of the value
+\item \textit{Keyword}Method - the method used to obtain this value (e.g. experiment, theory, etc)
+\end{itemize}
+
+
 \subsection{Mapping from VAMDCXSAMS}
 
 The quantities used in the mapping belong to the following branches of VAMDCXSAMS:\\\\
@@ -134,7 +142,7 @@ Listed below are the mappings for the atomic quantities defined in \ref{quantiti
 
 \item [wavelength] (in vacuum)\hfill\\
     \textit{data model:} RADTRANS.EnergyWavelength\\
-	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, RadTransWavelengthAirToVac\\
+	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, RadTransWavelengthAirToVac, RadTransWavelengthUnit, RadTransWavelengthMethod\\
 	\textit{constraints:} RadTransWavelengthVacuum = true; else use RadTransWavelengthAirToVac.\\
 
 	\item [inchi] \hfill\\
@@ -174,12 +182,12 @@ Listed below are the mappings for the atomic quantities defined in \ref{quantiti
 
 \item [upper\_energy]\hfill\\
 	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy\\
-	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID\\
+	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, AtomStateEnergyUnit\\
 	\textit{constraints:}  RadTransUpperStateRef = AtomStateID
 
 \item [lower\_energy]\hfill\\
 	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy\\
-	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID\\
+	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID, AtomStateEnergyUnit\\
 	\textit{constraints:}  RadTransLowerStateRef = AtomStateID
 
 \item [einstein\_a]\hfill\\
