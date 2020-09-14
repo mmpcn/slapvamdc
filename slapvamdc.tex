@@ -102,8 +102,8 @@ Relevant quantities are to be chosen based on IVOA use cases. We define the foll
 \texttt{element\_symbol} & symbol describing the chemical element \\
 \texttt{ion\_charge} & ionisation level\\
 \texttt{atom\_mass\_number} & atom mass number\\
-\texttt{upper\_state\_description} & upper state description\\
-\texttt{lower\_state\_description} & lower state description\\
+\texttt{upper\_state\_configuration} & upper state configuration\\
+\texttt{lower\_state\_configuration} & lower state configuration\\
 \texttt{upper\_energy} & energy of the upper state \\
 \texttt{lower\_energy} & energy of the lower state\\
 \texttt{einstein\_a} & Einstein A coefficient\\
@@ -120,7 +120,7 @@ Relevant quantities are to be chosen based on IVOA use cases. We define the foll
 Returnables corresponding to a "DataType" in the XSAMS schema (numerical values) have additional categories, besides the value. Following categories will be also used in the mapping, \textit{Keyword} being the returnable keyword:
 
  \begin{itemize}
-\item \textit{Keyword}Unit  - the units of the value
+\item \textit{Keyword}Unit  - the units of the value. If the wavelength unit returned is \textbf{A}, it must be corrected to \textbf{Angstrom} for compatibility
 \item \textit{Keyword}Method - the method used to obtain this value (e.g. experiment, theory, etc)
 \end{itemize}
 
@@ -145,40 +145,40 @@ Listed below are the mappings for the atomic quantities defined in \ref{quantiti
 	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, RadTransWavelengthAirToVac, RadTransWavelengthUnit, RadTransWavelengthMethod\\
 	\textit{constraints:} RadTransWavelengthVacuum = true; else use RadTransWavelengthAirToVac.\\
 
-	\item [inchi] \hfill\\
+\item [inchi] \hfill\\
 	\textit{data model:} ATOM.Isotope.Ion.InChi\\
-    \textit{returnables needed:} AtomInchi\\
-	\textit{constraints:} \\
-
-	\item [inchikey] \hfill\\
+        \textit{returnables needed:} AtomInchi\\
+	\textit{constraints:} RadTrans.SpeciesRef = Atom.SpeciesID
+	
+\item [inchikey] \hfill\\
 	\textit{data model:} ATOM.Isotope.Ion.InChiKey\\
-    \textit{returnables needed:} AtomInchiKey\\
-    \textit{constraints:} \\
+         \textit{returnables needed:} AtomInchiKey\\
+         \textit{constraints:} RadTrans.SpeciesRef = Atom.SpeciesID
 
 \item [element\_symbol] \hfill\\
 	\textit{data model:} ATOM.ChemicalElement.ElementSymbol\\
-	\textit{returnables needed:} RadTransSpeciesRef, Atom.SpeciesID, Atom.Symbol
-	\textit{constraints:}  RadTransSpeciesRef = Atom.SpeciesID
+	\textit{returnables needed:} RadTrans.SpeciesRef, Atom.SpeciesID, Atom.Symbol
+	\textit{constraints:}  RadTrans.SpeciesRef = Atom.SpeciesID
 
 \item [ion\_charge]\hfill\\
 	\textit{data model:} ATOM.Isotope.Ion.IonCharge\\
 	\textit{returnables needed:} RadTransSpeciesRef, AtomSpeciesID, AtomIonCharge\\
-	\textit{constraints:}
+	\textit{constraints:}RadTransSpeciesRef=AtomSpeciesID
 
 	\item [atom\_mass\_number]\hfill\\
 	\textit{data model:} ATOM.Isotope.IsotopParameters.MassNumber\\
 	\textit{returnables needed:} AtomMassNumber\\
-	\textit{constraints:}
+	\textit{constraints:}RadTransSpeciesRef=AtomSpeciesID
 
-	\item [upper\_state\_description]\hfill\\
-	\textit{data model:} ATOMICSTATE.Description\\
+	\item [upper\_state\_configuration]\hfill\\
+	\textit{data model:} ATOMICSTATE.ConfigurationLabel\\
 	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID\\
-	\textit{constraints:}  
+	\textit{constraints:}  RadTransUpperStateRef = AtomStateID
 
-\item [lower\_state\_description]\hfill\\
-	\textit{data model:} ATOMICSTATE.Description\\
+\item [lower\_state\_configuration]\hfill\\
+	\textit{data model:} ATOMICSTATE.ConfigurationLabel\\
 	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID\\
-	\textit{constraints:}  
+	\textit{constraints:}  RadTransLowerStateRef = AtomStateID
 
 \item [upper\_energy]\hfill\\
 	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy\\
@@ -191,17 +191,17 @@ Listed below are the mappings for the atomic quantities defined in \ref{quantiti
 	\textit{constraints:}  RadTransLowerStateRef = AtomStateID
 
 \item [einstein\_a]\hfill\\
-	\textit{data model:}  RADTRANS.Probabilitty.TransitionProbabilityA\\
+	\textit{data model:}  RADTRANS.Probability.TransitionProbabilityA\\
 	\textit{returnables needed:} RadTransProbabilityA\\
 	\textit{constraints:}
 
 \item [oscillator\_strength]\hfill\\
-	\textit{data model:}  RADTRANS.Probabilitty.TransitionOscillatorStrength\\
+	\textit{data model:}  RADTRANS.Probability.TransitionOscillatorStrength\\
 	\textit{returnables needed:} RadTransProbabilityOscillatorStrength\\
     \textit{constraints:}
 
 \item [weighted\_oscillator\_strength]\hfill\\
-	\textit{data model:}  RADTRANS.Probabilitty.TransitionWeightedOscillatorStrength\\
+	\textit{data model:}  RADTRANS.Probability.TransitionWeightedOscillatorStrength\\
 	\textit{returnables needed:} RadTransProbabilityWeightedOscillatorStrength\\
     \textit{constraints:}
 
@@ -216,7 +216,7 @@ Listed below are the mappings for the atomic quantities defined in \ref{quantiti
 	\textit{constraints:}
 
 \item [line\_strength]\hfill\\
-	\textit{data model:} RadTrans.Probabilitty.TransitionLineStrength\\
+	\textit{data model:} RadTrans.Probability.TransitionLineStrength\\
 	\textit{returnables needed:} RadTransProbabilityLineStrength\\
     \textit{constraints:}
 
