@@ -1,9 +1,10 @@
 \documentclass[11pt,a4paper]{ivoa}
 \input tthdefs
 \usepackage{float}
+\usepackage{todonotes}
 
 
-\title{Mapping VAMDC spectral line data to SLAP}
+\title{IVOA Relational Model for Spectral Lines and Protocol \(LineTAP\)}
 
 % see ivoatexDoc for what group names to use here
 \ivoagroup{???? group ????}
@@ -17,11 +18,8 @@
 
 \begin{document}
 \begin{abstract}
-VAMDC contains  a great amount of spectral line data, that could be made more
-accessible from VO Applications with VO protocols. This document proposes a mapping
-between relevant VAMDCXSAMS Data Model and a new set of selected parameters  in
-order to define a spectral line protocol to access this information.
 
+This document proposes a set of  spectral line parameters that can be queried using the TAP protocol. Its purpose is to present a simpler way to query for spectral line data using VO Applications. Among the existing services, SSLDM/SLAP has very few services deployed and is not being used. On the other side, VAMDC is has plenty of services and spectral line information, but its data model is very complex. Therefore the need of a simpler model, using already established protocols for querying and retrieving the information. Besides the proposed set of parameters, a mapping from VAMDC data model has also been developed.
 
 \end{abstract}
 
@@ -50,7 +48,11 @@ SLAP (Simple Line Access Protocol)\citep{2010ivoa.specQ1209O} is the VO standard
 Currently there are very few working services in the VO that use this protocols, meaning that the amount of spectral line data in the VO is small. 
 On the other side, VAMDC services offer a great amount of spectral line data, and  so it's desirable to access this data in a VO-way. 
 The queries to the VAMDC services might be simple, however, the data returned is much more than the necessary data for the common use cases in VO, besides the XSAMS \citep{XSAMS:Docs} output format being quite complex.
-This document proposes a simple way to access VAMDC data through a VO service. The data returned is a selection of the common used spectral line metadata that will be mapped from the \href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS Data Model} into an easy accessible format. A query protocol is used  to retrieve this data,  that will be returned in a VOTABLE format, easily readable by VO client applications.
+
+This document proposes a simple way to access spectral line data through a VO service through a relational data model. A selection of the relevant line quantities used in astronomy has been defined, which can be retrieved using TAP \citep{std:TAP}, which is an established IVOA protocol.
+
+To make use of the VAMDC data, a mapping from the from the \href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS Data Model} to the relational model is also presented. Using TAP, the resulting data is returned in VOTABLE format,  easily readable by VO client applications. 
+
 
 \section{Use Cases}
 
@@ -76,29 +78,27 @@ For any retrieved spectral line, the reference of the source article where it wa
 should always be provided if available.
 
 \section{Protocol, Service discovery and queries - (need better title)}
-TO DO -> Markus
 
-discovery -> VO Registry
-querying ->  TAP ? (ObsCore?)
-What is done in the Client, what is done in the server, how it would work
+\subsection{ Service description, service discovery }
+\todo{ MARKUS D}
 
-
-\section{Mapping}
+\subsection{ Queries: LineTAP }
+\todo{ description, examples, translation VAMDC Queries}
 
 
+\section{Spectral Line Data}\label{quantities}
 
-\subsection{Proposed quantities to be retrieved}\label{quantities}
+We define the following quantities based on IVOA use cases):
 
-Relevant quantities are to be chosen based on IVOA use cases. We define the following quantities (based on use cases) to be mapped from VAMDCXSAMS \textit{returnables needed:}
+\todo{ method: define other method options besides experiment and theory?}
 
 \begin{table}[H]
 %\small
 \begin{center}
 \begin{tabular}{l l}% p{0.4\linewidth}}
 \texttt{title} & the title of the line \\
-\texttt{wavelength} & wavelength in vacuum \\
-\texttt{inchi} & chemical species inchi \\
-\texttt{inchikey} & chemical species inchikey \\
+\texttt{vacuum\_wavelength} & wavelength in vacuum, in Angstrom \\
+\texttt{method} & method the wavelength was obtained with: \textit{Experiment}, \textit{Theory}  \\
 \texttt{element\_symbol} & symbol describing the chemical element \\
 \texttt{ion\_charge} & ionisation level\\
 \texttt{atom\_mass\_number} & atom mass number\\
@@ -106,6 +106,8 @@ Relevant quantities are to be chosen based on IVOA use cases. We define the foll
 \texttt{lower\_state\_configuration} & lower state configuration\\
 \texttt{upper\_energy} & energy of the upper state \\
 \texttt{lower\_energy} & energy of the lower state\\
+\texttt{inchi} & chemical species inchi \\
+\texttt{inchikey} & chemical species inchikey \\
 \texttt{einstein\_a} & Einstein A coefficient\\
 \texttt{oscillator\_strength} & oscillator strength of radiative transition \\
 \texttt{weighted\_oscillator\_strength} &  Weighted oscillator strength of radiative transition \\
@@ -117,15 +119,18 @@ Relevant quantities are to be chosen based on IVOA use cases. We define the foll
 \end{center}
 \end{table}
 
-Returnables corresponding to a "DataType" in the XSAMS schema (numerical values) have additional categories, besides the value. Following categories will be also used in the mapping, \textit{Keyword} being the returnable keyword:
-
- \begin{itemize}
-\item \textit{Keyword}Unit  - the units of the value. If the wavelength unit returned is \textbf{A}, it must be corrected to \textbf{Angstrom} for compatibility
-\item \textit{Keyword}Method - the method used to obtain this value (e.g. experiment, theory, etc)
-\end{itemize}
 
 
-\subsection{Mapping from VAMDCXSAMS}
+
+%Returnables corresponding to a "DataType" in the XSAMS schema (numerical values) have additional categories, besides the value. Following categories will be also used in the mapping, \textit{Keyword} being the returnable keyword:
+
+% \begin{itemize}
+%\item \textit{Keyword}Unit  - the units of the value. If the wavelength unit returned is \textbf{A}, it must be corrected to \textbf{Angstrom} for compatibility
+%\item \textit{Keyword}Method - the method used to obtain this value (e.g. experiment, theory, etc)
+%\end{itemize}
+
+
+\section{Mapping from VAMDCXSAMS}
 
 The quantities used in the mapping belong to the following branches of VAMDCXSAMS:\\\\
 \textit{XSAMSData.Species.Atoms.Atom}  referred as ATOM,\\
@@ -137,13 +142,19 @@ The VAMDC-TAP query language defines a list of keywords, called \href{https://st
 
 Listed below are the mappings for the atomic quantities defined in \ref{quantities} (at the moment only atoms, not molecules):
 
+
 \renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\texttt{#1}}
 \begin{description}
 
-\item [wavelength] (in vacuum)\hfill\\
+\item [vacuum\_wavelength] (in Angstrom)\hfill\\
     \textit{data model:} RADTRANS.EnergyWavelength\\
-	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, RadTransWavelengthAirToVac, RadTransWavelengthUnit, RadTransWavelengthMethod\\
+	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, RadTransWavelengthAirToVac, RadTransWavelengthUnit\\
 	\textit{constraints:} RadTransWavelengthVacuum = true; else use RadTransWavelengthAirToVac.\\
+	
+\item [method] \hfill\\
+	\textit{data model:} Methods.Method.Category\\
+	\textit{returnables needed:} RadTransWavelengthMethod\\
+	\textit{constraints:} Methods.Method.MethodID=RadTransWavelength.Wavelength@methodRef\\
 
 \item [inchi] \hfill\\
 	\textit{data model:} ATOM.Isotope.Ion.InChi\\
@@ -225,6 +236,7 @@ Listed below are the mappings for the atomic quantities defined in \ref{quantiti
 
 
 \end{description}
+
 
 \appendix
 \section{Changes from Previous Versions}
