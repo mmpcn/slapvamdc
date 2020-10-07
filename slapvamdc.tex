@@ -186,50 +186,50 @@ Listed below are the mappings for the atomic quantities defined in \ref{quantiti
 	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID\\
 	\textit{constraints:}  RadTransUpperStateRef = AtomStateID
 
-\item [lower\_state\_configuration]\hfill\\
+	\item [lower\_state\_configuration]\hfill\\
 	\textit{data model:} ATOMICSTATE.ConfigurationLabel\\
 	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID\\
 	\textit{constraints:}  RadTransLowerStateRef = AtomStateID
 
-\item [upper\_energy]\hfill\\
+	\item [upperi\_state\_energy]\hfill\\
 	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy\\
 	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, AtomStateEnergyUnit\\
 	\textit{constraints:}  RadTransUpperStateRef = AtomStateID
-
-\item [lower\_energy]\hfill\\
+	
+	\item [lower\_state\_energy]\hfill\\
 	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy\\
 	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID, AtomStateEnergyUnit\\
 	\textit{constraints:}  RadTransLowerStateRef = AtomStateID
 
-\item [einstein\_a]\hfill\\
+	\item [einstein\_a]\hfill\\
 	\textit{data model:}  RADTRANS.Probability.TransitionProbabilityA\\
 	\textit{returnables needed:} RadTransProbabilityA\\
 	\textit{constraints:}
 
-\item [oscillator\_strength]\hfill\\
+	\item [oscillator\_strength]\hfill\\
 	\textit{data model:}  RADTRANS.Probability.TransitionOscillatorStrength\\
 	\textit{returnables needed:} RadTransProbabilityOscillatorStrength\\
-    \textit{constraints:}
+        \textit{constraints:}
 
-\item [weighted\_oscillator\_strength]\hfill\\
+	\item [weighted\_oscillator\_strength]\hfill\\
 	\textit{data model:}  RADTRANS.Probability.TransitionWeightedOscillatorStrength\\
 	\textit{returnables needed:} RadTransProbabilityWeightedOscillatorStrength\\
-    \textit{constraints:}
+ 	   \textit{constraints:}
 
-\item [line\_reference\_doi]\hfill\\
+	\item [line\_reference\_doi]\hfill\\
 	\textit{data model:} SOURCES.Source.DigitalObjectIdentifier\\
 	\textit{returnables needed:} SourceDOI\\
 	\textit{constraints:}
 
-\item [line\_reference\_uri]\hfill\\
+	\item [line\_reference\_uri]\hfill\\
 	\textit{data model:} SOURCES.Source.UniformResourceIdentifier\\
 	\textit{returnables needed:} SourceURI\\
 	\textit{constraints:}
 
-\item [line\_strength]\hfill\\
+	\item [line\_strength]\hfill\\
 	\textit{data model:} RadTrans.Probability.TransitionLineStrength\\
 	\textit{returnables needed:} RadTransProbabilityLineStrength\\
-    \textit{constraints:}
+        \textit{constraints:}
 
 \item [title]\hfill\\
 	a string composed by the values of  \texttt{element\_symbol} and \texttt{ion\_charge}
