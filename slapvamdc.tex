@@ -46,17 +46,22 @@ infrastructure that enable VO applications.
 
 SLAP (Simple Line Access Protocol)\citep{2010ivoa.specQ1209O} is the VO standard for Spectral Line querying. SSLDM (Simple Spectral Line Access Protocol)\citep{2010ivoa.spec.1209O} is the VO data model for spectral lines.
 Currently there are very few working services in the VO that use this protocols, meaning that the amount of spectral line data in the VO is small. 
+
 On the other side, VAMDC services offer a great amount of spectral line data, and  so it's desirable to access this data in a VO-way. 
 The queries to the VAMDC services might be simple, however, the data returned is much more than the necessary data for the common use cases in VO, besides the XSAMS \citep{XSAMS:Docs} output format being quite complex.
 
-This document proposes a simple way to access spectral line data through a VO service through a relational data model. A selection of the relevant line quantities used in astronomy has been defined, which can be retrieved using TAP \citep{std:TAP}, which is an established IVOA protocol.
+This document proposes a simple way to access spectral line data through a VO service through a relational data model. A selection of the relevant line quantities used in astronomy has been defined, which can be retrieved using TAP \citep{std:TAP}, which is an established IVOA protocol. It is restricted to atomic data, and could be expanded to include molecules in the future.
 
 To make use of the VAMDC data, a mapping from the from the \href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS Data Model} to the relational model is also presented. Using TAP, the resulting data is returned in VOTABLE format,  easily readable by VO client applications. 
+
+
 
 
 \section{Use Cases}
 
 In most use cases, the goal is to search for spectral lines within a wavelength range:
+
+\todo{ more use cases}
 
 \begin{itemize}
 
@@ -88,7 +93,7 @@ should always be provided if available.
 
 \section{Spectral Line Data}\label{quantities}
 
-We define the following quantities based on IVOA use cases):
+We define the following atomic quantities based on IVOA use cases:
 
 \todo{ method: define other method options besides experiment and theory?}
 
@@ -135,7 +140,7 @@ We define the following quantities based on IVOA use cases):
 The quantities used in the mapping belong to the following branches of VAMDCXSAMS:\\\\
 \textit{XSAMSData.Species.Atoms.Atom}  referred as ATOM,\\
 \textit{XSAMSData.Species.Atoms.AtomicState}  referred as ATOMICSTATE,\\
-\textit{XSAMSData.Species.Molecules.Molecule}, referred as MOLECULE,\\
+%\textit{XSAMSData.Species.Molecules.Molecule}, referred as MOLECULE,\\
 \textit{XSAMSData.Processes.Radiative.RadiativeTransition}, referred as RADTRANS.\\
 
 The VAMDC-TAP query language defines a list of keywords, called \href{https://standards.vamdc.eu/dictionary/returnables.html}{Returnables}, listing the quantities that can be returned by a service.They correspond to an element in the XSAMS data model. The returnables supported by a service are declared by a service manager when he deploys the software on its database, and saved in the VAMDC registry. \\
@@ -182,12 +187,12 @@ Listed below are the mappings for the atomic quantities defined in \ref{quantiti
 	\textit{constraints:}RadTransSpeciesRef=AtomSpeciesID
 
 	\item [upper\_state\_configuration]\hfill\\
-	\textit{data model:} ATOMICSTATE.ConfigurationLabel\\
+	\textit{data model:} ATOMICSTATE.Description\\
 	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID\\
 	\textit{constraints:}  RadTransUpperStateRef = AtomStateID
 
 	\item [lower\_state\_configuration]\hfill\\
-	\textit{data model:} ATOMICSTATE.ConfigurationLabel\\
+	\textit{data model:} ATOMICSTATE.Description\\
 	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID\\
 	\textit{constraints:}  RadTransLowerStateRef = AtomStateID
 
