@@ -38,13 +38,15 @@
         <xsl:value-of select="$newline"/>
         <xsl:text>                                        Damping parameters   Lande Central</xsl:text>
         <xsl:value-of select="$newline"/>
-        <xsl:text>Title, WL, WLUnits, WLMethod,  Speci, Ion, MassNumber, InCgI, InChIKey, LowerStateEnergy(eV),LowerStateUnit, LowerStateConfig, UpperStateEnergy, UpperStateUnit, UpperStateConfig, EinsteinA, OscTrength, WeightedOscStrength, LineStrength, doi, uri</xsl:text>
+        <xsl:text>title, vacuum_wavelength(Angstrom), method, element_symbol, ion_charge, mass_number, inchi, inchikey, lower_state_energy(1/cm), upper_state_energy(1/cm), lower_state_configuration, upper_state_configuration, einstein_a, oscillator_strength, weighted_oscillator_strength, line_strength, line_reference_doi, line_reference_uri</xsl:text>
         <xsl:value-of select="$newline"/>
 
         <xsl:apply-templates/>
     </xsl:template>
     <xsl:template match="xsams:RadiativeTransition">
         <xsl:variable name="wlUnits" select="./xsams:EnergyWavelength/xsams:Wavelength/xsams:Value/@units"/> 
+	<xsl:comment> TO DO: Ceck if it's air wavelength and convert to vacuum
+	</xsl:comment>
         <xsl:variable name="methodRef" select="./xsams:EnergyWavelength/xsams:Wavelength/@methodRef"/>
         <xsl:variable name="lowerStateId" select="xsams:LowerStateRef"/>
         <xsl:variable name="upperStateId" select="xsams:UpperStateRef"/>
@@ -61,6 +63,7 @@
                 <xsl:text>', </xsl:text>
                 <xsl:value-of select='format-number(./xsams:EnergyWavelength/xsams:Wavelength/xsams:Value, "###0000.0000", "fixnan")'/>
                 <xsl:text>, </xsl:text>
+		<xsl:comment>
 		<xsl:choose>
                     <xsl:when test="$wlUnits='A'">
                 	<xsl:text>Angstrom, </xsl:text>
@@ -70,6 +73,7 @@
                         <xsl:text>, </xsl:text>
                     </xsl:otherwise>
                 </xsl:choose>
+		</xsl:comment>
                 <xsl:value-of select="$method"/>
                 <xsl:text>, </xsl:text>
                 <xsl:value-of select="$lowerState/../../../xsams:ChemicalElement/xsams:ElementSymbol"/>
@@ -84,15 +88,19 @@
                 <xsl:text>, </xsl:text>
                 <xsl:value-of select='format-number(1.239841930E-4 * $lowerState/xsams:AtomicNumericalData/xsams:StateEnergy/xsams:Value, "00.0000", "fixnan")'/>
                 <xsl:text>,  </xsl:text>
+		<xsl:comment>
                 <xsl:value-of select="$lowerState/xsams:AtomicNumericalData/xsams:StateEnergy/xsams:Value/@units"/>
                 <xsl:text>,  </xsl:text>
-                <xsl:value-of select="$lowerState/xsams:AtomicComposition/xsams:Component/xsams:Configuration/xsams:ConfigurationLabel"/>
-                <xsl:text>, </xsl:text>
+		</xsl:comment>
                 <xsl:value-of select='format-number(1.239841930E-4 * $upperState/xsams:AtomicNumericalData/xsams:StateEnergy/xsams:Value, "00.0000", "fixnan")'/>
                 <xsl:text>,  </xsl:text>
+		<xsl:comment>
                 <xsl:value-of select="$upperState/xsams:AtomicNumericalData/xsams:StateEnergy/xsams:Value/@units"/>
                 <xsl:text>,  </xsl:text>
-                <xsl:value-of select="$upperState/xsams:AtomicComposition/xsams:Component/xsams:Configuration/xsams:ConfigurationLabel"/>
+		</xsl:comment>
+                <xsl:value-of select='$lowerState/xsams:Description'/>
+                <xsl:text>, </xsl:text>
+                <xsl:value-of select='$upperState/xsams:Description'/>
                 <xsl:text>, </xsl:text>
                 <xsl:value-of select='format-number(./xsams:Probability/xsams:TransitionProbabilityA/xsams:Value, "0.000", "fixnan")'/>
                 <xsl:text>,</xsl:text>
