@@ -19,7 +19,7 @@
 \begin{document}
 \begin{abstract}
 
-This document proposes a set of  spectral line parameters that can be queried using the TAP protocol. Its purpose is to present a simpler way to query for spectral line data using VO Applications. Among the existing services, SSLDM/SLAP has very few services deployed and is not being used. On the other side, VAMDC is has plenty of services and spectral line information, but its data model is very complex. Therefore the need of a simpler model, using already established protocols for querying and retrieving the information. Besides the proposed set of parameters, a mapping from VAMDC data model has also been developed.
+This document proposes a set of  spectral line parameters that can be queried using the TAP protocol. Its purpose is to present a simpler way to query for spectral line data using VO Applications. Among the existing services, SSLDM/SLAP has very few services deployed and is not being used. On the other side, VAMDC is has plenty of services and spectral line information, but its data model is very complex. Therefore the need of a simpler model, using already established protocols like TAP for querying and retrieving the information. Besides the proposed set of parameters, a mapping from VAMDC data model has also been developed.
 
 \end{abstract}
 
@@ -50,7 +50,7 @@ Currently there are very few working services in the VO that use this protocols,
 On the other side, VAMDC services offer a great amount of spectral line data, and  so it's desirable to access this data in a VO-way. 
 The queries to the VAMDC services might be simple, however, the data returned is much more than the necessary data for the common use cases in VO, besides the XSAMS \citep{XSAMS:Docs} output format being quite complex.
 
-This document proposes a simple way to access spectral line data through a VO service through a relational data model. A selection of the relevant line quantities used in astronomy has been defined, which can be retrieved using TAP \citep{std:TAP}, which is an established IVOA protocol. It is restricted to atomic data, and could be expanded to include molecules in the future.
+This document proposes LineTAP, a simple way to access spectral line data through a VO service through a relational data model. A selection of the relevant line quantities used in astronomy has been defined, which can be retrieved using TAP \citep{std:TAP}, which is an established IVOA protocol. 
 
 To make use of the VAMDC data, a mapping from the from the \href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS Data Model} to the relational model is also presented. Using TAP, the resulting data is returned in VOTABLE format,  easily readable by VO client applications. 
 
@@ -96,15 +96,16 @@ should always be provided if available.
 We define the following atomic quantities based on IVOA use cases:
 
 \todo{ method: define other method options besides experiment and theory?}
-
+\todo{ add type
 \begin{table}[H]
 %\small
 \begin{center}
-\begin{tabular}{l l}% p{0.4\linewidth}}
-\texttt{title} & the title of the line \\
+\begin{tabular}{l p{8cm}}%{l l}% p{0.4\linewidth}}
+\texttt{title} & the title of the line, a human readable string representing the species originating  the line.  \\
 \texttt{vacuum\_wavelength} & wavelength in vacuum, in Angstrom \\
-\texttt{method} & method the wavelength was obtained with: \textit{Experiment}, \textit{Theory}  \\
-\texttt{element\_symbol} & symbol describing the chemical element \\
+\texttt{vacuum\_wavelength\_error} & error for the measured vacuum wavelength \\
+\texttt{method} & method the wavelength was obtained with: \textit{experiment} (observed wavelength), or \textit{theory} (wavelength calculated from theoretical models) \\ 
+\texttt{stoichiometric\_formula} & string describing the chemical element (symbol) or the molecule (formula) \\
 \texttt{ion\_charge} & ionisation level\\
 \texttt{atom\_mass\_number} & atom mass number\\
 \texttt{upper\_state\_configuration} & upper state configuration\\
@@ -134,24 +135,33 @@ We define the following atomic quantities based on IVOA use cases:
 %\item \textit{Keyword}Method - the method used to obtain this value (e.g. experiment, theory, etc)
 %\end{itemize}
 
+\section{LineTAP use case examples}
+
 
 \section{Mapping from VAMDCXSAMS}
 
 The quantities used in the mapping belong to the following branches of VAMDCXSAMS:\\\\
 \textit{XSAMSData.Species.Atoms.Atom}  referred as ATOM,\\
 \textit{XSAMSData.Species.Atoms.AtomicState}  referred as ATOMICSTATE,\\
-%\textit{XSAMSData.Species.Molecules.Molecule}, referred as MOLECULE,\\
+\textit{XSAMSData.Species.Molecules.Molecule}, referred as MOLECULE,\\
 \textit{XSAMSData.Processes.Radiative.RadiativeTransition}, referred as RADTRANS.\\
+\textit{XSAMSData.Sources}, referred as RADTRANS.\\
+
 
 The VAMDC-TAP query language defines a list of keywords, called \href{https://standards.vamdc.eu/dictionary/returnables.html}{Returnables}, listing the quantities that can be returned by a service.They correspond to an element in the XSAMS data model. The returnables supported by a service are declared by a service manager when he deploys the software on its database, and saved in the VAMDC registry. \\
 
 Listed below are the mappings for the atomic quantities defined in \ref{quantities} (at the moment only atoms, not molecules):
 
-
 \renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\texttt{#1}}
 \begin{description}
 
 \item [vacuum\_wavelength] (in Angstrom)\hfill\\
+    \textit{data model:} RADTRANS.EnergyWavelength\\
+	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, RadTransWavelengthAirToVac, RadTransWavelengthUnit\\
+	\textit{constraints:} RadTransWavelengthVacuum = true; else use RadTransWavelengthAirToVac.\\
+	
+\item [vacuum\_wavelength\_error]  \hfill\\\todo{Wavelength error? How to get it from VAMDC data?}
+
     \textit{data model:} RADTRANS.EnergyWavelength\\
 	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, RadTransWavelengthAirToVac, RadTransWavelengthUnit\\
 	\textit{constraints:} RadTransWavelengthVacuum = true; else use RadTransWavelengthAirToVac.\\
@@ -162,49 +172,49 @@ Listed below are the mappings for the atomic quantities defined in \ref{quantiti
 	\textit{constraints:} Methods.Method.MethodID=RadTransWavelength.Wavelength@methodRef\\
 
 \item [inchi] \hfill\\
-	\textit{data model:} ATOM.Isotope.Ion.InChi\\
-        \textit{returnables needed:} AtomInchi\\
-	\textit{constraints:} RadTrans.SpeciesRef = Atom.SpeciesID
+	\textit{data model:} ATOM.Isotope.Ion.InChi,  MOLECULE.MolecularChemicalSpecies.InChI\\
+        \textit{returnables needed:} AtomInchi, MoleculeInChi\\
+	\textit{constraints:} RadTrans.SpeciesRef = Atom.SpeciesID or MoleculeSpeciesID
 	
 \item [inchikey] \hfill\\
-	\textit{data model:} ATOM.Isotope.Ion.InChiKey\\
-         \textit{returnables needed:} AtomInchiKey\\
-         \textit{constraints:} RadTrans.SpeciesRef = Atom.SpeciesID
+	\textit{data model:} ATOM.Isotope.Ion.InChiKey, MOLECULE.MolecularChemicalSpecies.InChIKey \\
+         \textit{returnables needed:} AtomInchiKey, MoleculeInChiKey\\
+         \textit{constraints:} RadTrans.SpeciesRef = Atom.SpeciesID or  Molecule.SpeciesID
 
-\item [element\_symbol] \hfill\\
-	\textit{data model:} ATOM.ChemicalElement.ElementSymbol\\
-	\textit{returnables needed:} RadTrans.SpeciesRef, Atom.SpeciesID, Atom.Symbol
-	\textit{constraints:}  RadTrans.SpeciesRef = Atom.SpeciesID
+\item [stoichiometric\_formula] \hfill\\
+	\textit{data model:} ATOM.ChemicalElement.ElementSymbol,\\ MOLECULE. MolecularChemicalSpecies.StoichiometricFormula\\
+	\textit{returnables needed:} RadTrans.SpeciesRef, Atom.SpeciesID, Molecule.SpeciesID, Atom.Symbol, Molecule.MoleculeStoichiometricFormula\\
+	\textit{constraints:}  RadTrans.SpeciesRef = Atom.SpeciesID or  Molecule.SpeciesID
 
 \item [ion\_charge]\hfill\\
-	\textit{data model:} ATOM.Isotope.Ion.IonCharge\\
-	\textit{returnables needed:} RadTransSpeciesRef, AtomSpeciesID, AtomIonCharge\\
-	\textit{constraints:}RadTransSpeciesRef=AtomSpeciesID
+	\textit{data model:} ATOM.Isotope.Ion.IonCharge or MOLECULE.MolecularChemicalSpecies.IonCharge \\
+	\textit{returnables needed:} RadTransSpeciesRef, AtomSpeciesID, AtomIonCharge, MoleculeSpeciesID, MoleculeIonCharge \\
+	\textit{constraints:}RadTransSpeciesRef=AtomSpeciesID or  Molecule.SpeciesID
 
 	\item [atom\_mass\_number]\hfill\\
-	\textit{data model:} ATOM.Isotope.IsotopParameters.MassNumber\\
+	\textit{data model:} ATOM.Isotope.IsotopParameters.MassNumber \\
 	\textit{returnables needed:} AtomMassNumber\\
 	\textit{constraints:}RadTransSpeciesRef=AtomSpeciesID
 
 	\item [upper\_state\_configuration]\hfill\\
-	\textit{data model:} ATOMICSTATE.Description\\
-	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID\\
+	\textit{data model:} ATOMICSTATE.Description, MOLECULARSTATE.Description\\
+	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, MoleculeStateID,\\ AtomStateDescription, MoleculeStateDescription\\
 	\textit{constraints:}  RadTransUpperStateRef = AtomStateID
 
 	\item [lower\_state\_configuration]\hfill\\
-	\textit{data model:} ATOMICSTATE.Description\\
-	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID\\
-	\textit{constraints:}  RadTransLowerStateRef = AtomStateID
-
-	\item [upperi\_state\_energy]\hfill\\
-	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy\\
-	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, AtomStateEnergyUnit\\
-	\textit{constraints:}  RadTransUpperStateRef = AtomStateID
+	\textit{data model:} ATOMICSTATE.Description, MOLECULARSTATE.Description\\
+	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, MoleculeStateID,\\ AtomStateDescription, MoleculeStateDescription\\
+	\textit{constraints:}  RadTransUpperStateRef = AtomStateID or MolecularStateID
+	
+	\item [upper\_state\_energy]\hfill\\
+	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy, \\ MOLECULARSTATE.MolecularStateCharacterisation.StateEnergy\\
+	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, MoleculeStateID\\
+	\textit{constraints:}  RadTransUpperStateRef = AtomStateID or MoleculeStateID
 	
 	\item [lower\_state\_energy]\hfill\\
-	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy\\
-	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID, AtomStateEnergyUnit\\
-	\textit{constraints:}  RadTransLowerStateRef = AtomStateID
+	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy, \\ MOLECULARSTATE.MolecularStateCharacterisation.StateEnergy\\
+	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID,  MoleculeStateID\\
+	\textit{constraints:}  RadTransLowerStateRef = AtomStateID or MoleculeStateID
 
 	\item [einstein\_a]\hfill\\
 	\textit{data model:}  RADTRANS.Probability.TransitionProbabilityA\\
