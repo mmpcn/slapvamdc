@@ -1,0 +1,69 @@
+<ri:Resource 
+	xsi:type="vstd:Standard" 
+	created="2020-10-26T11:44:00" 
+	updated="2020-10-26T11:44:00"
+	status="active"
+	xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
+	xmlns:vstd="http://www.ivoa.net/xml/StandardsRegExt/v1.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+	xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v1.0
+		http://www.ivoa.net/xml/VOResource/v1.0
+	http://www.ivoa.net/xml/StandardsRegExt/v1.0
+		http://www.ivoa.net/xml/StandardsRegExt/v1.0
+	http://www.ivoa.net/xml/VOResource/v1.0
+		http://www.ivoa.net/xml/VOResource/v1.0">
+
+  <title>IVOA Relational model for Spectral Lines (LineTAP)</title>
+  <shortName>linetap</shortName>
+  <identifier>ivo://ivoa.net/std/linetap</identifier> 
+  <curation>
+    <publisher>IVOA</publisher>
+
+    <creator>
+      <name>Castro Neves, M.</name>
+    </creator>
+    <creator>
+      <name>Moreau, N.</name>
+    </creator>
+    <creator>
+      <name>Demleitner, M.</name>
+    </creator>
+
+		<!-- this should be the date of the last recommendation -->
+    <date role="update">2020-05-27</date>
+    <version>1.0</version> <!-- the document version -->
+    <contact>
+      <name>IVOA Data Access layer WG</name>
+      <email>dal@ivoa.net</email> <!-- typically, the mailing list address -->
+    </contact>
+  </curation>
+  <content>
+    <subject>Virtual observatory</subject>
+    <subject>spectral-line-lists </subject>
+
+    <description>
+    	This document proposes a set of  spectral line parameters that can be
+    	queried using the TAP protocol. Its purpose is to present a simpler way
+    	to query for spectral line data using VO Applications. Among the existing
+    	services, SSLDM/SLAP has very few services deployed and is not being
+    	used. On the other side, VAMDC is has plenty of services and spectral
+    	line information, but its data model is very complex. Therefore the need
+    	of a simpler model, using already established protocols like TAP for
+    	querying and retrieving the information. Besides the proposed set of
+    	parameters, a mapping from VAMDC data model has also been developed.
+    </description>
+    <referenceURL>http://ivoa.net/documents/linetap/</referenceURL>
+    <type>Other</type>
+  	<contentLevel>Research</contentLevel>
+  </content>
+
+  <endorsedVersion status="wd">1.0</endorsedVersion>
+
+	<key>
+		<name>table-1.0</name>
+		<description>The LineTAP table schema as of version 1.0.
+		</description>
+	</key>
+
+</ri:Resource>
