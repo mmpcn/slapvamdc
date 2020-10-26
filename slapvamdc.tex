@@ -3,6 +3,9 @@
 \usepackage{float}
 \usepackage{todonotes}
 
+\lstloadlanguages{SQL,XML}
+\lstset{flexiblecolumns=true,numberstyle=\small,showstringspaces=False,
+  identifierstyle=\texttt}
 
 \title{IVOA Relational Model for Spectral Lines (LineTAP)}
 
@@ -259,16 +262,17 @@ LineTAP tables are registered using VODataService
 \citep{2010ivoa.spec.1202P} tablesets, where the table utype is set to
 $$\hbox{\verb|ivo://ivoa.net/std/linetap#table-1.0|}.$$
 
-The tableset will be contained in a VODataService \xmlel{CatalogService}
-record with a TAP capability, and this capability will be an auxiliary
+The tableset is normally contained in a VODataService \xmlel{CatalogService}
+record with a TAP capability, and this capability normally is an auxiliary
 capability as per DDC \citep{2019ivoa.rept.0520D}.  For one-table
 services a full TAPRegExt \citep{2012ivoa.spec.0827D} capability is also
-allowed.
+allowed; other resource types can be used for registration as
+appropriate.
 
 Further capabilities, for instance for full VAMDC or legacy SLAP
 services, may be given in the same record.
 
-An example for a registration record in VOResource, for the case of
+An example for a registry record in VOResource, for the case of
 using an auxiliary capability referencing a main TAP service comes with
 this document\footnote{\auxiliaryurl{example-record.xml}}.
 
@@ -286,7 +290,8 @@ through which the service is queriable as per DDC:
 \end{lstlisting}
 
 \item The declaration for the auxiliary capability, including the access
-URL so clients to not need to follow the relationship just declared:
+URL so clients to not need to follow the relationship just declared if
+all they need is the access URL:
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
 <capability standardID="ivo://ivoa.net/std/TAP#aux">
    <interface role="std" version="1.1" xsi:type="vs:ParamHTTP">
@@ -299,7 +304,7 @@ URL so clients to not need to follow the relationship just declared:
 clients discover that this particular table contains EPNCore data:
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
 <table>
-  <name>mpc.epn_core</name>
+  <name>toss.ivoa_lines</name>
   <title>TOSS</title>
   <description> The EPN-TAP 2.0 version of...</description>
   <utype>ivo://ivoa.net/std/linetap#table-1.0</utype>
@@ -314,6 +319,38 @@ of the table is an artefact of LineTAP registrations being single-table
 and is thus to be expected in most registrations of this type.
 
 
+\subsection{Discovering LineTAP services}
+
+LineTAP consumers in general are interested in TAP endpoints and table names for
+lineTAP services.  By our registration pattern, this translates into
+resources with TAP capabilities that have a standard key for version 1
+LineTAP in a table utype.
+
+Translated into RegTAP \citep{2019ivoa.spec.1011D}, the following query
+would return TAP access URLs and the table names, using ADQL 2.1 CTEs
+for readability:
+
+\begin{lstlisting}[language=SQL]
+SELECT DISTINCT table_name, access_url
+FROM rr.res_table
+  NATURAL JOIN rr.capability
+  NATURAL JOIN rr.interface
+WHERE
+  table_utype='ivo://ivoa.net/std/linetap#table-1.%'
+  AND standard_id LIKE 'ivo://ivoa.net/std/tap%'
+  AND intf_role='std'
+\end{lstlisting}
+
+The \texttt{DISTINCT} in the main query is a rough filter that removes
+entries duplicated because their tables are registred both in the main
+TAP record and in an auxiliary capability.  
+
+The regular expression in the utype match is to make sure minor version
+increments do not prevent service discovery; by IVOA versioning rules,
+all lineTAP services of minor version 1 can be operated by all lineTAP
+clients of version 1.  We do not constrain the version of the TAP
+service; clients may want to adapt the TAP discovery pattern to match
+their specific needs.
 
 
 
