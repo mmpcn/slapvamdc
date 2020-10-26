@@ -4,7 +4,7 @@
 \usepackage{todonotes}
 
 
-\title{IVOA Relational Model for Spectral Lines and Protocol \(LineTAP\)}
+\title{IVOA Relational Model for Spectral Lines and Protocol LineTAP)}
 
 % see ivoatexDoc for what group names to use here
 \ivoagroup{???? group ????}
@@ -83,9 +83,6 @@ For any retrieved spectral line, the reference of the source article where it wa
 should always be provided if available.
 
 \section{Protocol, Service discovery and queries - (need better title)}
-
-\subsection{ Service description, service discovery }
-\todo{ MARKUS D}
 
 \subsection{ Queries: LineTAP }
 \todo{ description, examples, translation VAMDC Queries}
@@ -251,6 +248,71 @@ Listed below are the mappings for the atomic quantities defined in \ref{quantiti
 
 
 \end{description}
+
+\section{LineTAP and the VO Registry}
+
+\subsection{Registering LineTAP-conforming Tables}
+
+LineTAP tables are registered using VODataService
+\citep{2010ivoa.spec.1202P} tablesets, where the table utype is set to
+$$\hbox{\verb|ivo://ivoa.net/std/linetap#table-1.0|}.$$
+
+The tableset will be contained in a VODataService \xmlel{CatalogService}
+record with a TAP capability, and this capability will be an auxiliary
+capability as per DDC \citep{2019ivoa.rept.0520D}.  For one-table
+services a full TAPRegExt \citep{2012ivoa.spec.0827D} capability is also
+allowed.
+
+Further capabilities, for instance for full VAMDC or legacy SLAP
+services, may be given in the same record.
+
+An example for a registration record in VOResource, for the case of
+using an auxiliary capability referencing a main TAP service comes with
+this document\footnote{\auxiliaryurl{example-record.xml}}.
+
+The noteworthy points in the record are:
+
+\begin{itemize}
+\item A \xmlel{relationship} element referencing the main TAP service 
+through which the service is queriable as per DDC:
+\begin{lstlisting}[language=XML,basicstyle=\footnotesize]
+<relationship>
+  <relationshipType>served-by</relationshipType>
+  <relatedResource ivo-id="ivo://org.gavo.dc/tap"
+    >GAVO Data Center TAP service</relatedResource>
+</relationship>
+\end{lstlisting}
+
+\item The declaration for the auxiliary capability, including the access
+URL so clients to not need to follow the relationship just declared:
+\begin{lstlisting}[language=XML,basicstyle=\footnotesize]
+<capability standardID="ivo://ivoa.net/std/TAP#aux">
+   <interface role="std" version="1.1" xsi:type="vs:ParamHTTP">
+     <accessURL use="base">http://dc.zah.uni-heidelberg.de/tap</accessURL>
+   </interface>
+</capability>
+\end{lstlisting}
+
+\item Most importantly, the declaration of the table utype that lets
+clients discover that this particular table contains EPNCore data:
+\begin{lstlisting}[language=XML,basicstyle=\footnotesize]
+<table>
+  <name>mpc.epn_core</name>
+  <title>TOSS</title>
+  <description> The EPN-TAP 2.0 version of...</description>
+  <utype>ivo://ivoa.net/std/linetap#table-1.0</utype>
+  ...
+</table>
+\end{lstlisting}
+\end{itemize}
+
+That in the example record, the resource description is identical to the
+description of the schema, which again is identical to the description
+of the table is an artefact of LineTAP registrations being single-table
+and is thus to be expected in most registrations of this type.
+
+
+
 
 
 \appendix
