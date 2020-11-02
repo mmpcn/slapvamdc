@@ -1,0 +1,36 @@
+\begin{thebibliography}{xx}
+
+\harvarditem{Bradner}{1997}{std:RFC2119}
+Bradner, S.  \harvardyearleft 1997\harvardyearright , `Key words for use in
+  {RFCs} to indicate requirement levels', RFC 2119.
+\newline\url{http://www.ietf.org/rfc/rfc2119.txt}
+
+\harvarditem{C.~Hill}{2012}{XSAMS:Docs}
+C.~Hill, M.~Doronin, T.~M.  \harvardyearleft 2012\harvardyearright , {\em
+  VAMDC-XSAMS Reference Guide Version 12.07}.
+\newline\url{http://www.vamdc.org/documents/vamdc-xsams-guide_v12.07.pdf}
+
+\harvarditem[Dowler \harvardand\ Rixon et~al.]{Dowler, Rixon \harvardand\
+  Tody}{2010}{std:TAP}
+Dowler, P., Rixon, G. \harvardand\ Tody, D.  \harvardyearleft
+  2010\harvardyearright , `Table access protocol version 1.0', {IVOA
+  Recommendation}.
+\newline\url{http://www.ivoa.net/documents/TAP}
+
+\harvarditem{{Osuna}, {Salgado}, {Guainazzi}, {Barbarisi}, {Dubernet}
+  \harvardand\ {Tody}}{2010}{2010ivoa.specQ1209O}
+{Osuna}, P., {Salgado}, J., {Guainazzi}, M., {Barbarisi}, I., {Dubernet}, M.-L.
+  \harvardand\ {Tody}, D.  \harvardyearleft 2010\harvardyearright , `{Simple
+  Line Access Protocol Version 1.0}', IVOA Recommendation 9 December 2010,
+  arXiv:1110.0500.
+\newline\url{http://adsabs.harvard.edu/abs/2010ivoa.specQ1209O}
+
+\harvarditem{{Osuna}, {Salgado}, {Guainazzi}, {Dubernet} \harvardand\
+  {Roueff}}{2010}{2010ivoa.spec.1209O}
+{Osuna}, P., {Salgado}, J., {Guainazzi}, M., {Dubernet}, M.-L. \harvardand\
+  {Roueff}, E.  \harvardyearleft 2010\harvardyearright , `{Simple Spectral
+  Lines Data Model Version 1.0}', IVOA Recommendation 09 December 2010,
+  arXiv:1110.0505.
+\newline\url{http://adsabs.harvard.edu/abs/2010ivoa.spec.1209O}
+
+\end{thebibliography}
