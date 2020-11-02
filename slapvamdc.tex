@@ -87,47 +87,70 @@ from a service, as a first step before looking for spectral lines.
 For any retrieved spectral line, the reference of the source article where it was published
 should always be provided if available.
 
-\section{Protocol, Service discovery and queries - (need better title)}
-
-\subsection{ Queries: LineTAP }
-\todo{ description, examples, translation VAMDC Queries}
 
 
 \section{Spectral Line Data}\label{quantities}
 
-We define the following atomic quantities based on IVOA use cases:
+In the following table the selected quantities based on IVOA use cases are defined, including units, data types and mandatory status:
 
 \todo{ method: define other method options besides experiment and theory?}
-\todo{ add more information to this table (data type, mandatory/optional, etc)}
+\todo{ Units for Energy? VAMDC uses 1/cm - Keep it? }
+
 \begin{table}[H]
-%\small
-\begin{center}
-\begin{tabular}{l p{8cm}}%{l l}% p{0.4\linewidth}}
-\texttt{title} & the title of the line, a human readable string representing the species originating  the line.  \\
-\texttt{vacuum\_wavelength} & wavelength in vacuum, in Angstrom \\
-\texttt{vacuum\_wavelength\_error} & error for the measured vacuum wavelength \\
-\texttt{method} & method the wavelength was obtained with: \textit{experiment} (observed wavelength), or \textit{theory} (wavelength calculated from theoretical models) \\ 
-\texttt{stoichiometric\_formula} & string describing the chemical element (symbol) or the molecule (formula) \\
-\texttt{ion\_charge} & ionisation level\\
-\texttt{atom\_mass\_number} & atom mass number\\
-\texttt{upper\_state\_configuration} & upper state configuration\\
-\texttt{lower\_state\_configuration} & lower state configuration\\
-\texttt{upper\_energy} & energy of the upper state \\
-\texttt{lower\_energy} & energy of the lower state\\
-\texttt{inchi} & chemical species inchi \\
-\texttt{inchikey} & chemical species inchikey \\
-\texttt{einstein\_a} & Einstein A coefficient\\
-\texttt{oscillator\_strength} & oscillator strength of radiative transition \\
-\texttt{weighted\_oscillator\_strength} &  Weighted oscillator strength of radiative transition \\
-\texttt{line\_strength} & Total absorption by a spectra line \\
-\texttt{line\_reference\_doi} & Digital Object Identifier of bibliography source \\
-\texttt{line\_reference\_uri} & Web link to the publication\\
+\small
+%\begin{center}
+\begin{tabular}{|l|l|l|p{0.8cm}|p{4cm}|}%{l l}% p{0.4\linewidth}}
+\hline
+\textbf{column name} & \textbf{unit} & \textbf{type} & \textbf{man da tory} & \textbf{description} \\
+\hline
+\hline
+\texttt{title} & & string & & name of the species originating  the line.  \\
+\hline
+\texttt{vacuum\_wavelength} & Angstrom & double & yes & wavelength in vacuum \\
+\hline
+\texttt{vacuum\_wavelength\_error} & & double & & error for the measured vacuum wavelength \\
+\hline
+\texttt{method} && string& & method the wavelength was obtained with: \textit{experiment} (observed), or \textit{theory} (calculated from theoretical models) \\ 
+\hline
+\texttt{stoichiometric\_formula} & & string & &  the chemical element (symbol) or the molecule (formula) \\
+\hline
+\texttt{ion\_charge} & & integer & yes & ionisation level\\
+\hline
+\texttt{atom\_mass\_number} & & integer & yes  & atom mass number\\
+\hline
+\texttt{upper\_state\_configuration} & & string & & upper state configuration\\
+\hline
+\texttt{lower\_state\_configuration} & & string & & lower state configuration\\
+\hline
+\texttt{upper\_energy} & ?  & double & & energy of the upper state \\
+\hline
+\texttt{lower\_energy} & ? & double & & energy of the lower state\\
+\hline
+\texttt{inchi} & & string & & chemical species inchi \\
+\hline
+\texttt{inchikey} & & string & & chemical species inchikey \\
+\hline
+\texttt{einstein\_a} & & double  & &  Einstein A coefficient\\
+\hline
+\texttt{oscillator\_strength} & & double & & oscillator strength of radiative transition \\
+\hline
+\texttt{weighted\_oscillator\_strength} & & double  & &  Weighted oscillator strength of radiative transition \\
+\hline
+\texttt{line\_strength} & & string & & Total absorption by a spectra line \\
+\hline
+\texttt{line\_reference\_doi} & & string & & Digital Object Identifier of bibliography source \\
+\hline
+\texttt{line\_reference\_uri} & & string & & Web link to the publication\\
+\hline
 \end{tabular}
 
-\end{center}
+%\end{center}
 \end{table}
 
+\section{Protocol, Service discovery and queries - (need better title)}
 
+\subsection{ Queries: LineTAP }
+\todo{ description, examples, translation VAMDC Queries}
 
 
 %Returnables corresponding to a "DataType" in the XSAMS schema (numerical values) have additional categories, besides the value. Following categories will be also used in the mapping, \textit{Keyword} being the returnable keyword:
@@ -142,7 +165,8 @@ We define the following atomic quantities based on IVOA use cases:
 
 \section{Mapping from VAMDCXSAMS}
 
-The quantities used in the mapping belong to the following branches of VAMDCXSAMS:\\\\
+The quantities used in the mapping belong to the following branches of VAMDCXSAMS:\\
+\\
 \textit{XSAMSData.Species.Atoms.Atom}  referred as ATOM,\\
 \textit{XSAMSData.Species.Atoms.AtomicState}  referred as ATOMICSTATE,\\
 \textit{XSAMSData.Species.Molecules.Molecule}, referred as MOLECULE,\\
