@@ -24,7 +24,14 @@
 \begin{document}
 \begin{abstract}
 
-This document proposes a set of  spectral line parameters that can be queried using the TAP protocol. Its purpose is to present a simpler way to query for spectral line data using VO Applications. Among the existing services, SSLDM/SLAP has very few services deployed and is not being used. On the other side, VAMDC is has plenty of services and spectral line information, but its data model is very complex. Therefore the need of a simpler model, using already established protocols like TAP for querying and retrieving the information. Besides the proposed set of parameters, a mapping from VAMDC data model has also been developed.
+This document proposes a set of  spectral line parameters that can be queried using the 
+TAP protocol. Its purpose is to present a simpler way to query for spectral line data using 
+VO Applications. Among the existing services, SSLDM/SLAP has very few services 
+deployed and is not being used. On the other side, VAMDC is has plenty of services and 
+spectral line information, but its data model is very complex. Therefore the need of a 
+simpler model, using already established protocols like TAP for querying and retrieving the 
+information. Besides the proposed set of parameters, a mapping from VAMDC data model 
+has also been developed.
 
 \end{abstract}
 
@@ -49,15 +56,29 @@ infrastructure that enable VO applications.
 
 \section{Introduction}
 
-SLAP (Simple Line Access Protocol)\citep{2010ivoa.specQ1209O} is the VO standard for Spectral Line querying. SSLDM (Simple Spectral Line Data Model)\citep{2010ivoa.spec.1209O} is the VO data model for spectral lines.
-Currently there are very few working services in the VO that use this protocols, meaning that the amount of spectral line data in the VO is small. 
+SLAP (Simple Line Access Protocol)\citep{2010ivoa.specQ1209O} is the VO standard for 
+Spectral Line querying. SSLDM (Simple Spectral Line Data 
+Model)\citep{2010ivoa.spec.1209O} 
+is the VO data model for spectral lines.
+Currently there are very few working services in the VO that use this protocols, meaning 
+that the amount of spectral line data in the VO is small. 
 
-On the other side, VAMDC services offer a great amount of spectral line data, and  so it's desirable to access this data in a VO-way. 
-The queries to the VAMDC services might be simple, however, the data returned is much more than the necessary data for the common use cases in VO, besides the XSAMS \citep{XSAMS:Docs} output format being quite complex.
+On the other side, VAMDC services offer a great amount of spectral line data, and  so it's 
+desirable to access this data in a VO-way. 
+The queries to the VAMDC services might be simple, however, the data returned is much 
+more than the necessary data for the common use cases in VO, besides the XSAMS 
+\citep{XSAMS:Docs} output format being quite complex.
 
-This document proposes LineTAP, a simple way to access spectral line data through a VO service through a relational data model. A selection of the relevant line quantities used in astronomy has been defined, which can be retrieved using TAP \citep{std:TAP}, which is an established IVOA protocol. 
+This document proposes LineTAP, a simple way to access spectral line data through a VO 
+service through a relational data model. A selection of the relevant line quantities used in 
+astronomy has been defined, which can be retrieved using TAP \citep{std:TAP}, which is 
+an established IVOA protocol. 
 
-To make use of the VAMDC data, a mapping from the from the \href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS Data Model} to the relational model is also presented. Using TAP, the resulting data is returned in VOTABLE format,  easily readable by VO client applications. 
+To make use of the VAMDC data, a mapping from the from the 
+\href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS 
+Data Model} to the relational model is 
+also presented. Using TAP, the resulting data is returned in VOTABLE format,  easily 
+readable by VO client applications. 
 
 
 
@@ -71,7 +92,9 @@ In most use cases, the goal is to search for spectral lines within a wavelength 
 \begin{itemize}
 
 \item selecting  spectral lines that fit the ones in the spectrum.
-Normally when searching for lines within a wavelength range, a great quantity of lines are returned, with very similar wavelengths. It's necessary to select the one that really represents the transition that caused the line in the spectrum.
+Normally when searching for lines within a wavelength range, a great quantity of lines are 
+returned, with very similar wavelengths. It's necessary to select the one that really 
+represents the transition that caused the line in the spectrum.
 \item areas: Stars, galaxies, ISM, planets?
 \item calculating redshift
 \item comparing theoretical spectra to observed spectra
@@ -91,7 +114,8 @@ should always be provided if available.
 
 \section{Spectral Line Data}\label{quantities}
 
-In the following table the selected quantities based on IVOA use cases are defined, including units, data types and mandatory status:
+In the following table the selected quantities based on IVOA use cases are defined, 
+including units, data types and mandatory status:
 
 \todo{ method: define other method options besides experiment and theory?}
 \todo{ Units for Energy? VAMDC uses 1/cm - Keep it? }
@@ -101,18 +125,22 @@ In the following table the selected quantities based on IVOA use cases are defin
 %\begin{center}
 \begin{tabular}{|l|l|l|p{0.8cm}|p{4cm}|}%{l l}% p{0.4\linewidth}}
 \hline
-\textbf{column name} & \textbf{unit} & \textbf{type} & \textbf{man da tory} & \textbf{description} \\
+\textbf{column name} & \textbf{unit} & \textbf{type} & \textbf{man da tory} & 
+\textbf{description} \\
 \hline
 \hline
 \texttt{title} & & string & & name of the species originating  the line.  \\
 \hline
 \texttt{vacuum\_wavelength} & Angstrom & double & yes & wavelength in vacuum \\
 \hline
-\texttt{vacuum\_wavelength\_error} & & double & & error for the measured vacuum wavelength \\
+\texttt{vacuum\_wavelength\_error} & & double & & error for the measured vacuum 
+wavelength \\
 \hline
-\texttt{method} && string& & method the wavelength was obtained with: \textit{experiment} (observed), or \textit{theory} (calculated from theoretical models) \\ 
+\texttt{method} && string& & method the wavelength was obtained with: 
+\textit{experiment} (observed), or \textit{theory} (calculated from theoretical models) \\ 
 \hline
-\texttt{stoichiometric\_formula} & & string & &  the chemical element (symbol) or the molecule (formula) \\
+\texttt{stoichiometric\_formula} & & string & &  the chemical element (symbol) or the 
+molecule (formula) \\
 \hline
 \texttt{ion\_charge} & & integer & yes & ionisation level\\
 \hline
@@ -134,7 +162,8 @@ In the following table the selected quantities based on IVOA use cases are defin
 \hline
 \texttt{oscillator\_strength} & & double & & oscillator strength of radiative transition \\
 \hline
-\texttt{weighted\_oscillator\_strength} & & double  & &  Weighted oscillator strength of radiative transition \\
+\texttt{weighted\_oscillator\_strength} & & double  & &  Weighted oscillator strength of 
+radiative transition \\
 \hline
 \texttt{line\_strength} & & string & & Total absorption by a spectra line \\
 \hline
@@ -153,11 +182,15 @@ In the following table the selected quantities based on IVOA use cases are defin
 \todo{ description, examples, translation VAMDC Queries}
 
 
-%Returnables corresponding to a "DataType" in the XSAMS schema (numerical values) have additional categories, besides the value. Following categories will be also used in the mapping, \textit{Keyword} being the returnable keyword:
+%Returnables corresponding to a "DataType" in the XSAMS schema (numerical values) 
+%have additional categories, besides the value. Following categories will be also used in 
+%the mapping, \textit{Keyword} being the returnable keyword:
 
 % \begin{itemize}
-%\item \textit{Keyword}Unit  - the units of the value. If the wavelength unit returned is \textbf{A}, it must be corrected to \textbf{Angstrom} for compatibility
-%\item \textit{Keyword}Method - the method used to obtain this value (e.g. experiment, theory, etc)
+%\item \textit{Keyword}Unit  - the units of the value. If the wavelength unit returned is 
+%\textbf{A}, it must be corrected to \textbf{Angstrom} for compatibility
+%\item \textit{Keyword}Method - the method used to obtain this value (e.g. experiment, 
+%theory, etc)
 %\end{itemize}
 
 \section{LineTAP use case examples}
@@ -174,47 +207,65 @@ The quantities used in the mapping belong to the following branches of VAMDCXSAM
 \textit{XSAMSData.Sources}, referred as RADTRANS.\\
 
 
-The VAMDC-TAP query language defines a list of keywords, called \href{https://standards.vamdc.eu/dictionary/returnables.html}{Returnables}, listing the quantities that can be returned by a service.They correspond to an element in the XSAMS data model. The returnables supported by a service are declared by a service manager when he deploys the software on its database, and saved in the VAMDC registry. \\
+The VAMDC-TAP query language defines a list of keywords, called 
+\href{https://standards.vamdc.eu/dictionary/returnables.html}{Returnables}, 
+listing the quantities that 
+can be returned by a service.They correspond to an element in the XSAMS data model. 
+The returnables supported by a service are declared by a service manager when he 
+deploys the software on its database, and saved in the VAMDC registry. \\
 
-Listed below are the mappings for the atomic quantities defined in \ref{quantities} (at the moment only atoms, not molecules):
+Listed below are the mappings for the atomic quantities defined in \ref{quantities} (at the 
+moment only atoms, not molecules):
 
 \renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\texttt{#1}}
 \begin{description}
 
 \item [vacuum\_wavelength] (in Angstrom)\hfill\\
     \textit{data model:} RADTRANS.EnergyWavelength\\
-	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, RadTransWavelengthAirToVac, RadTransWavelengthUnit\\
-	\textit{constraints:} RadTransWavelengthVacuum = true; else use RadTransWavelengthAirToVac.\\
+	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, 
+RadTransWavelengthAirToVac, RadTransWavelengthUnit\\
+	\textit{constraints:} RadTransWavelengthVacuum = true; else use 
+RadTransWavelengthAirToVac.\\
 	
-\item [vacuum\_wavelength\_error]  \hfill\\\todo{Wavelength error? How to get it from VAMDC data?}
+\item [vacuum\_wavelength\_error]  \hfill\\\todo{Wavelength error? How to get it from 
+VAMDC data?}
 
     \textit{data model:} RADTRANS.EnergyWavelength\\
-	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, RadTransWavelengthAirToVac, RadTransWavelengthUnit\\
-	\textit{constraints:} RadTransWavelengthVacuum = true; else use RadTransWavelengthAirToVac.\\
+	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, 
+RadTransWavelengthAirToVac, RadTransWavelengthUnit\\
+	\textit{constraints:} RadTransWavelengthVacuum = true; else use 
+RadTransWavelengthAirToVac.\\
 	
 \item [method] \hfill\\
 	\textit{data model:} Methods.Method.Category\\
 	\textit{returnables needed:} RadTransWavelengthMethod\\
-	\textit{constraints:} Methods.Method.MethodID=RadTransWavelength.Wavelength@methodRef\\
+	\textit{constraints:} 
+Methods.Method.MethodID=RadTransWavelength.Wavelength@methodRef\\
 
 \item [inchi] \hfill\\
-	\textit{data model:} ATOM.Isotope.Ion.InChi,  MOLECULE.MolecularChemicalSpecies.InChI\\
+	\textit{data model:} ATOM.Isotope.Ion.InChi,  
+MOLECULE.MolecularChemicalSpecies.InChI\\
         \textit{returnables needed:} AtomInchi, MoleculeInChi\\
 	\textit{constraints:} RadTrans.SpeciesRef = Atom.SpeciesID or MoleculeSpeciesID
 	
 \item [inchikey] \hfill\\
-	\textit{data model:} ATOM.Isotope.Ion.InChiKey, MOLECULE.MolecularChemicalSpecies.InChIKey \\
+	\textit{data model:} ATOM.Isotope.Ion.InChiKey, 
+MOLECULE.MolecularChemicalSpecies.InChIKey \\
          \textit{returnables needed:} AtomInchiKey, MoleculeInChiKey\\
          \textit{constraints:} RadTrans.SpeciesRef = Atom.SpeciesID or  Molecule.SpeciesID
 
 \item [stoichiometric\_formula] \hfill\\
-	\textit{data model:} ATOM.ChemicalElement.ElementSymbol,\\ MOLECULE. MolecularChemicalSpecies.StoichiometricFormula\\
-	\textit{returnables needed:} RadTrans.SpeciesRef, Atom.SpeciesID, Molecule.SpeciesID, Atom.Symbol, Molecule.MoleculeStoichiometricFormula\\
+	\textit{data model:} ATOM.ChemicalElement.ElementSymbol,\\ MOLECULE. 
+MolecularChemicalSpecies.StoichiometricFormula\\
+	\textit{returnables needed:} RadTrans.SpeciesRef, Atom.SpeciesID, 
+Molecule.SpeciesID, Atom.Symbol, Molecule.MoleculeStoichiometricFormula\\
 	\textit{constraints:}  RadTrans.SpeciesRef = Atom.SpeciesID or  Molecule.SpeciesID
 
 \item [ion\_charge]\hfill\\
-	\textit{data model:} ATOM.Isotope.Ion.IonCharge or MOLECULE.MolecularChemicalSpecies.IonCharge \\
-	\textit{returnables needed:} RadTransSpeciesRef, AtomSpeciesID, AtomIonCharge, MoleculeSpeciesID, MoleculeIonCharge \\
+	\textit{data model:} ATOM.Isotope.Ion.IonCharge or 
+MOLECULE.MolecularChemicalSpecies.IonCharge \\
+	\textit{returnables needed:} RadTransSpeciesRef, AtomSpeciesID, AtomIonCharge, 
+MoleculeSpeciesID, MoleculeIonCharge \\
 	\textit{constraints:}RadTransSpeciesRef=AtomSpeciesID or  Molecule.SpeciesID
 
 	\item [atom\_mass\_number]\hfill\\
@@ -224,22 +275,31 @@ Listed below are the mappings for the atomic quantities defined in \ref{quantiti
 
 	\item [upper\_state\_configuration]\hfill\\
 	\textit{data model:} ATOMICSTATE.Description, MOLECULARSTATE.Description\\
-	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, MoleculeStateID,\\ AtomStateDescription, MoleculeStateDescription\\
+	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, 
+MoleculeStateID,\\ 
+AtomStateDescription, MoleculeStateDescription\\
 	\textit{constraints:}  RadTransUpperStateRef = AtomStateID
 
 	\item [lower\_state\_configuration]\hfill\\
 	\textit{data model:} ATOMICSTATE.Description, MOLECULARSTATE.Description\\
-	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, MoleculeStateID,\\ AtomStateDescription, MoleculeStateDescription\\
+	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, 
+MoleculeStateID,\\ 
+AtomStateDescription, MoleculeStateDescription\\
 	\textit{constraints:}  RadTransUpperStateRef = AtomStateID or MolecularStateID
 	
 	\item [upper\_state\_energy]\hfill\\
-	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy, \\ MOLECULARSTATE.MolecularStateCharacterisation.StateEnergy\\
-	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, MoleculeStateID\\
-	\textit{constraints:}  RadTransUpperStateRef = AtomStateID or MoleculeStateID
+	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy, \\ 
+MOLECULARSTATE.MolecularStateCharacterisation.StateEnergy\\
+	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, 
+MoleculeStateID\\
+	\textit{constraints:} 
+ RadTransUpperStateRef = AtomStateID or MoleculeStateID
 	
 	\item [lower\_state\_energy]\hfill\\
-	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy, \\ MOLECULARSTATE.MolecularStateCharacterisation.StateEnergy\\
-	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID,  MoleculeStateID\\
+	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy, \\ 
+MOLECULARSTATE.MolecularStateCharacterisation.StateEnergy\\
+	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID,  
+MoleculeStateID\\
 	\textit{constraints:}  RadTransLowerStateRef = AtomStateID or MoleculeStateID
 
 	\item [einstein\_a]\hfill\\
