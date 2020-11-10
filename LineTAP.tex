@@ -18,7 +18,7 @@
 
 \editor{Margarida Castro Neves, Nicolas Moreau}
 
-% \previousversion[????URL????]{????Funny Label????}
+
 \previousversion{This is the first public release}
 
 \begin{document}
@@ -118,7 +118,6 @@ In the following table the selected quantities based on IVOA use cases are defin
 including units, data types and mandatory status:
 
 \todo{ method: define other method options besides experiment and theory?}
-\todo{ Units for Energy? VAMDC uses 1/cm - Keep it? }
 
 \begin{table}[H]
 \small
@@ -131,32 +130,32 @@ including units, data types and mandatory status:
 \hline
 \texttt{title} & & string & & name of the species originating  the line.  \\
 \hline
-\texttt{vacuum\_wavelength} & Angstrom & double & yes & wavelength in vacuum \\
+\texttt{vacuum\_wavelength} & J & double & yes & wavelength in vacuum \\
 \hline
 \texttt{vacuum\_wavelength\_error} & & double & & error for the measured vacuum 
 wavelength \\
 \hline
-\texttt{method} && string& & method the wavelength was obtained with: 
+\texttt{method} && string& & method the wavelength was obtained with:
 \textit{experiment} (observed), or \textit{theory} (calculated from theoretical models) \\ 
 \hline
-\texttt{stoichiometric\_formula} & & string & &  the chemical element (symbol) or the 
-molecule (formula) \\
+\texttt{stoichiometric\_formula} & & string & &  the symbol of the chemical element or the 
+molecule formula\\
 \hline
 \texttt{ion\_charge} & & integer & yes & ionisation level\\
 \hline
-\texttt{atom\_mass\_number} & & integer & yes  & atom mass number\\
+\texttt{atom\_mass\_number} & & integer &  & atom mass number\\
 \hline
 \texttt{upper\_state\_configuration} & & string & & upper state configuration\\
 \hline
 \texttt{lower\_state\_configuration} & & string & & lower state configuration\\
 \hline
-\texttt{upper\_energy} & ?  & double & & energy of the upper state \\
+\texttt{upper\_energy} & J  & double & & energy of the upper state \\
 \hline
-\texttt{lower\_energy} & ? & double & & energy of the lower state\\
+\texttt{lower\_energy} & J & double & & energy of the lower state\\
 \hline
-\texttt{inchi} & & string & & chemical species inchi \\
+\texttt{inchi} & & string & yes & chemical species inchi \\
 \hline
-\texttt{inchikey} & & string & & chemical species inchikey \\
+\texttt{inchikey} & & string & yes & chemical species inchikey \\
 \hline
 \texttt{einstein\_a} & & double  & &  Einstein A coefficient\\
 \hline
@@ -176,22 +175,37 @@ radiative transition \\
 %\end{center}
 \end{table}
 
-\section{Protocol, Service discovery and queries - (need better title)}
+\begin{itemize}
+\item \texttt{vacuum\_wavelength} 
+is stored in the database in Joules (J),  to avoid having to provide extra information about
+air/vacuum lengths. Different communities can use a provided  ADQL user-defined function 
+to convert this energy to wavelength in the desired unit. They will be described in
+\ref{sec:Protocol}.
+\\
+\item \texttt{vacuum\_wavelength\_error} is the energy error.
+\todo {comment on symmetry/assimetry of errors} 
+\end{itemize}
+\todo{ write about InChi, InChiKey, add Literature sources}
 
+\section{Protocol }
+\label{sec:Protocol}
 \subsection{ Queries: LineTAP }
+
+\subsection{User-defined functions}
+
+\begin{itemize}
+\item ivo\_spectral(value, unit)\\
+Converts energy values in J to values in other units. Example:\\
+\begin{quote}
+select ivo\_spectral(energy, 'Angstrom') as lambda \\
+ where ivo\_spectral(energy, 'MHz') between 88 and 108
+\end{quote}
+
+\end{itemize}
+
 \todo{ description, examples, translation VAMDC Queries}
 
 
-%Returnables corresponding to a "DataType" in the XSAMS schema (numerical values) 
-%have additional categories, besides the value. Following categories will be also used in 
-%the mapping, \textit{Keyword} being the returnable keyword:
-
-% \begin{itemize}
-%\item \textit{Keyword}Unit  - the units of the value. If the wavelength unit returned is 
-%\textbf{A}, it must be corrected to \textbf{Angstrom} for compatibility
-%\item \textit{Keyword}Method - the method used to obtain this value (e.g. experiment, 
-%theory, etc)
-%\end{itemize}
 
 \section{LineTAP use case examples}
 
@@ -220,12 +234,12 @@ moment only atoms, not molecules):
 \renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\texttt{#1}}
 \begin{description}
 
-\item [vacuum\_wavelength] (in Angstrom)\hfill\\
+\item [vacuum\_wavelength] (in J)\hfill\\
     \textit{data model:} RADTRANS.EnergyWavelength\\
 	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, 
 RadTransWavelengthAirToVac, RadTransWavelengthUnit\\
 	\textit{constraints:} RadTransWavelengthVacuum = true; else use 
-RadTransWavelengthAirToVac.\\
+RadTransWavelengthAirToVac. Original Value in $Angstrom$ has to be converted to $J$\\
 	
 \item [vacuum\_wavelength\_error]  \hfill\\\todo{Wavelength error? How to get it from 
 VAMDC data?}
@@ -293,14 +307,16 @@ MOLECULARSTATE.MolecularStateCharacterisation.StateEnergy\\
 	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, 
 MoleculeStateID\\
 	\textit{constraints:} 
- RadTransUpperStateRef = AtomStateID or MoleculeStateID
+ RadTransUpperStateRef = AtomStateID or MoleculeStateID. 
+ Original value in $cm^{-1}$ has to be converted to $J$
 	
 	\item [lower\_state\_energy]\hfill\\
 	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy, \\ 
 MOLECULARSTATE.MolecularStateCharacterisation.StateEnergy\\
 	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID,  
 MoleculeStateID\\
-	\textit{constraints:}  RadTransLowerStateRef = AtomStateID or MoleculeStateID
+	\textit{constraints:}  RadTransLowerStateRef = AtomStateID or MoleculeStateID.
+	Original value in $cm^{-1}$ has to be converted to $J$
 
 	\item [einstein\_a]\hfill\\
 	\textit{data model:}  RADTRANS.Probability.TransitionProbabilityA\\
