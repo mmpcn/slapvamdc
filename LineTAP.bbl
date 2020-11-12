@@ -10,6 +10,29 @@ C.~Hill, M.~Doronin, T.~M.  \harvardyearleft 2012\harvardyearright , {\em
   VAMDC-XSAMS Reference Guide Version 12.07}.
 \newline\url{http://www.vamdc.org/documents/vamdc-xsams-guide_v12.07.pdf}
 
+\harvarditem[{Demleitner} \harvardand\ {Dowler} et~al.]{{Demleitner}, {Dowler},
+  {Plante}, {Rixon} \harvardand\ {Taylor}}{2012}{2012ivoa.spec.0827D}
+{Demleitner}, M., {Dowler}, P., {Plante}, R., {Rixon}, G. \harvardand\
+  {Taylor}, M.  \harvardyearleft 2012\harvardyearright , `{TAPRegExt: a
+  VOResource Schema Extension for Describing TAP Services Version 1.0}', IVOA
+  Recommendation 27 August 2012,  arXiv:1402.4742.
+\newline\url{http://doi.org/10.5479/ADS/bib/2012ivoa.spec.0827D}
+
+\harvarditem[{Demleitner} \harvardand\ {Harrison} et~al.]{{Demleitner},
+  {Harrison}, {Molinaro}, {Greene}, {Dower} \harvardand\
+  {Perdikeas}}{2019}{2019ivoa.spec.1011D}
+{Demleitner}, M., {Harrison}, P., {Molinaro}, M., {Greene}, G., {Dower}, T.
+  \harvardand\ {Perdikeas}, M.  \harvardyearleft 2019\harvardyearright , `{IVOA
+  Registry Relational Schema Version 1.1}', IVOA Recommendation 11 October
+  2019.
+\newline\url{https://ui.adsabs.harvard.edu/abs/2019ivoa.spec.1011D}
+
+\harvarditem{{Demleitner} \harvardand\ {Taylor}}{2019}{2019ivoa.rept.0520D}
+{Demleitner}, M. \harvardand\ {Taylor}, M.  \harvardyearleft
+  2019\harvardyearright , `{Discovering Data Collections Within Services
+  Version 1.1}', IVOA Note 20 May 2019.
+\newline\url{http://doi.org/10.5479/ADS/bib/2019ivoa.rept.0520D}
+
 \harvarditem[Dowler \harvardand\ Rixon et~al.]{Dowler, Rixon \harvardand\
   Tody}{2010}{std:TAP}
 Dowler, P., Rixon, G. \harvardand\ Tody, D.  \harvardyearleft
@@ -23,7 +46,7 @@ Dowler, P., Rixon, G. \harvardand\ Tody, D.  \harvardyearleft
   \harvardand\ {Tody}, D.  \harvardyearleft 2010\harvardyearright , `{Simple
   Line Access Protocol Version 1.0}', IVOA Recommendation 9 December 2010,
   arXiv:1110.0500.
-\newline\url{http://adsabs.harvard.edu/abs/2010ivoa.specQ1209O}
+\newline\url{http://doi.org/10.5479/ADS/bib/2010ivoa.specQ1209O}
 
 \harvarditem{{Osuna}, {Salgado}, {Guainazzi}, {Dubernet} \harvardand\
   {Roueff}}{2010}{2010ivoa.spec.1209O}
@@ -31,6 +54,16 @@ Dowler, P., Rixon, G. \harvardand\ Tody, D.  \harvardyearleft
   {Roueff}, E.  \harvardyearleft 2010\harvardyearright , `{Simple Spectral
   Lines Data Model Version 1.0}', IVOA Recommendation 09 December 2010,
   arXiv:1110.0505.
-\newline\url{http://adsabs.harvard.edu/abs/2010ivoa.spec.1209O}
+\newline\url{http://doi.org/10.5479/ADS/bib/2010ivoa.spec.1209O}
+
+\harvarditem[{Plante} \harvardand\ {St{\'e}b{\'e}} et~al.]{{Plante},
+  {St{\'e}b{\'e}}, {Benson}, {Dowler}, {Graham}, {Greene}, {Harrison},
+  {Lemson}, {Linde} \harvardand\ {Rixon}}{2010}{2010ivoa.spec.1202P}
+{Plante}, R., {St{\'e}b{\'e}}, A., {Benson}, K., {Dowler}, P., {Graham}, M.,
+  {Greene}, G., {Harrison}, P., {Lemson}, G., {Linde}, T. \harvardand\ {Rixon},
+  G.  \harvardyearleft 2010\harvardyearright , `{VODataService: a VOResource
+  Schema Extension for Describing Collections, Services Version 1.1}', IVOA
+  Recommendation 02 December 2010,  arXiv:1110.0516.
+\newline\url{http://doi.org/10.5479/ADS/bib/2010ivoa.spec.1202P}
 
 \end{thebibliography}

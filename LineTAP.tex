@@ -7,7 +7,7 @@
 \lstset{flexiblecolumns=true,numberstyle=\small,showstringspaces=False,
   identifierstyle=\texttt}
 
-\title{IVOA Relational Model for Spectral Lines (LineTAP)}
+\title{LineTAP: IVOA Relational Model for Spectral Lines}
 
 % see ivoatexDoc for what group names to use here
 \ivoagroup{???? group ????}
@@ -130,10 +130,10 @@ including units, data types and mandatory status:
 \hline
 \texttt{title} & & string & & name of the species originating  the line.  \\
 \hline
-\texttt{vacuum\_wavelength} & J & double & yes & wavelength in vacuum \\
+\texttt{spectral\_location} & J & double & yes & energy equivalent to wavelength 
+in vacuum \\
 \hline
-\texttt{vacuum\_wavelength\_error} & & double & & error for the measured vacuum 
-wavelength \\
+\texttt{spectral\_error} & & double & & integrated error for the spectral location \\
 \hline
 \texttt{method} && string& & method the wavelength was obtained with:
 \textit{experiment} (observed), or \textit{theory} (calculated from theoretical models) \\ 
@@ -176,16 +176,21 @@ radiative transition \\
 \end{table}
 
 \begin{itemize}
-\item \texttt{vacuum\_wavelength} 
-is stored in the database in Joules (J),  to avoid having to provide extra information about
-air/vacuum lengths. Different communities can use a provided  ADQL user-defined function 
-to convert this energy to wavelength in the desired unit. They will be described in
+\item \texttt{spectral\_location} 
+We use energy instead of wavelength to avoid having to provide extra information about
+air/vacuum lengths. It is stored in the database in Joules (J). Different communities can use 
+a provided  ADQL user-defined function to convert this energy to wavelength in the desired 
+unit. They will be described in
 \ref{sec:Protocol}.
 \\
-\item \texttt{vacuum\_wavelength\_error} is the energy error.
-\todo {comment on symmetry/assimetry of errors} 
+\item \texttt{spectral\_error} is the integrated error for the wavelength.
+\todo {comment on symmetry/assimmetry of errors} 
+
+\item \texttt{inchi} 
+\item \texttt{inchiKey} 
+\todo{ write about InChi, InChiKey, add Literature sources about it}
 \end{itemize}
-\todo{ write about InChi, InChiKey, add Literature sources}
+
 
 \section{Protocol }
 \label{sec:Protocol}
@@ -197,8 +202,8 @@ to convert this energy to wavelength in the desired unit. They will be described
 \item ivo\_spectral(value, unit)\\
 Converts energy values in J to values in other units. Example:\\
 \begin{quote}
-select ivo\_spectral(energy, 'Angstrom') as lambda \\
- where ivo\_spectral(energy, 'MHz') between 88 and 108
+SELECT ivo\_spectral(energy, 'Angstrom') AS lambda \\
+ WHERE ivo\_spectral(energy, 'MHz') BETWEEN 88 AND 108
 \end{quote}
 
 \end{itemize}
@@ -234,15 +239,14 @@ moment only atoms, not molecules):
 \renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\texttt{#1}}
 \begin{description}
 
-\item [vacuum\_wavelength] (in J)\hfill\\
+\item [spectral\_location] (in J)\hfill\\
     \textit{data model:} RADTRANS.EnergyWavelength\\
 	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, 
 RadTransWavelengthAirToVac, RadTransWavelengthUnit\\
 	\textit{constraints:} RadTransWavelengthVacuum = true; else use 
 RadTransWavelengthAirToVac. Original Value in $Angstrom$ has to be converted to $J$\\
 	
-\item [vacuum\_wavelength\_error]  \hfill\\\todo{Wavelength error? How to get it from 
-VAMDC data?}
+\item [spectral\_error]  \hfill\\\todo{Wavelength error? How to get it from VAMDC data?}
 
     \textit{data model:} RADTRANS.EnergyWavelength\\
 	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, 
