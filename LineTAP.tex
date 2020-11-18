@@ -28,10 +28,10 @@ This document proposes a set of  spectral line parameters that can be queried us
 TAP protocol. Its purpose is to present a simpler way to query for spectral line data using 
 VO Applications. Among the existing services, SSLDM/SLAP has very few services 
 deployed and is not being used. On the other side, VAMDC is has plenty of services and 
-spectral line information, but its data model is very complex. Therefore the need of a 
-simpler model, using already established protocols like TAP for querying and retrieving the 
-information. Besides the proposed set of parameters, a mapping from VAMDC data model 
-has also been developed.
+spectral line information, but its data model, which is very detailed, is also very complex.
+Therefore the need of a  simpler model, using already established protocols like TAP for 
+querying and retrieving the information. Besides the proposed set of parameters, a mapping 
+from VAMDC data model to LineTAP model is also provided.
 
 \end{abstract}
 
@@ -64,7 +64,9 @@ Currently there are very few working services in the VO that use this protocols,
 that the amount of spectral line data in the VO is small. 
 
 On the other side, VAMDC services offer a great amount of spectral line data, and  so it's 
-desirable to access this data in a VO-way. 
+desirable to access this data in a VO-way. VAMDC data model is very detailed, and gives 
+the data providers the possibility of delivering a broad range of parameters. This 
+adds to the complexity of the data model.
 The queries to the VAMDC services might be simple, however, the data returned is much 
 more than the necessary data for the common use cases in VO, besides the XSAMS 
 \citep{XSAMS:Docs} output format being quite complex.
@@ -143,7 +145,7 @@ molecule formula\\
 \hline
 \texttt{ion\_charge} & & integer & yes & ionisation level\\
 \hline
-\texttt{atom\_mass\_number} & & integer &  & atom mass number\\
+\texttt{mass\_number} & & integer &  & atomic or molecular mass number\\
 \hline
 \texttt{upper\_state\_configuration} & & string & & upper state configuration\\
 \hline
@@ -184,7 +186,7 @@ unit. They will be described in
 \ref{sec:Protocol}.
 \\
 \item \texttt{spectral\_error} is the integrated error for the wavelength.
-\todo {comment on symmetry/assimmetry of errors} 
+\todo {comment on symmetry/assymmetry of errors} 
 
 \item \texttt{inchi} 
 \item \texttt{inchiKey} 
@@ -286,7 +288,7 @@ MOLECULE.MolecularChemicalSpecies.IonCharge \\
 MoleculeSpeciesID, MoleculeIonCharge \\
 	\textit{constraints:}RadTransSpeciesRef=AtomSpeciesID or  Molecule.SpeciesID
 
-	\item [atom\_mass\_number]\hfill\\
+	\item [mass\_number] (atoms)\hfill\\
 	\textit{data model:} ATOM.Isotope.IsotopParameters.MassNumber \\
 	\textit{returnables needed:} AtomMassNumber\\
 	\textit{constraints:}RadTransSpeciesRef=AtomSpeciesID
