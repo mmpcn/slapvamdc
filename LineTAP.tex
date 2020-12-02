@@ -10,7 +10,7 @@
 \title{LineTAP: IVOA Relational Model for Spectral Lines}
 
 % see ivoatexDoc for what group names to use here
-\ivoagroup{???? group ????}
+\ivoagroup{DAL}
 
 \author{Castro Neves, M.}
 \author{Moreau, N.}
@@ -24,14 +24,18 @@
 \begin{document}
 \begin{abstract}
 
-This document proposes a set of  spectral line parameters that can be queried using the 
-TAP protocol. Its purpose is to present a simpler way to query for spectral line data using 
-VO Applications. Among the existing services, SSLDM/SLAP has very few services 
-deployed and is not being used. On the other side, VAMDC is has plenty of services and 
-spectral line information, but its data model, which is very detailed, is also very complex.
-Therefore the need of a  simpler model, using already established protocols like TAP for 
-querying and retrieving the information. Besides the proposed set of parameters, a mapping 
-from VAMDC data model to LineTAP model is also provided.
+This document proposes a relational data model to describe spectral line transitions 
+that can be queried using the TAP protocol. Its purpose is, parting from VAMDC and SSLDM
+models, to present a simpler way to query for spectral line data using VO Applications. The 
+data quantities used will be selected from the VAMDC model, to take into account only 
+the ones used by common use-cases.
+
+%Among the existing services, SSLDM/SLAP has very few services 
+%deployed and is not being used. On the other side, VAMDC is has plenty of services and 
+%spectral line information, but its data model, which is very detailed, is also very complex.
+%Therefore the need of a  simpler model, using already established protocols like TAP for 
+%querying and retrieving the information. Besides the proposed set of parameters, a mapping 
+%from VAMDC data model to LineTAP model is also provided.
 
 \end{abstract}
 
@@ -56,10 +60,15 @@ infrastructure that enable VO applications.
 
 \section{Introduction}
 
+
 SLAP (Simple Line Access Protocol)\citep{2010ivoa.specQ1209O} is the VO standard for 
 Spectral Line querying. SSLDM (Simple Spectral Line Data 
 Model)\citep{2010ivoa.spec.1209O} 
 is the VO data model for spectral lines.
+
+As  in SSLDM, a \textbf{spectral line} in this document is considered to be the result of a (radiative) 
+transition between two energy levels.
+
 Currently there are very few working services in the VO that use this protocols, meaning 
 that the amount of spectral line data in the VO is small. 
 
@@ -71,10 +80,15 @@ The queries to the VAMDC services might be simple, however, the data returned is
 more than the necessary data for the common use cases in VO, besides the XSAMS 
 \citep{XSAMS:Docs} output format being quite complex.
 
+
 This document proposes LineTAP, a simple way to access spectral line data through a VO 
-service through a relational data model. A selection of the relevant line quantities used in 
-astronomy has been defined, which can be retrieved using TAP \citep{std:TAP}, which is 
-an established IVOA protocol. 
+service through a relational data model.  A selection of the relevant line attributes/quantities used in 
+astronomy has been defined parting from the VAMDC/XSAMS Data Model. The purpose is not to
+get into detail on the atomic and molecular states descriptions, but to get the most used data for 
+the most common use cases. 
+
+The relational data model allows the data to be retrieved using TAP \citep{std:TAP}, which is an 
+established IVOA protocol. 
 
 To make use of the VAMDC data, a mapping from the from the 
 \href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS 
@@ -87,30 +101,47 @@ readable by VO client applications.
 
 \section{Use Cases}
 
-In most use cases, the goal is to search for spectral lines within a wavelength range:
+In most use cases, the goal is to search for spectral lines within a wavelength range for identification
+of lines in a spectrum, but also other use cases are possible.
+
+For any retrieved spectral line, the reference of the source article where it was published
+should always be provided if available.
+
 
 \todo{ more use cases}
 
-\begin{itemize}
+\subsection{Identification of spectral lines in a spectrum}
 
+\begin{itemize}
 \item selecting  spectral lines that fit the ones in the spectrum.
 Normally when searching for lines within a wavelength range, a great quantity of lines are 
 returned, with very similar wavelengths. It's necessary to select the one that really 
 represents the transition that caused the line in the spectrum.
-\item areas: Stars, galaxies, ISM, planets?
-\item calculating redshift
+
+\item calculating redshift of an object by comparing the wavelengths found in spectrum and the respective 
+spectral lines from the database
+
+\item classify a spectrum of an unknown object according to spectral lines. Objects of same type (star types, QSOs etc) have  typical sets of spectral lines, so by identifying the lines of the spectrum and 
+comparing to known object lines one can know what kind of object the spectrum belongs to.
+
 \item comparing theoretical spectra to observed spectra
-\item classify the star type according to spectral lines?
-\item spectral lines from a specific atom (or molecule)
+\item comparing  lines generated from a theoretical model to measured lines
 \item spectral lines from a specific ionisation level
 \item spectral lines with specific (other) parameter
 \end{itemize}
 
-Another use case to consider is to get a list of all available chemical species 
-from a service, as a first step before looking for spectral lines.
+\subsection{Finding spectral lines for specific species}
+\begin{itemize}
+\item using a mass spectrometer, researchers find a molecule with the sum formula $C_{16}H_{10}$  in a 
+comet particle.  They now want to figure out whether any line in the spectrum of the coma of the parent object corresponds to some molecule with that sum formula.
+\end{itemize}
 
-For any retrieved spectral line, the reference of the source article where it was published
-should always be provided if available.
+\subsection{Search available species from a database}
+
+\begin{itemize}
+\item get a list of all available chemical species from a service, as a first step before looking 
+for spectral lines.
+\end{itemize}
 
 
 
@@ -132,10 +163,9 @@ including units, data types and mandatory status:
 \hline
 \texttt{title} & & string & & name of the species originating  the line.  \\
 \hline
-\texttt{spectral\_location} & J & double & yes & energy equivalent to wavelength 
-in vacuum \\
+\texttt{vacuum\_wavelength} & Angstrom & double & yes &  wavelength in vacuum \\
 \hline
-\texttt{spectral\_error} & & double & & integrated error for the spectral location \\
+\texttt{vacuum\_wavelength\_error} & & double & & integrated error for the spectral location \\
 \hline
 \texttt{method} && string& & method the wavelength was obtained with:
 \textit{experiment} (observed), or \textit{theory} (calculated from theoretical models) \\ 
@@ -178,19 +208,35 @@ radiative transition \\
 \end{table}
 
 \begin{itemize}
-\item \texttt{spectral\_location} 
-We use energy instead of wavelength to avoid having to provide extra information about
-air/vacuum lengths. It is stored in the database in Joules (J). Different communities can use 
-a provided  ADQL user-defined function to convert this energy to wavelength in the desired 
+\item \texttt{vacuum\_wavelength} 
+Wavelength value is always in vacuum, and  is stored in the database in Angstrom. 
+An  ADQL user-defined function is provided to convert this wavelengthto the desired 
 unit. They will be described in
 \ref{sec:Protocol}.
 \\
-\item \texttt{spectral\_error} is the integrated error for the wavelength.
+\item \texttt{vacuum\_wavelength\_error} is the integrated error for the wavelength.
 \todo {comment on symmetry/assymmetry of errors} 
 
-\item \texttt{inchi} 
-\item \texttt{inchiKey} 
-\todo{ write about InChi, InChiKey, add Literature sources about it}
+\item \texttt{stoichiometric\_formula} is the chemical element symbol for atoms. For molecules 
+it is an alphabetical suite of the atomic constituents followed by the total number of their 
+occurences (e.g. HCOOH => CH2O2 ).
+
+\item \texttt{ion\_charge} is the ionization level of the species
+
+\item \texttt{inchi} is the The IUPAC International Chemical Identifier (InChI), which  provides unique labels for well-defined chemical substances (\cite{INCHI}). It is meant to be human readable, but depending of the molecule it can be very long.
+\item \texttt{inchiKey} is a character signature based on a hash code of the InChI string. It will be used to uniquely identify species.
+
+\item \texttt{mass\_number} The mass number of an atom or the sum of each atomic mass numbers of the elements forming a molecule.
+
+\item \texttt{upper\_state\_configuration} a text string describing the quantum state of the state with higher energy (e.g. 
+\item \texttt{lower\_state\_configuration} 
+\item \texttt{upper\_energy} 
+\item \texttt{lower\_energy} 
+
+\item \texttt{einstein\_a}\item \texttt{oscillator\_strength}\item \texttt{weighted\_oscillator\_strength}\item \texttt{line\_strength}
+
+
+
 \end{itemize}
 
 
@@ -241,14 +287,14 @@ moment only atoms, not molecules):
 \renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\texttt{#1}}
 \begin{description}
 
-\item [spectral\_location] (in J)\hfill\\
+\item [vacuum\_wavelength] (in J)\hfill\\
     \textit{data model:} RADTRANS.EnergyWavelength\\
 	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, 
 RadTransWavelengthAirToVac, RadTransWavelengthUnit\\
 	\textit{constraints:} RadTransWavelengthVacuum = true; else use 
-RadTransWavelengthAirToVac. Original Value in $Angstrom$ has to be converted to $J$\\
+RadTransWavelengthAirToVac. \\
 	
-\item [spectral\_error]  \hfill\\\todo{Wavelength error? How to get it from VAMDC data?}
+\item [vacuuml\_wavelength\_error]  \hfill\\\todo{Wavelength error? How to get it from VAMDC data?}
 
     \textit{data model:} RADTRANS.EnergyWavelength\\
 	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, 
