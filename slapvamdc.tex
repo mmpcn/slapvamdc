@@ -24,16 +24,12 @@
 \begin{document}
 \begin{abstract}
 
-This document proposes a set of  spectral line parameters that can be
-queried using the TAP protocol. Its purpose is to present a simpler way
-to query for spectral line data using VO Applications. Among the
-existing services, SSLDM/SLAP has very few services deployed and is not
-being used. On the other side, VAMDC is has plenty of services and
-spectral line information, but its data model is very complex. Therefore
-the need of a simpler model, using already established protocols like
-TAP for querying and retrieving the information. Besides the proposed
-set of parameters, a mapping from VAMDC data model has also been
-developed.
+This document proposes a schema for a database table containing
+descriptions of spectral lines.  Together with the IVOA's Table Access
+Protocol TAP, this results in a powerful facility for spectral line
+discovery and identification.  The underlying model is rooted in the
+widely-depolyed VAMDC, and the intent is that at least the atomic and
+molecular data from VAMDC can easily be re-published using LineTAP.
 
 \end{abstract}
 
