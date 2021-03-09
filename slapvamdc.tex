@@ -54,26 +54,39 @@ infrastructure that enable VO applications.
 
 \section{Introduction}
 
-SLAP (Simple Line Access Protocol)\citep{2010ivoa.specQ1209O} is the VO
-standard for Spectral Line querying. SSLDM (Simple Spectral Line Data
-Model)\citep{2010ivoa.spec.1209O} is the VO data model for spectral
-lines.
-Currently there are very few working services in the VO that use this protocols, meaning that the amount of spectral line data in the VO is small. 
+The Simple Line Access Protocol SLAP \citep{2010ivoa.specQ1209O}
+currently is the VO
+recommendation for querying spectral line collections. 
+It is based on the Simple Spectral Line Data
+Model SSLDM \citep{2010ivoa.spec.1209O}, which defines the underlying
+data model.
+More than ten years after the protocol's definition, there are still
+very few SLAP services registred in the VO.
 
-On the other side, VAMDC services offer a great amount of spectral line
-data, and  so it's desirable to access this data in a VO-way. 
-The queries to the VAMDC services might be simple, however, the data returned is much more than the necessary data for the common use cases in VO, besides the XSAMS \citep{XSAMS:Docs} output format being quite complex.
+On the other hand, the Virtual Atomic and Molecular Data Center
+VAMDC\todo{reference?} offers a great amount of spectral line
+data.  Making this data available to VO clients without major extra
+tooling is certainly desirable.  While the query part of VAMDC clearly
+betrays its origins in VO standards and thus might readily be integrated
+into the VO protocol stack, the service output
+comes in a very comprehensive derivative of the XML Schema
+for Atomic, Molecular and Solid Data XSAMS \citep{XSAMS:Docs}; in
+particular, its tree-like nature complicates casual use.  In addition, many
+interesting use cases can already be satisfied with a simple relational
+mapping of XSAMS. \todo{Prior art: HTML table XSLT from VAMDC -- do we
+want to reference it?}
 
 This document proposes LineTAP, a simple way to access spectral line
-data through a VO service through a relational data model. A selection
-of the relevant line quantities used in astronomy has been defined,
-which can be retrieved using TAP \citep{std:TAP}, which is an
-established IVOA protocol. 
+data through a VO service employing such a simplified relational 
+mapping.  We give this mapping from the VAMDC-XSAMS Data 
+Model to the
+selected set of line quantities of great relevance to astronomy in
+section~\ref{sect:sld}.
 
-To make use of the VAMDC data, a mapping from the from the
-\href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS Data Model} to
-the relational model is also presented. Using TAP, the resulting data is
-returned in VOTABLE format,  easily readable by VO client applications. 
+When accessed using the Table Access Protocol TAP \citep{std:TAP}, the
+table can be queried using the expressive SQL-derived query language
+ADQL, while query results are available in the VOTable format, easily
+readable by VO client applications. 
 
 
 
@@ -116,6 +129,7 @@ should always be provided if available.
 
 
 \section{Spectral Line Data}\label{quantities}
+\label{sect:sld}
 
 We define the following atomic quantities based on IVOA use cases:
 
