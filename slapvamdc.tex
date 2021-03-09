@@ -10,7 +10,7 @@
 \title{IVOA Relational Model for Spectral Lines (LineTAP)}
 
 % see ivoatexDoc for what group names to use here
-\ivoagroup{???? group ????}
+\ivoagroup{DAL}
 
 \author{Castro Neves, M.}
 \author{Moreau, N.}
@@ -24,7 +24,16 @@
 \begin{document}
 \begin{abstract}
 
-This document proposes a set of  spectral line parameters that can be queried using the TAP protocol. Its purpose is to present a simpler way to query for spectral line data using VO Applications. Among the existing services, SSLDM/SLAP has very few services deployed and is not being used. On the other side, VAMDC is has plenty of services and spectral line information, but its data model is very complex. Therefore the need of a simpler model, using already established protocols like TAP for querying and retrieving the information. Besides the proposed set of parameters, a mapping from VAMDC data model has also been developed.
+This document proposes a set of  spectral line parameters that can be
+queried using the TAP protocol. Its purpose is to present a simpler way
+to query for spectral line data using VO Applications. Among the
+existing services, SSLDM/SLAP has very few services deployed and is not
+being used. On the other side, VAMDC is has plenty of services and
+spectral line information, but its data model is very complex. Therefore
+the need of a simpler model, using already established protocols like
+TAP for querying and retrieving the information. Besides the proposed
+set of parameters, a mapping from VAMDC data model has also been
+developed.
 
 \end{abstract}
 
@@ -49,29 +58,44 @@ infrastructure that enable VO applications.
 
 \section{Introduction}
 
-SLAP (Simple Line Access Protocol)\citep{2010ivoa.specQ1209O} is the VO standard for Spectral Line querying. SSLDM (Simple Spectral Line Data Model)\citep{2010ivoa.spec.1209O} is the VO data model for spectral lines.
+SLAP (Simple Line Access Protocol)\citep{2010ivoa.specQ1209O} is the VO
+standard for Spectral Line querying. SSLDM (Simple Spectral Line Data
+Model)\citep{2010ivoa.spec.1209O} is the VO data model for spectral
+lines.
 Currently there are very few working services in the VO that use this protocols, meaning that the amount of spectral line data in the VO is small. 
 
-On the other side, VAMDC services offer a great amount of spectral line data, and  so it's desirable to access this data in a VO-way. 
+On the other side, VAMDC services offer a great amount of spectral line
+data, and  so it's desirable to access this data in a VO-way. 
 The queries to the VAMDC services might be simple, however, the data returned is much more than the necessary data for the common use cases in VO, besides the XSAMS \citep{XSAMS:Docs} output format being quite complex.
 
-This document proposes LineTAP, a simple way to access spectral line data through a VO service through a relational data model. A selection of the relevant line quantities used in astronomy has been defined, which can be retrieved using TAP \citep{std:TAP}, which is an established IVOA protocol. 
+This document proposes LineTAP, a simple way to access spectral line
+data through a VO service through a relational data model. A selection
+of the relevant line quantities used in astronomy has been defined,
+which can be retrieved using TAP \citep{std:TAP}, which is an
+established IVOA protocol. 
 
-To make use of the VAMDC data, a mapping from the from the \href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS Data Model} to the relational model is also presented. Using TAP, the resulting data is returned in VOTABLE format,  easily readable by VO client applications. 
+To make use of the VAMDC data, a mapping from the from the
+\href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS Data Model} to
+the relational model is also presented. Using TAP, the resulting data is
+returned in VOTABLE format,  easily readable by VO client applications. 
 
 
 
 
 \section{Use Cases}
 
-In most use cases, the goal is to search for spectral lines within a wavelength range:
+In most use cases, the goal is to search for spectral lines within a
+wavelength range:
 
 \todo{ more use cases}
 
 \begin{itemize}
 
 \item selecting  spectral lines that fit the ones in the spectrum.
-Normally when searching for lines within a wavelength range, a great quantity of lines are returned, with very similar wavelengths. It's necessary to select the one that really represents the transition that caused the line in the spectrum.
+Normally when searching for lines within a wavelength range, a great
+quantity of lines are returned, with very similar wavelengths. It's
+necessary to select the one that really represents the transition that
+caused the line in the spectrum.
 \item areas: Stars, galaxies, ISM, planets?
 \item calculating redshift
 \item comparing theoretical spectra to observed spectra
@@ -81,10 +105,12 @@ Normally when searching for lines within a wavelength range, a great quantity of
 \item spectral lines with specific (other) parameter
 \end{itemize}
 
-Another use case to consider is to get a list of all available chemical species 
+Another use case to consider is to get a list of all available chemical
+species 
 from a service, as a first step before looking for spectral lines.
 
-For any retrieved spectral line, the reference of the source article where it was published
+For any retrieved spectral line, the reference of the source article
+where it was published
 should always be provided if available.
 
 \section{Protocol, Service discovery and queries - (need better title)}
@@ -150,9 +176,15 @@ The quantities used in the mapping belong to the following branches of VAMDCXSAM
 \textit{XSAMSData.Sources}, referred as RADTRANS.\\
 
 
-The VAMDC-TAP query language defines a list of keywords, called \href{https://standards.vamdc.eu/dictionary/returnables.html}{Returnables}, listing the quantities that can be returned by a service.They correspond to an element in the XSAMS data model. The returnables supported by a service are declared by a service manager when he deploys the software on its database, and saved in the VAMDC registry. \\
+The VAMDC-TAP query language defines a list of keywords, called
+\href{https://standards.vamdc.eu/dictionary/returnables.html}{Returnables},
+listing the quantities that can be returned by a service.They correspond
+to an element in the XSAMS data model. The returnables supported by a
+service are declared by a service manager when he deploys the software
+on its database, and saved in the VAMDC registry. \\
 
-Listed below are the mappings for the atomic quantities defined in \ref{quantities} (at the moment only atoms, not molecules):
+Listed below are the mappings for the atomic quantities defined in
+\ref{quantities} (at the moment only atoms, not molecules):
 
 \renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\texttt{#1}}
 \begin{description}
