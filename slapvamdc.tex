@@ -91,36 +91,87 @@ readable by VO client applications.
 
 
 
-\section{Use Cases}
+\section{Use Cases and Requirements}
 
-In most use cases, the goal is to search for spectral lines within a
-wavelength range:
+LineTAP really only has a single use case, the discovery of spectral
+lines for identification purposes.  To structure standards development,
+we discuss some situations specifically:
 
-\todo{ more use cases}
+\subsection{Identifying a Single Line}
+
+A user sees a feature in a spectral with known (and realiable) spectral
+calibration and now wants to know what might possibly be responsible for
+it.  Hence, they query a narrow spectral range and retrieve all known
+lines from all services.
+
+To select which of the candidate lines are plausible matches, users
+would inspect line metadata such as the originating atom or element, the
+ionisation state, and perhaps oscillator strengths.
+
+
+\subsection{Getting Properties of Well-Known Lines}
+
+A user wants to display, say, the Lyman series over a plot of a
+spectrum.  Hence, a client needs to discover which service holds such
+data, select the appropriate records -- presumably by their properties,
+perhaps even by their name --, and retrieve them.  If multiple services
+hold the desired data, it might need to reconcile differing
+specifications.
+
+
+\subsection{Retrieving Lines For Ploting}
+
+A client program displays a spectrum and wants to mark location of
+spectral features that might exist in the source object.
+
+The challenge here is that displaying all lines known obviously is
+impossible and would not help users in any way.  Hence, the client needs
+to have some idea of which lines can be expected to be strong given the
+physics of the emission's source region.
+
+Even retrieving the lines before selection can be optimised greatly in
+this case, as in wider spectra at least hundreds of thousands of lines
+will be within the spectral range, while it probably rarely makes sense
+to plot more than a hundred or so.  Hence, careful selection of lines
+can reduce the volume of data transferred and processed by the client by
+large factors.
+
+To make good on this promise, the tables need to be queriable such that
+lines suspected to be strong for some combination of chemistry,
+temperature, and pressure can be filtered out with some accuracy.
+
+
+\subsection{Molecular Chemistry}
+
+A specific challenge when specifying chemistry are molecules because
+they are so much harder to characterise than atoms.  While InChi and
+InChi keys help here, user acceptance of them at this point is at least
+questionable.  As a fallback mechanism, and perhaps also as a means of
+characterising servers, users may want to discover all species served by
+a specific server.
+
+
+\subsection{Credit}
+
+In particular to provide an incentive to contribute to the global
+repository of line data, it should be as simple as possible for users to
+give credit to the contributors of line data.
+
+
+\subsection{Non-Use Cases}
+
+This specification differs from VAMDC in that it does not attempt to
+cover all possible uses of spectral line data.  In particular, no
+attempt is made to
 
 \begin{itemize}
-
-\item selecting  spectral lines that fit the ones in the spectrum.
-Normally when searching for lines within a wavelength range, a great
-quantity of lines are returned, with very similar wavelengths. It's
-necessary to select the one that really represents the transition that
-caused the line in the spectrum.
-\item areas: Stars, galaxies, ISM, planets?
-\item calculating redshift
-\item comparing theoretical spectra to observed spectra
-\item classify the star type according to spectral lines?
-\item spectral lines from a specific atom (or molecule)
-\item spectral lines from a specific ionisation level
-\item spectral lines with specific (other) parameter
+\item Publish sufficient information to feed sophisticated,
+high-precision atmosphere models.
+\item Deal with solid-state spectroscopy.
+\item Publish spectra of non-electromagnetic messengers.
 \end{itemize}
 
-Another use case to consider is to get a list of all available chemical
-species 
-from a service, as a first step before looking for spectral lines.
 
-For any retrieved spectral line, the reference of the source article
-where it was published
-should always be provided if available.
 
 \section{Protocol, Service discovery and queries - (need better title)}
 
