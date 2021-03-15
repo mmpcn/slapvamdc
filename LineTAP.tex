@@ -24,18 +24,20 @@
 \begin{document}
 \begin{abstract}
 
-This document proposes a relational data model to describe spectral line transitions 
-that can be queried using the TAP protocol. Its purpose is, parting from VAMDC and SSLDM
-models, to present a simpler way to query for spectral line data using VO Applications. The 
-data quantities used will be selected from the VAMDC model, to take into account only 
-the ones used by common use-cases.
+This document proposes a relational data model to describe spectral line
+transitions that can be queried using the TAP protocol. Its purpose is,
+parting from VAMDC and SSLDM models, to present a simpler way to query
+for spectral line data using VO Applications. The data quantities used
+will be selected from the VAMDC model, to take into account only the
+ones used by common use-cases.
 
-%Among the existing services, SSLDM/SLAP has very few services 
-%deployed and is not being used. On the other side, VAMDC is has plenty of services and 
-%spectral line information, but its data model, which is very detailed, is also very complex.
-%Therefore the need of a  simpler model, using already established protocols like TAP for 
-%querying and retrieving the information. Besides the proposed set of parameters, a mapping 
-%from VAMDC data model to LineTAP model is also provided.
+%Among the existing services, SSLDM/SLAP has very few services deployed
+%and is not being used. On the other side, VAMDC is has plenty of
+%services and spectral line information, but its data model, which is
+%very detailed, is also very complex.  Therefore the need of a  simpler
+%model, using already established protocols like TAP for querying and
+%retrieving the information. Besides the proposed set of parameters, a
+%mapping from VAMDC data model to LineTAP model is also provided.
 
 \end{abstract}
 
@@ -61,51 +63,54 @@ infrastructure that enable VO applications.
 \section{Introduction}
 
 
-SLAP (Simple Line Access Protocol)\citep{2010ivoa.specQ1209O} is the VO standard for 
-Spectral Line querying. SSLDM (Simple Spectral Line Data 
-Model)\citep{2010ivoa.spec.1209O} 
-is the VO data model for spectral lines.
+SLAP (Simple Line Access Protocol)\citep{2010ivoa.specQ1209O} is the VO
+standard for Spectral Line querying. SSLDM (Simple Spectral Line Data
+Model)\citep{2010ivoa.spec.1209O} is the VO data model for spectral
+lines.
 
-As  in SSLDM, a \textbf{spectral line} in this document is considered to be the result of a (radiative) 
-transition between two energy levels.
+As  in SSLDM, a \textbf{spectral line} in this document is considered to
+be the result of a (radiative) transition between two energy levels.
 
-Currently there are very few working services in the VO that use this protocols, meaning 
-that the amount of spectral line data in the VO is small. 
+Currently there are very few working services in the VO that use this
+protocols, meaning that the amount of spectral line data in the VO is
+small. 
 
-On the other side, VAMDC services offer a great amount of spectral line data, and  so it's 
-desirable to access this data in a VO-way. VAMDC data model is very detailed, and gives 
-the data providers the possibility of delivering a broad range of parameters. This 
-adds to the complexity of the data model.
-The queries to the VAMDC services might be simple, however, the data returned is much 
-more than the necessary data for the common use cases in VO, besides the XSAMS 
-\citep{XSAMS:Docs} output format being quite complex.
+On the other side, VAMDC services offer a great amount of spectral line
+data, and  so it's desirable to access this data in a VO-way. VAMDC data
+model is very detailed, and gives the data providers the possibility of
+delivering a broad range of parameters. This adds to the complexity of
+the data model.  The queries to the VAMDC services might be simple,
+however, the data returned is much more than the necessary data for the
+common use cases in VO, besides the XSAMS \citep{XSAMS:Docs} output
+format being quite complex.
 
 
-This document proposes LineTAP, a simple way to access spectral line data through a VO 
-service through a relational data model.  A selection of the relevant line attributes/quantities used in 
-astronomy has been defined parting from the VAMDC/XSAMS Data Model. The purpose is not to
-get into detail on the atomic and molecular states descriptions, but to get the most used data for 
-the most common use cases. 
+This document proposes LineTAP, a simple way to access spectral line
+data through a VO service through a relational data model.  A selection
+of the relevant line attributes/quantities used in astronomy has been
+defined parting from the VAMDC/XSAMS Data Model. The purpose is not to
+get into detail on the atomic and molecular states descriptions, but to
+get the most used data for the most common use cases. 
 
-The relational data model allows the data to be retrieved using TAP \citep{std:TAP}, which is an 
-established IVOA protocol. 
+The relational data model allows the data to be retrieved using TAP
+\citep{std:TAP}, which is an established IVOA protocol. 
 
-To make use of the VAMDC data, a mapping from the from the 
-\href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS 
-Data Model} to the relational model is 
-also presented. Using TAP, the resulting data is returned in VOTABLE format,  easily 
-readable by VO client applications. 
+To make use of the VAMDC data, a mapping from the from the
+\href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS Data Model} to
+the relational model is also presented. Using TAP, the resulting data is
+returned in VOTABLE format,  easily readable by VO client applications. 
 
 
 
 
 \section{Use Cases}
 
-In most use cases, the goal is to search for spectral lines within a wavelength range for identification
-of lines in a spectrum, but also other use cases are possible.
+In most use cases, the goal is to search for spectral lines within a
+wavelength range for identification of lines in a spectrum, but also
+other use cases are possible.
 
-For any retrieved spectral line, the reference of the source article where it was published
-should always be provided if available.
+For any retrieved spectral line, the reference of the source article
+where it was published should always be provided if available.
 
 
 \todo{ more use cases}
@@ -114,15 +119,19 @@ should always be provided if available.
 
 \begin{itemize}
 \item selecting  spectral lines that fit the ones in the spectrum.
-Normally when searching for lines within a wavelength range, a great quantity of lines are 
-returned, with very similar wavelengths. It's necessary to select the one that really 
-represents the transition that caused the line in the spectrum.
+Normally when searching for lines within a wavelength range, a great
+quantity of lines are returned, with very similar wavelengths. It's
+necessary to select the one that really represents the transition that
+caused the line in the spectrum.
 
-\item calculating redshift of an object by comparing the wavelengths found in spectrum and the respective 
-spectral lines from the database
+\item calculating redshift of an object by comparing the wavelengths
+found in spectrum and the respective spectral lines from the database
 
-\item classify a spectrum of an unknown object according to spectral lines. Objects of same type (star types, QSOs etc) have  typical sets of spectral lines, so by identifying the lines of the spectrum and 
-comparing to known object lines one can know what kind of object the spectrum belongs to.
+\item classify a spectrum of an unknown object according to spectral
+lines. Objects of same type (star types, QSOs etc) have  typical sets of
+spectral lines, so by identifying the lines of the spectrum and
+comparing to known object lines one can know what kind of object the
+spectrum belongs to.
 
 \item comparing theoretical spectra to observed spectra
 \item comparing  lines generated from a theoretical model to measured lines
@@ -132,23 +141,25 @@ comparing to known object lines one can know what kind of object the spectrum be
 
 \subsection{Finding spectral lines for specific species}
 \begin{itemize}
-\item using a mass spectrometer, researchers find a molecule with the sum formula $C_{16}H_{10}$  in a 
-comet particle.  They now want to figure out whether any line in the spectrum of the coma of the parent object corresponds to some molecule with that sum formula.
+\item using a mass spectrometer, researchers find a molecule with the
+sum formula $C_{16}H_{10}$  in a comet particle.  They now want to
+figure out whether any line in the spectrum of the coma of the parent
+object corresponds to some molecule with that sum formula.
 \end{itemize}
 
 \subsection{Search available species from a database}
 
 \begin{itemize}
-\item get a list of all available chemical species from a service, as a first step before looking 
-for spectral lines.
+\item get a list of all available chemical species from a service, as a
+first step before looking for spectral lines.
 \end{itemize}
 
 
 
 \section{Spectral Line Data}\label{quantities}
 
-In the following table the selected quantities based on IVOA use cases are defined, 
-including units, data types and mandatory status:
+In the following table the selected quantities based on IVOA use cases
+are defined, including units, data types and mandatory status:
 
 \todo{ method: define other method options besides experiment and theory?}
 
@@ -209,33 +220,42 @@ radiative transition \\
 
 \begin{itemize}
 \item \texttt{vacuum\_wavelength} 
-Wavelength value is always in vacuum, and  is stored in the database in Angstrom. 
-An  ADQL user-defined function is provided to convert this wavelengthto the desired 
-unit. They will be described in
+Wavelength value is always in vacuum, and  is stored in the database in
+Angstrom.  An  ADQL user-defined function is provided to convert this
+wavelengthto the desired unit. They will be described in
 \ref{sec:Protocol}.
-\\
+
 \item \texttt{vacuum\_wavelength\_error} is the integrated error for the wavelength.
 \todo {comment on symmetry/assymmetry of errors} 
 
-\item \texttt{stoichiometric\_formula} is the chemical element symbol for atoms. For molecules 
-it is an alphabetical suite of the atomic constituents followed by the total number of their 
-occurences (e.g. HCOOH => CH2O2 ).
+\item \texttt{stoichiometric\_formula} is the chemical element symbol
+for atoms. For molecules it is an alphabetical suite of the atomic
+constituents followed by the total number of their occurences (e.g.
+HCOOH => CH2O2 ).
 
 \item \texttt{ion\_charge} is the ionization level of the species
 
-\item \texttt{inchi} is the The IUPAC International Chemical Identifier (InChI), which  provides unique labels for well-defined chemical substances (\cite{INCHI}). It is meant to be human readable, but depending of the molecule it can be very long.
-\item \texttt{inchiKey} is a character signature based on a hash code of the InChI string. It will be used to uniquely identify species.
+\item \texttt{inchi} is the The IUPAC International Chemical Identifier
+(InChI), which  provides unique labels for well-defined chemical
+substances (\cite{INCHI}). It is meant to be human readable, but
+depending of the molecule it can be very long.
 
-\item \texttt{mass\_number} The mass number of an atom or the sum of each atomic mass numbers of the elements forming a molecule.
+\item \texttt{inchiKey} is a character signature based on a hash code of
+the InChI string. It will be used to uniquely identify species.
 
-\item \texttt{upper\_state\_configuration} a text string describing the quantum state of the state with higher energy (e.g. 
+\item \texttt{mass\_number} The mass number of an atom or the sum of
+each atomic mass numbers of the elements forming a molecule.
+
+\item \texttt{upper\_state\_configuration} a text string describing the
+quantum state of the state with higher energy (e.g. 
 \item \texttt{lower\_state\_configuration} 
 \item \texttt{upper\_energy} 
 \item \texttt{lower\_energy} 
 
-\item \texttt{einstein\_a}\item \texttt{oscillator\_strength}\item \texttt{weighted\_oscillator\_strength}\item \texttt{line\_strength}
-
-
+\item \texttt{einstein\_a}
+\item \texttt{oscillator\_strength}
+\item \texttt{weighted\_oscillator\_strength}
+\item \texttt{line\_strength}
 
 \end{itemize}
 
@@ -274,15 +294,15 @@ The quantities used in the mapping belong to the following branches of VAMDCXSAM
 \textit{XSAMSData.Sources}, referred as RADTRANS.\\
 
 
-The VAMDC-TAP query language defines a list of keywords, called 
-\href{https://standards.vamdc.eu/dictionary/returnables.html}{Returnables}, 
-listing the quantities that 
-can be returned by a service.They correspond to an element in the XSAMS data model. 
-The returnables supported by a service are declared by a service manager when he 
-deploys the software on its database, and saved in the VAMDC registry. \\
+The VAMDC-TAP query language defines a list of keywords, called
+\href{https://standards.vamdc.eu/dictionary/returnables.html}{Returnables},
+listing the quantities that can be returned by a service.They correspond
+to an element in the XSAMS data model.  The returnables supported by a
+service are declared by a service manager when he deploys the software
+on its database, and saved in the VAMDC registry. \\
 
-Listed below are the mappings for the atomic quantities defined in \ref{quantities} (at the 
-moment only atoms, not molecules):
+Listed below are the mappings for the atomic quantities defined in
+\ref{quantities} (at the moment only atoms, not molecules):
 
 \renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\texttt{#1}}
 \begin{description}
