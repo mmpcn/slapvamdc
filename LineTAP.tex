@@ -24,12 +24,13 @@
 \begin{document}
 \begin{abstract}
 
-This document proposes a relational data model to describe spectral line
+This document proposes a relational schema to describe spectral line
 transitions that can be queried using the TAP protocol. Its purpose is,
 parting from VAMDC and SSLDM models, to present a simpler way to query
-for spectral line data using VO Applications. The data quantities used
-will be selected from the VAMDC model, to take into account only the
-ones used by common use-cases.
+for spectral line data using VO applications. The underlying model is
+rooted in the widely-depolyed VAMDC, and the intent is that at least the
+atomic and molecular data from VAMDC can easily be re-published using
+LineTAP.
 
 %Among the existing services, SSLDM/SLAP has very few services deployed
 %and is not being used. On the other side, VAMDC is has plenty of
@@ -62,101 +63,150 @@ infrastructure that enable VO applications.
 
 \section{Introduction}
 
-
-SLAP (Simple Line Access Protocol)\citep{2010ivoa.specQ1209O} is the VO
-standard for Spectral Line querying. SSLDM (Simple Spectral Line Data
-Model)\citep{2010ivoa.spec.1209O} is the VO data model for spectral
-lines.
-
-As  in SSLDM, a \textbf{spectral line} in this document is considered to
+The Simple Line Access Protocol SLAP \citep{2010ivoa.specQ1209O}
+currently is the VO
+recommendation for querying spectral line collections. 
+It is based on the Simple Spectral Line Data
+Model SSLDM \citep{2010ivoa.spec.1209O}, which defines the underlying
+data model.
+As  in SSLDM, a \emph{spectral line} in this document is considered to
 be the result of a (radiative) transition between two energy levels.
 
-Currently there are very few working services in the VO that use this
-protocols, meaning that the amount of spectral line data in the VO is
-small. 
+More than ten years after the protocol's definition, there are still
+very few SLAP services registred in the VO.
+On the other hand, the Virtual Atomic and Molecular Data Center
+VAMDC\todo{reference?} offers a great amount of spectral line
+data.  Making this data available to VO clients without major extra
+tooling is certainly desirable.  
 
-On the other side, VAMDC services offer a great amount of spectral line
-data, and  so it's desirable to access this data in a VO-way. VAMDC data
-model is very detailed, and gives the data providers the possibility of
-delivering a broad range of parameters. This adds to the complexity of
-the data model.  The queries to the VAMDC services might be simple,
-however, the data returned is much more than the necessary data for the
-common use cases in VO, besides the XSAMS \citep{XSAMS:Docs} output
-format being quite complex.
-
+While the query part of VAMDC clearly betrays its origins in VO
+standards and thus might readily be integrated into the VO protocol
+stack, the service output comes in a very comprehensive derivative of
+the XML Schema for Atomic, Molecular and Solid Data XSAMS
+\citep{XSAMS:Docs}; in particular, its tree-like nature complicates
+casual use.  In addition, many interesting use cases can already be
+satisfied with a simple relational mapping of XSAMS. \todo{Prior art:
+HTML table XSLT from VAMDC -- do we want to reference it?}
 
 This document proposes LineTAP, a simple way to access spectral line
-data through a VO service through a relational data model.  A selection
-of the relevant line attributes/quantities used in astronomy has been
-defined parting from the VAMDC/XSAMS Data Model. The purpose is not to
-get into detail on the atomic and molecular states descriptions, but to
-get the most used data for the most common use cases. 
+data through a VO service employing such a simplified relational
+mapping.  The resulting table schema is presented in
+section~\ref{sect:quantities}, while the mapping between our columns and the
+VAMDC-XSAMS Data Model is given in section~\ref{sect:mapping}.
 
-The relational data model allows the data to be retrieved using TAP
-\citep{std:TAP}, which is an established IVOA protocol. 
-
-To make use of the VAMDC data, a mapping from the from the
-\href{https://standards.vamdc.eu/#data-model}{VAMDC-XSAMS Data Model} to
-the relational model is also presented. Using TAP, the resulting data is
-returned in VOTABLE format,  easily readable by VO client applications. 
-
+When accessed using the Table Access Protocol TAP
+\citep{2019ivoa.spec.0927D}, the table can be queried using the
+expressive SQL-derived query language ADQL, while query results are
+available in the VOTable format, easily readable by VO client
+applications.  Line databases accessible in this way can be registered
+in the VO Registry.  The detailed rules for this registration, and
+recommendations for how to discover LineTAP services, are given in
+section~\ref{sect:regmatters}.
 
 
 
 \section{Use Cases}
 
-In most use cases, the goal is to search for spectral lines within a
-wavelength range for identification of lines in a spectrum, but also
-other use cases are possible.
+LineTAP really only has a single use case, the discovery of spectral
+lines for identification purposes.  To structure standards development,
+we discuss some situations specifically:
 
-For any retrieved spectral line, the reference of the source article
-where it was published should always be provided if available.
+\subsection{Identifying a Single Line}
+
+A user sees a feature in a spectral with known (and realiable) spectral
+calibration and now wants to know what might possibly be responsible for
+it.  Hence, they query a narrow spectral range and retrieve all known
+lines from all services.
+
+To select which of the candidate lines are plausible matches, users
+would inspect line metadata such as the originating atom or element, the
+ionisation state, and perhaps oscillator strengths.
+
+\subsection{Getting Properties of Well-Known Lines}
+
+A user wants to display, say, the Lyman series over a plot of a
+spectrum.  Hence, a client needs to discover which service holds such
+data, select the appropriate records -- presumably by their properties,
+perhaps even by their name --, and retrieve them.  If multiple services
+hold the desired data, it might need to reconcile differing
+specifications.
 
 
-\todo{ more use cases}
+\subsection{Retrieving Spectral Lines for Cross-Identification}
 
-\subsection{Identification of spectral lines in a spectrum}
+Users may have various reasons to retrieve a larger number of spectral
+lines:
 
 \begin{itemize}
-\item selecting  spectral lines that fit the ones in the spectrum.
-Normally when searching for lines within a wavelength range, a great
-quantity of lines are returned, with very similar wavelengths. It's
-necessary to select the one that really represents the transition that
-caused the line in the spectrum.
+\item When analysing a given spectrum, selecting spectral lines that may
+fit the ones in the spectrum, for instance to establish the source's
+chemistry or physical state.  Depending on the prior knowledge of the
+source, they will want to constrain the matches to specific species in
+specific ionisation (or even excitation) states.
 
-\item calculating redshift of an object by comparing the wavelengths
-found in spectrum and the respective spectral lines from the database
+\item When estimating the redshift of an object, features found in the
+spectrum need to be matched to the rest wavelengths.
 
-\item classify a spectrum of an unknown object according to spectral
-lines. Objects of same type (star types, QSOs etc) have  typical sets of
-spectral lines, so by identifying the lines of the spectrum and
-comparing to known object lines one can know what kind of object the
-spectrum belongs to.
-
-\item comparing theoretical spectra to observed spectra
-\item comparing  lines generated from a theoretical model to measured lines
-\item spectral lines from a specific ionisation level
-\item spectral lines with specific (other) parameter
+\item When computing theoretical spectra, a comparison to the (observed)
+ground truth is desirable.
 \end{itemize}
+
+The challenge in all these cases is that, say, displaying all lines
+known obviously is impossible and would not help users in any way.
+Hence, the client needs to have some idea of which lines can be expected
+to be strong given the physics of the emission's source region.
+
+Selecting the lines before retrieval is a significant optimisation in
+this case, as in wider spectra at least hundreds of thousands of lines
+will be within the spectral range, while it probably rarely makes sense
+to plot more than a hundred or so.  Hence, careful selection of lines
+can reduce the volume of data transferred and processed by the client by
+several orders of magnitude.
+
+To make good on this promise, the tables need to be queriable such that
+lines suspected to be strong for some combination of chemistry,
+temperature, and pressure can be filtered out with some accuracy.
+
 
 \subsection{Finding spectral lines for specific species}
-\begin{itemize}
-\item using a mass spectrometer, researchers find a molecule with the
-sum formula $C_{16}H_{10}$  in a comet particle.  They now want to
+
+Using a mass spectrometer, researchers find a molecule with the
+sum formula C$_{16}$H$_{10}$  in a comet particle.  They now want to
 figure out whether any line in the spectrum of the coma of the parent
 object corresponds to some molecule with that sum formula.
-\end{itemize}
 
-\subsection{Search available species from a database}
+A specific challenge in this use case is the characterisation of the
+molecule.  While InChi labels and keys help to some degree, user
+acceptance of them at this point is at least questionable; also,
+searching by sum formula is impossible using InChis\todo{A claim
+made without actually knowing InChi)}.  
+
+As a fallback mechanism, and perhaps also as a means of characterising
+servers, users may want to discover all species served by a specific
+server.
+
+\subsection{Credit}
+
+In particular to provide an incentive to contribute to the global
+repository of line data, it should be as simple as possible for users to
+give credit to the contributors of line data.
+
+
+\subsection{Non-Use Cases}
+
+This specification differs from VAMDC in that it does not attempt to
+cover all possible uses of spectral line data.  In particular, no
+attempt is made to
 
 \begin{itemize}
-\item get a list of all available chemical species from a service, as a
-first step before looking for spectral lines.
+\item Publish sufficient information to feed sophisticated,
+high-precision atmosphere models.
+\item Deal with solid-state spectroscopy.
+\item Publish spectra of non-electromagnetic messengers.
 \end{itemize}
 
 
-
-\section{Spectral Line Data}\label{quantities}
+\section{Spectral Line Data}\label{sect:quantities}
 
 In the following table the selected quantities based on IVOA use cases
 are defined, including units, data types and mandatory status:
@@ -284,6 +334,7 @@ SELECT ivo\_spectral(energy, 'Angstrom') AS lambda \\
 
 
 \section{Mapping from VAMDCXSAMS}
+\label{sect:mapping}
 
 The quantities used in the mapping belong to the following branches of VAMDCXSAMS:\\
 \\
@@ -427,6 +478,7 @@ MoleculeStateID\\
 \end{description}
 
 \section{LineTAP and the VO Registry}
+\label{sect:regmatters}
 
 \subsection{Registering LineTAP-conforming Tables}
 
