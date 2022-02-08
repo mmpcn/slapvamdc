@@ -7,6 +7,18 @@
 \lstset{flexiblecolumns=true,numberstyle=\small,showstringspaces=False,
   identifierstyle=\texttt}
 
+% since we don't do a lot of UCDs here and XSAMS references share a lot
+% of the typesetting issues of UCDs, we'll re-use the ucd macro for now
+% for them:
+\let\xsref=\ucd
+
+\newenvironment{xsamsbridge}
+  {\begin{list}{}{\setlength\labelwidth{15em}%
+    \setlength\labelsep{1em}%
+    \setlength\leftmargin{5em}%
+    }}
+  {\end{list}}
+
 \title{LineTAP: IVOA Relational Model for Spectral Lines}
 
 % see ivoatexDoc for what group names to use here
@@ -25,10 +37,10 @@
 \begin{abstract}
 
 This document proposes a relational schema to describe spectral line
-transitions that can be queried using the TAP protocol. Its purpose is,
-parting from VAMDC and SSLDM models, to present a simpler way to query
-for spectral line data using VO applications. The underlying model is
-rooted in the widely-depolyed VAMDC, and the intent is that at least the
+transitions that can be queried using the TAP protocol. Its purpose is
+to derive from the VAMDC data model a simplified way to query
+spectral line databases from VO applications. The underlying model is
+rooted in the widely-deployed VAMDC, and the intent is that at least the
 atomic and molecular data from VAMDC can easily be re-published using
 LineTAP.
 
@@ -65,7 +77,7 @@ infrastructure that enable VO applications.
 
 The Simple Line Access Protocol SLAP \citep{2010ivoa.specQ1209O}
 currently is the VO
-recommendation for querying spectral line collections. 
+recommendation for querying spectral line collections.
 It is based on the Simple Spectral Line Data
 Model SSLDM \citep{2010ivoa.spec.1209O}, which defines the underlying
 data model.
@@ -77,7 +89,7 @@ very few SLAP services registred in the VO.
 On the other hand, the Virtual Atomic and Molecular Data Center
 VAMDC\todo{reference?} offers a great amount of spectral line
 data.  Making this data available to VO clients without major extra
-tooling is certainly desirable.  
+tooling is certainly desirable.
 
 While the query part of VAMDC clearly betrays its origins in VO
 standards and thus might readily be integrated into the VO protocol
@@ -113,13 +125,13 @@ we discuss some situations specifically:
 
 \subsection{Identifying a Single Line}
 
-A user sees a feature in a spectral with known (and realiable) spectral
+A user sees a feature in a spectrum with known (and realiable) spectral
 calibration and now wants to know what might possibly be responsible for
 it.  Hence, they query a narrow spectral range and retrieve all known
 lines from all services.
 
 To select which of the candidate lines are plausible matches, users
-would inspect line metadata such as the originating atom or element, the
+would inspect line metadata such as the originating atom or molecule, the
 ionisation state, and perhaps oscillator strengths.
 
 \subsection{Getting Properties of Well-Known Lines}
@@ -151,8 +163,9 @@ spectrum need to be matched to the rest wavelengths.
 ground truth is desirable.
 \end{itemize}
 
-The challenge in all these cases is that, say, displaying all lines
-known obviously is impossible and would not help users in any way.
+The challenge in all these cases is that displaying all lines
+known obviously is impossible due to the sheer volume of the data,
+and it would not help users in any way.
 Hence, the client needs to have some idea of which lines can be expected
 to be strong given the physics of the emission's source region.
 
@@ -179,7 +192,7 @@ A specific challenge in this use case is the characterisation of the
 molecule.  While InChi labels and keys help to some degree, user
 acceptance of them at this point is at least questionable; also,
 searching by sum formula is impossible using InChis\todo{A claim
-made without actually knowing InChi)}.  
+made without actually knowing InChi)}.
 
 As a fallback mechanism, and perhaps also as a means of characterising
 servers, users may want to discover all species served by a specific
@@ -202,36 +215,37 @@ attempt is made to
 \item Publish sufficient information to feed sophisticated,
 high-precision atmosphere models.
 \item Deal with solid-state spectroscopy.
-\item Publish spectra of non-electromagnetic messengers.
+\item Publish lines of non-electromagnetic messengers.
 \end{itemize}
 
 
 \section{Spectral Line Data}\label{sect:quantities}
 
-In the following table the selected quantities based on IVOA use cases
-are defined, including units, data types and mandatory status:
+The following table shows the database columns that make up the LineTAP
+relation model, together with their units and data types and whether
+NULLs are allowed within them.
 
-\todo{ method: define other method options besides experiment and theory?}
+\todo{method: define other method options besides experiment and theory?}
 
 \begin{table}[H]
 \small
 %\begin{center}
 \begin{tabular}{|l|l|l|p{0.8cm}|p{4cm}|}%{l l}% p{0.4\linewidth}}
 \hline
-\textbf{column name} & \textbf{unit} & \textbf{type} & \textbf{man da tory} & 
+\textbf{column name} & \textbf{unit} & \textbf{type} & \textbf{non null} &
 \textbf{description} \\
 \hline
 \hline
 \texttt{title} & & string & & name of the species originating  the line.  \\
 \hline
-\texttt{vacuum\_wavelength} & Angstrom & double & yes &  wavelength in vacuum \\
+\texttt{vacuum\_wavelength} & Angstrom & float & yes &  wavelength in vacuum \\
 \hline
-\texttt{vacuum\_wavelength\_error} & & double & & integrated error for the spectral location \\
+\texttt{vacuum\_wavelength\_error} & & float & & integrated error for the spectral location \\
 \hline
 \texttt{method} && string& & method the wavelength was obtained with:
-\textit{experiment} (observed), or \textit{theory} (calculated from theoretical models) \\ 
+\textit{experiment} (observed), or \textit{theory} (calculated from theoretical models) \\
 \hline
-\texttt{stoichiometric\_formula} & & string & &  the symbol of the chemical element or the 
+\texttt{stoichiometric\_formula} & & string & &  the symbol of the chemical element or the
 molecule formula\\
 \hline
 \texttt{ion\_charge} & & integer & yes & ionisation level\\
@@ -242,19 +256,19 @@ molecule formula\\
 \hline
 \texttt{lower\_state\_configuration} & & string & & lower state configuration\\
 \hline
-\texttt{upper\_energy} & J  & double & & energy of the upper state \\
+\texttt{upper\_energy} & J  & float & & energy of the upper state \\
 \hline
-\texttt{lower\_energy} & J & double & & energy of the lower state\\
+\texttt{lower\_energy} & J & float & & energy of the lower state\\
 \hline
 \texttt{inchi} & & string & yes & chemical species inchi \\
 \hline
 \texttt{inchikey} & & string & yes & chemical species inchikey \\
 \hline
-\texttt{einstein\_a} & & double  & &  Einstein A coefficient\\
+\texttt{einstein\_a} & & float  & &  Einstein A coefficient\\
 \hline
-\texttt{oscillator\_strength} & & double & & oscillator strength of radiative transition \\
+\texttt{oscillator\_strength} & & float & & oscillator strength of radiative transition \\
 \hline
-\texttt{weighted\_oscillator\_strength} & & double  & &  Weighted oscillator strength of 
+\texttt{weighted\_oscillator\_strength} & & float  & &  Weighted oscillator strength of
 radiative transition \\
 \hline
 \texttt{line\_strength} & & string & & Total absorption by a spectra line \\
@@ -268,22 +282,32 @@ radiative transition \\
 %\end{center}
 \end{table}
 
+Implementations MUST use the column names as given and declare the units
+in both TAP\_SCHEMA and in VOTables returned.  They MAY change or improve
+the descriptions.  Column types can be adjusted to local needs; in the
+above table, ``float'' is to be understood as any suitable
+floating-point number, ``integer'' as any integral type, and ``string''
+some sort of character sequence.
+
+The following additional notes apply to individual columns:
+
 \begin{itemize}
-\item \texttt{vacuum\_wavelength} 
-Wavelength value is always in vacuum, and  is stored in the database in
-Angstrom.  An  ADQL user-defined function is provided to convert this
-wavelengthto the desired unit. They will be described in
+\item \texttt{vacuum\_wavelength}
+All wavelengths in LineTAP are given for the vacuum,
+and  they are stored in the database in
+Angstrom.  An  ADQL user-defined function is provided to convert these
+wavelengths to other units. They will be described in
 \ref{sec:Protocol}.
 
-\item \texttt{vacuum\_wavelength\_error} is the integrated error for the wavelength.
-\todo {comment on symmetry/assymmetry of errors} 
+\item \texttt{vacuum\_wavelength\_error} is the integrated error for the wavelength.\todo {comment on symmetry/asymmetry of errors}
 
 \item \texttt{stoichiometric\_formula} is the chemical element symbol
 for atoms. For molecules it is an alphabetical suite of the atomic
 constituents followed by the total number of their occurences (e.g.
-HCOOH => CH2O2 ).
+HCOOH $\to$ CH2O2).\todo{If this is intended to be searchable, we need
+to fix the sequence of the elements.}
 
-\item \texttt{ion\_charge} is the ionization level of the species
+\item \texttt{ion\_charge} is the ionization level of the species.
 
 \item \texttt{inchi} is the The IUPAC International Chemical Identifier
 (InChI), which  provides unique labels for well-defined chemical
@@ -297,10 +321,12 @@ the InChI string. It will be used to uniquely identify species.
 each atomic mass numbers of the elements forming a molecule.
 
 \item \texttt{upper\_state\_configuration} a text string describing the
-quantum state of the state with higher energy (e.g. 
-\item \texttt{lower\_state\_configuration} 
-\item \texttt{upper\_energy} 
-\item \texttt{lower\_energy} 
+quantum state of the state with higher energy (e.g. \todo{Steal fillers
+from here on from VAMDC docs?}
+
+\item \texttt{lower\_state\_configuration}
+\item \texttt{upper\_energy}
+\item \texttt{lower\_energy}
 
 \item \texttt{einstein\_a}
 \item \texttt{oscillator\_strength}
@@ -310,15 +336,18 @@ quantum state of the state with higher energy (e.g.
 \end{itemize}
 
 
-\section{Protocol }
+\section{Protocol}
 \label{sec:Protocol}
-\subsection{ Queries: LineTAP }
+\subsection{Queries: LineTAP}
 
 \subsection{User-defined functions}
 
 \begin{itemize}
 \item ivo\_spectral(value, unit)\\
-Converts energy values in J to values in other units. Example:\\
+Converts energy values in J to values in other units.\todo{Shouldn't we
+go all the way for ivo\_speconf? Cf.
+\href{https://blog.g-vo.org/spectral-units-in-adql.html}{this blog post}}
+Example:\\
 \begin{quote}
 SELECT ivo\_spectral(energy, 'Angstrom') AS lambda \\
  WHERE ivo\_spectral(energy, 'MHz') BETWEEN 88 AND 108
@@ -336,146 +365,236 @@ SELECT ivo\_spectral(energy, 'Angstrom') AS lambda \\
 \section{Mapping from VAMDCXSAMS}
 \label{sect:mapping}
 
-The quantities used in the mapping belong to the following branches of VAMDCXSAMS:\\
-\\
-\textit{XSAMSData.Species.Atoms.Atom}  referred as ATOM,\\
-\textit{XSAMSData.Species.Atoms.AtomicState}  referred as ATOMICSTATE,\\
-\textit{XSAMSData.Species.Molecules.Molecule}, referred as MOLECULE,\\
-\textit{XSAMSData.Processes.Radiative.RadiativeTransition}, referred as RADTRANS.\\
-\textit{XSAMSData.Sources}, referred as RADTRANS.\\
+The quantities used in the mapping belong to the following branches of VAMDCXSAMS:
 
+\begin{itemize}
+\item \xsref{XSAMSData.Species.Atoms.Atom} referred to as \xsref{ATOM},
+\item \xsref{XSAMSData.Species.Atoms.AtomicState}  referred to as
+  \xsref{ATOMICSTATE},
+\item \xsref{XSAMSData.Species.Molecules.Molecule}, referred to as
+\xsref{MOLECULE},
+\item \xsref{XSAMSData.Processes.Radiative.RadiativeTransition},
+referred to as \xsref{RADTRANS},
+\item \xsref{XSAMSData.Sources}, referred to as \xsref{RADTRANS}.
+\end{itemize}
 
 The VAMDC-TAP query language defines a list of keywords, called
-\href{https://standards.vamdc.eu/dictionary/returnables.html}{Returnables},
+Returnables\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html}},
 listing the quantities that can be returned by a service.They correspond
 to an element in the XSAMS data model.  The returnables supported by a
-service are declared by a service manager when he deploys the software
-on its database, and saved in the VAMDC registry. \\
+service are declared by service managers when they deploys the software
+on its database, and they are saved in the VAMDC registry.
 
 Listed below are the mappings for the atomic quantities defined in
-\ref{quantities} (at the moment only atoms, not molecules):
+\ref{quantities} (at the moment only atoms, not molecules):\todo{Explain
+what data model, returnables, and constraints are meant}
 
-\renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\texttt{#1}}
-\begin{description}
+\begin{bigdescription}
+\item [vacuum\_wavelength (in J)]
+  \begin{xsamsbridge}
+  \item[data model] \xsref{RADTRANS.EnergyWavelength}
+  \item[returnables] \xsref{RadTransWavelength},
+    \xsref{RadTransWavelength.Vacuum},
+    \xsref{RadTransWavelengthAirToVac},
+    \xsref{RadTransWavelengthUnit}
+  \item[constraints] if \xsref{RadTransWavelengthVacuum} is not true, use
+    \xsref{RadTransWavelengthAirToVac}.
+  \end{xsamsbridge}
+  
+\item [vacuuml\_wavelength\_error]
+  \begin{xsamsbridge}
+   \item[data model] \xsref{RADTRANS.EnergyWavelength}\todo{Wavelength error? How to get it from VAMDC data?}
+   \item[returnables]
+    \xsref{RadTransWavelength},
+    \xsref{RadTransWavelength.Vacuum},
+    \xsref{RadTransWavelengthAirToVac},
+    \xsref{RadTransWavelengthUnit}
+  \item[constraints]
+    if \xsref{RadTransWavelengthVacuum} is not true, use
+      \xsref{RadTransWavelengthAirToVac}.
+  \end{xsamsbridge}
+  
+\item [method]
+  \begin{xsamsbridge}
+  \item[data model] \xsref{Methods.Method.Category}
+  \item[returnables] \xsref{RadTransWavelengthMethod}
+  \item[constraints]
+    \xsref{Methods.Method.MethodID} must be equal to
+    \xsref{RadTransWavelength.Wavelength@methodRef}.
+  \end{xsamsbridge}
 
-\item [vacuum\_wavelength] (in J)\hfill\\
-    \textit{data model:} RADTRANS.EnergyWavelength\\
-	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, 
-RadTransWavelengthAirToVac, RadTransWavelengthUnit\\
-	\textit{constraints:} RadTransWavelengthVacuum = true; else use 
-RadTransWavelengthAirToVac. \\
-	
-\item [vacuuml\_wavelength\_error]  \hfill\\\todo{Wavelength error? How to get it from VAMDC data?}
+\item [inchi]
+  \begin{xsamsbridge}
+  \item[data model] \xsref{ATOM.Isotope.Ion.InChi} or
+    \xsref{MOLECULE.MolecularChemicalSpecies.InChI}
+  \item[returnables] \xsref{AtomInchi}, \xsref{MoleculeInChi}
+  \item[constraints] \xsref{RadTrans.SpeciesRef} must be equal to
+    \xsref{Atom.SpeciesID or MoleculeSpeciesID}.
+  \end{xsamsbridge}
+  
+\item [inchikey]
+  \begin{xsamsbridge}
+    \item[data model] \xsref{ATOM.Isotope.Ion.InChiKey},
+      \xsref{MOLECULE.MolecularChemicalSpecies.InChIKey}
+    \item[returnables] \xsref{AtomInchiKey},
+      \xsref{MoleculeInChiKey}
+    \item[constraints] \xsref{RadTrans.SpeciesRef} must be equal to
+      either \xsref{Atom.SpeciesID} or \xsref{Molecule.SpeciesID}.
+  \end{xsamsbridge}
 
-    \textit{data model:} RADTRANS.EnergyWavelength\\
-	\textit{returnables needed:} RadTransWavelength, RadTransWavelength.Vacuum, 
-RadTransWavelengthAirToVac, RadTransWavelengthUnit\\
-	\textit{constraints:} RadTransWavelengthVacuum = true; else use 
-RadTransWavelengthAirToVac.\\
-	
-\item [method] \hfill\\
-	\textit{data model:} Methods.Method.Category\\
-	\textit{returnables needed:} RadTransWavelengthMethod\\
-	\textit{constraints:} 
-Methods.Method.MethodID=RadTransWavelength.Wavelength@methodRef\\
+\item [stoichiometric\_formula]
+  \begin{xsamsbridge}
+    \item[data model] \xsref{ATOM.ChemicalElement.ElementSymbol},
+      \xsref{MOLECULE.MolecularChemicalSpecies.StoichiometricFormula}
+    \item[returnables]
+      \xsref{RadTrans.SpeciesRef},
+      \xsref{Atom.SpeciesID},
+      \xsref{Molecule.SpeciesID},
+      \xsref{Atom.Symbol},
+      \xsref{Molecule.MoleculeStoichiometricFormula}
+    \item[constraints]
+      \xsref{RadTrans.SpeciesRef} must be equal to either
+      \xsref{Atom.SpeciesID} or  \xsref{Molecule.SpeciesID}.
+  \end{xsamsbridge}
 
-\item [inchi] \hfill\\
-	\textit{data model:} ATOM.Isotope.Ion.InChi,  
-MOLECULE.MolecularChemicalSpecies.InChI\\
-        \textit{returnables needed:} AtomInchi, MoleculeInChi\\
-	\textit{constraints:} RadTrans.SpeciesRef = Atom.SpeciesID or MoleculeSpeciesID
-	
-\item [inchikey] \hfill\\
-	\textit{data model:} ATOM.Isotope.Ion.InChiKey, 
-MOLECULE.MolecularChemicalSpecies.InChIKey \\
-         \textit{returnables needed:} AtomInchiKey, MoleculeInChiKey\\
-         \textit{constraints:} RadTrans.SpeciesRef = Atom.SpeciesID or  Molecule.SpeciesID
+\item [ion\_charge]
+  \begin{xsamsbridge}
+    \item[data model] \xsref{ATOM.Isotope.Ion.IonCharge} or
+      \xsref{MOLECULE.MolecularChemicalSpecies.IonCharge}
+    \item[returnables]
+      \xsref{RadTransSpeciesRef},
+      \xsref{AtomSpeciesID},
+      \xsref{AtomIonCharge},
+      \xsref{MoleculeSpeciesID},
+      \xsref{MoleculeIonCharge}
+    \item[constraints]
+      \xsref{RadTransSpeciesRef} must be equal to either
+      \xsref{AtomSpeciesID} or \xsref{Molecule.SpeciesID}.
+  \end{xsamsbridge}
 
-\item [stoichiometric\_formula] \hfill\\
-	\textit{data model:} ATOM.ChemicalElement.ElementSymbol,\\ MOLECULE. 
-MolecularChemicalSpecies.StoichiometricFormula\\
-	\textit{returnables needed:} RadTrans.SpeciesRef, Atom.SpeciesID, 
-Molecule.SpeciesID, Atom.Symbol, Molecule.MoleculeStoichiometricFormula\\
-	\textit{constraints:}  RadTrans.SpeciesRef = Atom.SpeciesID or  Molecule.SpeciesID
+\item [mass\_number (atoms)]
+  \begin{xsamsbridge}
+    \item[data model] \xsref{ATOM.Isotope.IsotopParameters.MassNumber}
+    \item[returnables] \xsref{AtomMassNumber}
+    \item[constraints] \xsref{RadTransSpeciesRef} must be equal
+      to \xsref{AtomSpeciesID}
+  \end{xsamsbridge}
 
-\item [ion\_charge]\hfill\\
-	\textit{data model:} ATOM.Isotope.Ion.IonCharge or 
-MOLECULE.MolecularChemicalSpecies.IonCharge \\
-	\textit{returnables needed:} RadTransSpeciesRef, AtomSpeciesID, AtomIonCharge, 
-MoleculeSpeciesID, MoleculeIonCharge \\
-	\textit{constraints:}RadTransSpeciesRef=AtomSpeciesID or  Molecule.SpeciesID
+\item [upper\_state\_configuration]
+  \begin{xsamsbridge}
+    \item[data model] \xsref{ATOMICSTATE.Description},
+      \xsref{MOLECULARSTATE.Description}
+    \item[returnables]
+      \xsref{RadTransUpperStateRef},
+      \xsref{AtomStateID},
+      \xsref{MoleculeStateID},
+      \xsref{AtomStateDescription},
+      \xsref{MoleculeStateDescription}
+    \item[constraints]  \xsref{RadTransUpperStateRef} must be
+      equal to \xsref{AtomStateID}.
+  \end{xsamsbridge}
 
-	\item [mass\_number] (atoms)\hfill\\
-	\textit{data model:} ATOM.Isotope.IsotopParameters.MassNumber \\
-	\textit{returnables needed:} AtomMassNumber\\
-	\textit{constraints:}RadTransSpeciesRef=AtomSpeciesID
+\item [lower\_state\_configuration]
+  \begin{xsamsbridge}
+    \item[data model] \xsref{ATOMICSTATE.Description},
+      \xsref{MOLECULARSTATE.Description}
+    \item[returnables]
+      \xsref{RadTransUpperStateRef},
+      \xsref{AtomStateID},
+      \xsref{MoleculeStateID},
+      \xsref{AtomStateDescription},
+      \xsref{MoleculeStateDescription}
+    \item[constraints]
+      \xsref{RadTransUpperStateRef} must be equal to either
+      \xsref{AtomStateID} or \xsref{MolecularStateID}
+  \end{xsamsbridge}
 
-	\item [upper\_state\_configuration]\hfill\\
-	\textit{data model:} ATOMICSTATE.Description, MOLECULARSTATE.Description\\
-	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, 
-MoleculeStateID,\\ 
-AtomStateDescription, MoleculeStateDescription\\
-	\textit{constraints:}  RadTransUpperStateRef = AtomStateID
+\item [upper\_state\_energy]
+  \begin{xsamsbridge}
+    \item[data model]
+      \xsref{ATOMICSTATE.AtomicNumericalData.StateEnergy},
+      \xsref{MOLECULARSTATE.MolecularStateCharacterisation.StateEnergy}
+    \item[returnables]
+      \xsref{RadTransUpperStateRef},
+      \xsref{AtomStateID},
+      \xsref{MoleculeStateID}
+    \item[constraints]
+       \xsref{RadTransUpperStateRef} must be equal to either
+       \xsref{AtomStateID} or \xsref{MoleculeStateID};
+       The wave number in $\textrm{cm}^{-1}$ has to be converted to
+       Joule.
+  \end{xsamsbridge}
 
-	\item [lower\_state\_configuration]\hfill\\
-	\textit{data model:} ATOMICSTATE.Description, MOLECULARSTATE.Description\\
-	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, 
-MoleculeStateID,\\ 
-AtomStateDescription, MoleculeStateDescription\\
-	\textit{constraints:}  RadTransUpperStateRef = AtomStateID or MolecularStateID
-	
-	\item [upper\_state\_energy]\hfill\\
-	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy, \\ 
-MOLECULARSTATE.MolecularStateCharacterisation.StateEnergy\\
-	\textit{returnables needed:} RadTransUpperStateRef, AtomStateID, 
-MoleculeStateID\\
-	\textit{constraints:} 
- RadTransUpperStateRef = AtomStateID or MoleculeStateID. 
- Original value in $cm^{-1}$ has to be converted to $J$
-	
-	\item [lower\_state\_energy]\hfill\\
-	\textit{data model:} ATOMICSTATE.AtomicNumericalData.StateEnergy, \\ 
-MOLECULARSTATE.MolecularStateCharacterisation.StateEnergy\\
-	\textit{returnables needed:} RadTransLowerStateRef, AtomStateID,  
-MoleculeStateID\\
-	\textit{constraints:}  RadTransLowerStateRef = AtomStateID or MoleculeStateID.
-	Original value in $cm^{-1}$ has to be converted to $J$
+\item [lower\_state\_energy]
+  \begin{xsamsbridge}
+    \item[data model]
+      \xsref{ATOMICSTATE.AtomicNumericalData.StateEnergy},
+      \xsref{MOLECULARSTATE.MolecularStateCharacterisation.StateEnergy}
+    \item[returnables]
+      \xsref{RadTransLowerStateRef},
+      \xsref{AtomStateID},
+      \xsref{MoleculeStateID}
+    \item[constraints]  \xsref{RadTransLowerStateRef} must be equal to
+    either \xsref{AtomStateID} or \xsref{MoleculeStateID};
+    The wave number in $\textrm{cm}^{-1}$ has to be converted to
+    Joule.
+  \end{xsamsbridge}
 
-	\item [einstein\_a]\hfill\\
-	\textit{data model:}  RADTRANS.Probability.TransitionProbabilityA\\
-	\textit{returnables needed:} RadTransProbabilityA\\
-	\textit{constraints:}
+\item [einstein\_a]
+  \begin{xsamsbridge}
+    \item[data model]
+      \xsref{RADTRANS.Probability.TransitionProbabilityA}
+    \item[returnables] \xsref{RadTransProbabilityA}
+    \item[constraints] None
+  \end{xsamsbridge}
 
-	\item [oscillator\_strength]\hfill\\
-	\textit{data model:}  RADTRANS.Probability.TransitionOscillatorStrength\\
-	\textit{returnables needed:} RadTransProbabilityOscillatorStrength\\
-        \textit{constraints:}
+\item [oscillator\_strength]
+  \begin{xsamsbridge}
+    \item[data model]
+      \xsref{RADTRANS.Probability.TransitionOscillatorStrength}
+    \item[returnables]
+      \xsref{RadTransProbabilityOscillatorStrength}
+    \item[constraints] None
+  \end{xsamsbridge}
 
-	\item [weighted\_oscillator\_strength]\hfill\\
-	\textit{data model:}  RADTRANS.Probability.TransitionWeightedOscillatorStrength\\
-	\textit{returnables needed:} RadTransProbabilityWeightedOscillatorStrength\\
- 	   \textit{constraints:}
+\item [weighted\_oscillator\_strength]
+  \begin{xsamsbridge}
+    \item[data model]
+      \xsref{RADTRANS.Probability.TransitionWeightedOscillatorStrength}
+    \item[returnables]
+      \xsref{RadTransProbabilityWeightedOscillatorStrength}
+     \item[constraints] None
+  \end{xsamsbridge}
 
-	\item [line\_reference\_doi]\hfill\\
-	\textit{data model:} SOURCES.Source.DigitalObjectIdentifier\\
-	\textit{returnables needed:} SourceDOI\\
-	\textit{constraints:}
+\item [line\_reference\_doi]
+  \begin{xsamsbridge}
+    \item[data model] \xsref{SOURCES.Source.DigitalObjectIdentifier}
+    \item[returnables] \xsref{SourceDOI}
+    \item[constraints] None
+  \end{xsamsbridge}
 
-	\item [line\_reference\_uri]\hfill\\
-	\textit{data model:} SOURCES.Source.UniformResourceIdentifier\\
-	\textit{returnables needed:} SourceURI\\
-	\textit{constraints:}
+\item [line\_reference\_uri]
+  \begin{xsamsbridge}
+    \item[data model]
+      \xsref{SOURCES.Source.UniformResourceIdentifier}
+    \item[returnables]
+      \xsref{SourceURI}
+    \item[constraints] None
+  \end{xsamsbridge}
 
-	\item [line\_strength]\hfill\\
-	\textit{data model:} RadTrans.Probability.TransitionLineStrength\\
-	\textit{returnables needed:} RadTransProbabilityLineStrength\\
-        \textit{constraints:}
+\item [line\_strength]
+  \begin{xsamsbridge}
+    \item[data model]
+      \xsref{RadTrans.Probability.TransitionLineStrength}
+    \item[returnables]
+      \xsref{RadTransProbabilityLineStrength}
+    \item[constraints]
+  \end{xsamsbridge}
 
-\item [title]\hfill\\
-	a string composed by the values of  \texttt{element\_symbol} and \texttt{ion\_charge}
-
-
-\end{description}
+\item [title]
+  a string composed by the values of  \texttt{element\_symbol} and
+  \texttt{ion\_charge}\todo{Not in XSAMS?}
+\end{bigdescription}
 
 \section{LineTAP and the VO Registry}
 \label{sect:regmatters}
@@ -488,7 +607,7 @@ $$\hbox{\verb|ivo://ivoa.net/std/linetap#table-1.0|}.$$
 
 The tableset is normally contained in a VODataService \xmlel{CatalogService}
 record with a TAP capability, and this capability normally is an auxiliary
-capability as per DDC \citep{2019ivoa.rept.0520D}.  For one-table
+capability as per DDC \citep{2019ivoa.spec.0520D}.  For one-table
 services a full TAPRegExt \citep{2012ivoa.spec.0827D} capability is also
 allowed; other resource types can be used for registration as
 appropriate.
@@ -503,7 +622,7 @@ this document\footnote{\auxiliaryurl{example-record.xml}}.
 The noteworthy points in the record are:
 
 \begin{itemize}
-\item A \xmlel{relationship} element referencing the main TAP service 
+\item A \xmlel{relationship} element referencing the main TAP service
 through which the service is queriable as per DDC:
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
 <relationship>
@@ -514,7 +633,7 @@ through which the service is queriable as per DDC:
 \end{lstlisting}
 
 \item The declaration for the auxiliary capability, including the access
-URL so clients to not need to follow the relationship just declared if
+URL so clients do not need to follow the relationship just declared if
 all they need is the access URL:
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
 <capability standardID="ivo://ivoa.net/std/TAP#aux">
@@ -525,7 +644,7 @@ all they need is the access URL:
 \end{lstlisting}
 
 \item Most importantly, the declaration of the table utype that lets
-clients discover that this particular table contains EPNCore data:
+clients discover that this particular table contains LineTAP data:
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
 <table>
   <name>toss.ivoa_lines</name>
@@ -540,7 +659,8 @@ clients discover that this particular table contains EPNCore data:
 That in the example record, the resource description is identical to the
 description of the schema, which again is identical to the description
 of the table is an artefact of LineTAP registrations being single-table
-and is thus to be expected in most registrations of this type.
+and is thus to be expected in most registrations of this type.  Clients
+are advised to use the resource description for full text searches.
 
 
 \subsection{Discovering LineTAP services}
@@ -551,8 +671,7 @@ resources with TAP capabilities that have a standard key for version 1
 LineTAP in a table utype.
 
 Translated into RegTAP \citep{2019ivoa.spec.1011D}, the following query
-would return TAP access URLs and the table names, using ADQL 2.1 CTEs
-for readability:
+would return TAP access URLs and the table names:
 
 \begin{lstlisting}[language=SQL]
 SELECT DISTINCT table_name, access_url
@@ -567,11 +686,11 @@ WHERE
 
 The \texttt{DISTINCT} in the main query is a rough filter that removes
 entries duplicated because their tables are registred both in the main
-TAP record and in an auxiliary capability.  
+TAP record and in an auxiliary capability.
 
 The regular expression in the utype match is to make sure minor version
 increments do not prevent service discovery; by IVOA versioning rules,
-all lineTAP services of minor version 1 can be operated by all lineTAP
+all LineTAP services of minor version 1 can be operated by all LineTAP
 clients of version 1.  We do not constrain the version of the TAP
 service; clients may want to adapt the TAP discovery pattern to match
 their specific needs.
