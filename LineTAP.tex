@@ -299,7 +299,13 @@ Angstrom.  An  ADQL user-defined function is provided to convert these
 wavelengths to other units. They will be described in
 \ref{sec:Protocol}.
 
-\item \texttt{vacuum\_wavelength\_error} is the integrated error for the wavelength.\todo {comment on symmetry/asymmetry of errors}
+\item \texttt{vacuum\_wavelength\_error} is the integrated error for the 
+\texttt{vacuum\_wavelength}.  This subsumes the complex error model of
+VAMDC and is obviously not intended to replace it for precise analyses.
+Data providers should, where necessary, combine systematic and
+statistical errors.  Where the original errors are asymmetric, this
+quantity should ideally reflect the FWHM of a Gaussian fit of the true
+error profile, or simply employ the larger error as an upper limit.
 
 \item \texttt{stoichiometric\_formula} is the chemical element symbol
 for atoms. For molecules it is an alphabetical suite of the atomic
@@ -342,25 +348,44 @@ from here on from VAMDC docs?}
 
 \subsection{User-defined functions}
 
-\begin{itemize}
-\item ivo\_spectral(value, unit)\\
-Converts energy values in J to values in other units.\todo{Shouldn't we
-go all the way for ivo\_speconf? Cf.
-\href{https://blog.g-vo.org/spectral-units-in-adql.html}{this blog post}}
-Example:\\
-\begin{quote}
-SELECT ivo\_spectral(energy, 'Angstrom') AS lambda \\
- WHERE ivo\_spectral(energy, 'MHz') BETWEEN 88 AND 108
-\end{quote}
+LineTAP services MUST implement the \texttt{ivo\_specconv} user defined
+function as defined by the Catalogue of ADQL User Defined Functions
+\citep{2021ivoa.spec.0310C}\todo{Update to a reference to 1.1 when it is
+actually in}.
 
-\end{itemize}
+With this function, users can query LineTAP databases in their preferred
+units, as in
 
-\todo{ description, examples, translation VAMDC Queries}
+\begin{lstlisting}[language=SQL]
+SELECT 
+  title,
+  ivo_specconv(vacuum_wavelength, 'GHz') as freq,
+WHERE
+  vacuum_wavelength BETWEEN ivo_specconv(200, 'GHz', 'Angstrom') 
+    AND ivo_specconv(300, 'GHz', 'Angstrom')
+\end{lstlisting}
 
+The shorter alternative
+
+\begin{lstlisting}[language=SQL]
+SELECT 
+  title,
+  ivo_specconv(vacuum_wavelength, 'GHz') as freq,
+WHERE
+  ivo_specconv(vacuum_wavelength, 'GHz') BETWEEN 200 AND 300
+\end{lstlisting}
+
+would work as well but will probably put a significantly higher load on
+the server machine.  It is therefore discouraged.
+
+Also note that since unit conversions may be non-linear, it is generally
+wrong to use \texttt{ivo\_specconv} on
+\texttt{vacuum\_wavelength\_error}.
 
 
 \section{LineTAP use case examples}
 
+TBD\todo{ description, examples, translation VAMDC Queries}
 
 \section{Mapping from VAMDCXSAMS}
 \label{sect:mapping}
@@ -392,7 +417,8 @@ what data model, returnables, and constraints are meant}
 \begin{bigdescription}
 \item [vacuum\_wavelength (in J)]
   \begin{xsamsbridge}
-  \item[data model] \xsref{RADTRANS.EnergyWavelength}
+  \item[data model] \xsref{RadTransWavelength}\footnote{%
+    \url{https://standards.vamdc.eu/dictionary/returnables.html#radtranswavelength}}
   \item[returnables] \xsref{RadTransWavelength},
     \xsref{RadTransWavelength.Vacuum},
     \xsref{RadTransWavelengthAirToVac},
