@@ -12,3 +12,4 @@ ivoatexmeta.tex
 *.fls
 *synctex.gz
 .DS_Store
+*.swp

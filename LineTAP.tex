@@ -121,6 +121,7 @@ section~\ref{sect:regmatters}.
 
 
 \section{Use Cases}
+\label{sect:use-cases}
 
 LineTAP really only has a single use case, the discovery of spectral
 lines for identification purposes.  To structure standards development,
@@ -190,16 +191,9 @@ Using a mass spectrometer, researchers find a molecule with the
 sum formula C$_{16}$H$_{10}$  in a comet particle.  They now want to
 figure out whether any line in the spectrum of the coma of the parent
 object corresponds to some molecule with that sum formula.
+Conversely, a researcher may want to find lines of Methane or perhaps
+even Methane with one hydrogen atom being replaced by a deuteron.
 
-A specific challenge in this use case is the characterisation of the
-molecule.  While InChi labels and keys help to some degree, user
-acceptance of them at this point is at least questionable; also,
-searching by sum formula is impossible using InChis\todo{A claim
-made without actually knowing InChi)}.
-
-As a fallback mechanism, and perhaps also as a means of characterising
-servers, users may want to discover all species served by a specific
-server.
 
 \subsection{Credit}
 
@@ -397,9 +391,98 @@ wrong to use \texttt{ivo\_specconv} on
 \texttt{vacuum\_wavelength\_error}.
 
 
-\section{LineTAP use case examples}
+\section{LineTAP Query Examples}
 
-TBD\todo{ description, examples, translation VAMDC Queries}
+\subsection{Use Case Examples}
+
+In this section, we give queries addressing the use cases from
+section~\ref{sect:use-cases}.
+
+\subsubsection{Identifying a Single Line}
+
+To obtain human-readable labels for a feature between 4005 and 4005.5
+Angstrom, run:
+
+% please-run-a-test
+\begin{lstlisting}[language=SQL]
+SELECT title, vacuum_wavelength
+FROM toss.line_tap
+WHERE
+  vacuum_wavelength BETWEEN 4005 AND 4005.5
+\end{lstlisting}
+
+While we suggest it is in general preferable to do unit conversion
+client-side, here is how to express such a query in
+frequency\todo{replace gavo\_specconv with ivo\_specconv when it's time}.
+Note that you will have to swap lower and upper limits when converting
+from energy or frequency to wavelangth.
+
+%please-run-a-test
+\begin{lstlisting}[language=SQL]
+SELECT title, gavo_specconv(vacuum_wavelength, 'THz')
+FROM toss.line_tap
+WHERE
+  vacuum_wavelength BETWEEN 
+    gavo_specconv(6.01, 'THz', 'Angstrom')
+    AND gavo_specconv(6.00, 'THz', 'Angstrom')
+\end{lstlisting}
+
+
+\subsubsection{Getting Properties of Well-Known Lines}
+
+TBD\todo{We don't have any well-known lines in TOSS; perhaps publish
+splatalogue in linetap?}
+
+\subsubsection{Retrieving Spectral Lines for Identification}
+
+When a researcher has reason to believe significant amounts of
+Technetium are in a hot atmosphere, a client might look for lines for
+four and five time ionised Technetium using the InChI\todo{perhaps we
+ought to have a column element especially for atoms?} between 3000 and
+3500 Angstrom like this:
+
+%please-run-a-test
+\begin{lstlisting}[language=SQL]
+SELECT *
+FROM toss.line_tap
+WHERE
+  (inchi='InChI=1S/Tc/q-4'
+    OR inchi='InChI=1S/Tc/q-5')
+  AND vacuum_wavelength BETWEEN 3000 and 3500
+ORDER BY line_strength DESC
+\end{lstlisting}
+
+\subsubsection{Finding Spectral Lines for Specific Species}
+
+Where species are only known by elemental composition, lines can be
+located using SQL patterns.  The example from the use case sould
+translate into
+
+% please-run-a-test-lenient
+\begin{lstlisting}[language=SQL]
+SELECT *
+FROM toss.line_tap
+WHERE
+  inchi LIKE 'InChI=1S/C16H10/%'
+\end{lstlisting}
+
+For a well-defined species, clients should use the InChi key.  For
+normal Methane, that would be:
+
+% please-run-a-test-lenient
+\begin{lstlisting}[language=SQL]
+SELECT *
+FROM toss.line_tap
+WHERE
+  inchikey='VNWKTOKETHGBQD-UHFFFAOYSA-N'
+\end{lstlisting}
+
+-- for singly deuterated Methane, the InChI key would be
+VNWKTOKETHGBQD-MICDWDOJSA-N.
+
+\subsection{Translating VAMDC Queries}
+TBD\todo{Let's see what we can write here}
+
 
 \section{Mapping from VAMDCXSAMS}
 \label{sect:mapping}
