@@ -32,3 +32,6 @@ VECTORFIGURES =
 AUX_FILES = example-record.xml
 
 include ivoatex/Makefile
+
+test:
+	python3 check-queries.py
