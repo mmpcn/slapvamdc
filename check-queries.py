@@ -58,7 +58,7 @@ def main():
 		try:
 			res = svc.run_sync(query)
 			if mode=="strict":
-				assert len(res)>0
+				assert len(res)>0, "No rows returned"
 			# else we're happy that the thing didn't crash
 		except (pyvo.DALQueryError, AssertionError) as ex:
 			print(f"FAILURE ({ex}):\n{query}")
