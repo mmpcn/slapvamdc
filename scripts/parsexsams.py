@@ -4,7 +4,7 @@
 #
 # parses a VAMDC xsams file and prints radiative transition information in csv format
 #
-# version 1.0
+# version 2.0
 # Author: Margarida Castro Neves (mcneves@ari.uni-heidelberg.de)
 #
 #########################################################################################
@@ -15,12 +15,12 @@ prefix=''
 
 # define dictionaries for easier search
 
-elem_dict={}    # speciesID : elementSymbol
-mass_dict={}	# speciesID : massNumber
-state_dict={}   # stateID   : state element
-ion_dict={}     # speciesID : isotope ion
-method_dict={}  # methodID  : method
-source_dict={}  # sourceID  : source
+elem_dict={}     # speciesID : elementSymbol
+mass_dict={}	 # speciesID : massNumber
+state_dict={}    # stateID   : state element
+species_dict={}  # speciesID : isotope ion or molecule
+method_dict={}   # methodID  : method
+source_dict={}   # sourceID  : source
 
 def parseXSAMS(file_name):
 
@@ -30,6 +30,7 @@ def parseXSAMS(file_name):
    global radtrans
    global methods
    global sources
+   global molecules
 
    # Parse XML with ElementTree
    tree = ET.ElementTree(file=file_name)
@@ -41,6 +42,9 @@ def parseXSAMS(file_name):
 
    # get list of atoms
    atoms = root.findall(prefix+'Atom')
+
+   # get list of molecules
+   molecules = root.findall(prefix+'Molecule')
 
    # get list of methods
    methods=root.findall(prefix+'Method')
@@ -57,13 +61,14 @@ def parseXSAMS(file_name):
 
    # Parse and print as csv
 
-   print "WL;WLUnit;WLMethod;Elem;Mass;Charge;upperEnergy;upperConfig;LowerEnergy;lowerConfig; einsteinA; oscStrehgth; weightedOscStrength; lineStrength; doi; uri" 
+   print "title;vacuum_wavelength(unit);vacuum_wavelength_error;method;stoichiometric_formula;mass_number;ion_charge;upper_state_energy;upper_state_configuration;lower_state_energy;lower_state_configuration;einstein_a; oscillator_strehgth; weighted_oscillator_strength; line_strength;inchi;inchikey; line_reference_doi; line_reference_uri" 
    for transition in radtrans:
 	#probEl= transition.find(prefix+'TransitionProbability')
 	species=transition.find(prefix+'SpeciesRef').text
         wavelengths = getWavelengths(transition)
         for wavelength in wavelengths: 
-	    print "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s" % (getWavelengthInfo(wavelength),getElement(species), getMass(species), getCharge(species), getUpperStateInfo(transition), getLowerStateInfo(transition), getProbabilities(transition), getInChI(species), getInChIKey(species), getPublicationInfo(species))
+	   print "%s %s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s" % (getFormula(species),getCharge(species),getWavelengthInfo(wavelength), getFormula(species), getMass(species), getCharge(species), getUpperStateInfo(transition), getLowerStateInfo(transition), getProbabilities(transition), getInChI(species), getInChIKey(species), getPublicationInfo(species))
+
 
 ############################
 # 
@@ -98,6 +103,12 @@ def getMethod(elem):
     return method_dict[id]
 
 #
+def getAccuracy(elem):
+    if elem is None:
+	return ''
+    return elem.find(prefix+'Accuracy').text
+
+#
 def createDicts():
 
    for m in methods:
@@ -110,7 +121,7 @@ def createDicts():
 
    for atom in atoms:
       massNumber=''
-      symbol=getText(atom.find(prefix+'ElementSymbol'))
+      formula=getText(atom.find(prefix+'ElementSymbol'))
       isotopes=atom.find(prefix+'Isotope')
       for isotope in isotopes:
          tag=isotope.tag
@@ -118,33 +129,67 @@ def createDicts():
 	    massNumber = getText(isotope.find(prefix+'MassNumber'))
          else: #Ion
 	 # ions: needed ipncharge, atomic state
-	    ioncharge= getText(isotope.find(prefix+'IonCharge'))
+	    ioncharge = getText(isotope.find(prefix+'IonCharge'))
 	    speciesID=isotope.get('speciesID')
-	    elem_dict[speciesID]=symbol
+	    elem_dict[speciesID]=formula
 	    mass_dict[speciesID]=massNumber
-	    ion_dict[speciesID]=isotope
+	    species_dict[speciesID]=isotope
 	   # print "charge: "+ioncharge.text+ "ID= "+speciesID
 	    states= isotope.findall(prefix+'AtomicState')
 	    for stateEl in states:
 	   #    print stateEl.get('stateID')
 	       state_dict[stateEl.get('stateID')]=stateEl
 
+   for molecule in molecules:
+      massNumber=''
+      formula=getText(molecule.find(prefix+'StoichiometricFormula'))
+      #isotopes=atom.find(prefix+'Isotope')
+      #for isotope in isotopes:
+      #   tag=isotope.tag
+      #if tag.endswith('IsotopeParameters'):
+	#    massNumber = getText(isotope.find(prefix+'MassNumber'))
+         #else: #Ion
+	 # ions: needed ipncharge, atomic state
+      ioncharge= getText(molecule.find(prefix+'IonCharge'))
+      speciesID=molecule.get('speciesID')
+      elem_dict[speciesID]=formula
+      mass_dict[speciesID]=massNumber
+      species_dict[speciesID]=molecule
+   # print "charge: "+ioncharge.text+ "ID= "+speciesID
+      states= molecule.findall(prefix+'MolecularState')
+      for stateEl in states:
+      #  print stateEl.get('stateID')
+        state_dict[stateEl.get('stateID')]=stateEl
 
+
+#
+def is_atom ( species ):
+
+   if species in species_dict:
+	return True
+   else:
+	return False
+   
 #
 def getWavelengths ( transition ):
    wlElem = transition.find(prefix+'EnergyWavelength')
-   return wlElem.findall(prefix+'Wavelength')
+   allWLs = wlElem.findall(prefix+'Wavelength')
+   if allWLs != []:
+	return allWLs
+   else:
+	return wlElem.findall(prefix+'Frequency')
 
 #
 def getWavelengthInfo ( wavelength ):
    ## TO DO check if air/vacuum flag is there, if yes convert vacElem = transition.find(prefix+'RadTransWavelengthVacuum')
    wl = getValue(wavelength)
+   error= getAccuracy(wavelength) ## TODO Error
    unit = getUnit(wavelength)
    method=getMethod(wavelength)
-   return " %s;%s;%s" % (wl, unit, method)
+   return " %s(%s);%s;%s" % (wl, unit, error, method)
 
 #
-def getElement(species):
+def getFormula(species):
    return elem_dict[species]
 
 #
@@ -153,15 +198,16 @@ def getMass(species):
 
 #
 def getCharge(species):
-   return getText(ion_dict[species].find(prefix+'IonCharge'))
+   # if atom or molecule!!!!!!!!!! TO DO
+   return getText(species_dict[species].find(prefix+'IonCharge'))
 
 #
 def getInChI(species):
-   return getText(ion_dict[species].find(prefix+'InChI'))
+   return getText(species_dict[species].find(prefix+'InChI'))
 
 #
 def getInChIKey(species):
-   return getText(ion_dict[species].find(prefix+'InChIKey'))
+   return getText(species_dict[species].find(prefix+'InChIKey'))
 
 #
 def getUpperStateInfo(transition):
@@ -179,7 +225,7 @@ def getStateInfo(stateref):
     state = state_dict[stateref]
     #print state
     energy= getValue(state.find(prefix+'StateEnergy'))
-    config = getText(state.find(prefix+'ConfigurationLabel'))
+    config = getText(state.find(prefix+'Description'))
     # return also energy unit ?
     stateinfo="%s;%s" % (energy,config)
     return stateinfo 
@@ -197,7 +243,7 @@ def getProbabilities(transition):
 def getPublicationInfo(speciesID):
     doi=''
     uri=''
-    sourceRef = getText(ion_dict[speciesID].find(prefix+'SourceRef'))
+    sourceRef = getText(species_dict[speciesID].find(prefix+'SourceRef'))
     if sourceRef in source_dict:   # not all species have a source
         doi=getText(source_dict[sourceRef].find(prefix+'DigitalObjectIdentifier'))
         uri=getText(source_dict[sourceRef].find(prefix+'UnifiedResourceIdentifier'))
