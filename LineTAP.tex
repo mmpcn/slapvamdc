@@ -238,7 +238,7 @@ NULLs are allowed within them.
 \texttt{vacuum\_wavelength\_error} & & float & & integrated error for the spectral location \\
 \hline
 \texttt{method} && string& & method the wavelength was obtained with:
-\textit{experiment},  \textit{theory}, or \textit{ritz} \\
+\textit{experiment},  \textit{theory} \\ %, or \textit{ritz} \\
 \hline
 \texttt{stoichiometric\_formula} & & string & &  the symbol of the chemical element or the
 molecule formula\\
@@ -275,6 +275,7 @@ radiative transition \\
 \end{tabular}
 
 %\end{center}
+
 \end{table}
 
 Implementations MUST use the column names as given and declare the units
@@ -292,7 +293,7 @@ All wavelengths in LineTAP are given for the vacuum,
 and  they are stored in the database in
 Angstrom.  An  ADQL user-defined function is provided to convert these
 wavelengths to other units. They will be described in
-\ref{sec:Protocol}.\todo{explain about convertion function?}
+\ref{sec:Protocol}.\todo{explain about conversion function?}
 
 \item \texttt{vacuum\_wavelength\_error} is the integrated error for the 
 \texttt{vacuum\_wavelength}.  This subsumes the complex error model of
@@ -303,8 +304,7 @@ quantity should ideally reflect the FWHM of a Gaussian fit of the true
 error profile, or simply employ the larger error as an upper limit.
 
 \item \texttt{method} describes which method was used to obtain the
-wavelength value. Possible methods are \textit{experiment},  \textit{theory}, 
-or \textit{ritz}.
+wavelength value. Possible methods are \textit{experiment} or \textit{theory}.
 
 \item \texttt{stoichiometric\_formula} is the chemical element symbol
 for atoms. For molecules it is an alphabetical suite of the atomic
@@ -530,11 +530,11 @@ Schema\footnote{\url{https://vamdc.org/documents/vamdc-xsams-doc-1.0/}\label{fn:
 \footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/sources.html}\label{fn:source}}
 \end{itemize}
 
-The VAMDC-TAP query language defines a list of keywords, called
-Returnables\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html}},
-listing the quantities that can be returned by a service.They correspond
+The VAMDC-TAP query language defines a list of keywords, the
+\textit{returnables}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html}},
+listing the quantities that can be returned by a service. They correspond
 to an element in the XSAMS data model.  The returnables supported by a
-service are declared by service managers when they deploys the software
+service are declared by service managers when they deploy the software
 on its database, and they are saved in the VAMDC registry.
 
 The \textbf{data model} item refers to the corresponding element in the XSAMS Schema
@@ -546,7 +546,7 @@ Listed below are the mappings for the LineTAP quantities defined in section
 \ref{sect:quantities}:% (at the moment only atoms, not molecules):
 
 \begin{bigdescription}
-\item [vacuum\_wavelength (in J)]\todo{ in J? According to VAMDC docs, RadTransWavelength returns values in Angstrom. So it needs be converted twice: to J, and from J to the users preferred unit}
+\item [vacuum\_wavelength]
   \begin{xsamsbridge}
   \item[data model] \xsref{RadiativeTransition.EnergyWavelength}\footref{fn:radtrans}
   \item[returnables] \xsref{RadTransWavelength}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#radtranswavelength}},
@@ -648,8 +648,8 @@ Listed below are the mappings for the LineTAP quantities defined in section
     \item[data model] \xsref{Atom.Isotope.Ion.AtomicState.Description}\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesAtoms.html\#atomicstate}\label{fn:atomicstate}},
           \xsref{Molecule.MolecularState.Description}\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesMolecules.html\#molecularstate}\label{fn:molecularstate}},
     \item[returnables]
-      \xsref{AtomStateDescription}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atomstatedescription}},
-      \xsref{MoleculeStateDescription}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#moleculestatedescription}}
+      \xsref{AtomStateDescription}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atomstatedescription}\label{fn:adescr}},
+      \xsref{MoleculeStateDescription}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#moleculestatedescription}\label{fn:adescr}}
       \xsref{RadTransUpperStateRef},
       \xsref{AtomStateID},
       \xsref{MoleculeStateID},
@@ -678,33 +678,31 @@ Listed below are the mappings for the LineTAP quantities defined in section
       \xsref{Atom.Isotope.Ion.AtomicState.AtomicNumericalData.StateEnergy}\footref{fn:atomicstate}  or
       \xsref{Molecule.MolecularState.MolecularStateCharacterisation.StateEnergy}\footref{fn:molecularstate}     
      \item[returnables]
-     \xsref{AtomicStateEnergy},\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atomstateenergy}}
-      \xsref{MolecularStateEnergy},\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atomstateenergy}}
+     \xsref{AtomicStateEnergy},\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atomstateenergy}\label{fn:astateenergy}}
+      \xsref{MolecularStateEnergy},\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#molecularstateenergy}\label{fn:mstateenergy}}
+
       \xsref{RadTransUpperStateRef},
       \xsref{AtomStateID},
       \xsref{MoleculeStateID}
     \item[constraints]
        \xsref{RadTransUpperStateRef} must be equal to either
        \xsref{AtomStateID} or \xsref{MoleculeStateID};
-       The wave number in $\textrm{cm}^{-1}$ has to be converted to
-       Joule.
+       The wave number in $\textrm{cm}^{-1}$ has to be converted to  Joule.
   \end{xsamsbridge}
 
 \item [lower\_state\_energy]
   \begin{xsamsbridge}
     \item[data model]
-      \xsref{Atom.Isotope.Ion.AtomicState..AtomicNumericalData.StateEnergy} \footref{fn:atomicstate} or
-      \xsref{Molecule.MolecularState..MolecularStateCharacterisation.StateEnergy}\footref{fn:molecularstate}
+      \xsref{Atom.Isotope.Ion.AtomicState.AtomicNumericalData.StateEnergy} \footref{fn:atomicstate} or
+      \xsref{Molecule.MolecularState.MolecularStateCharacterisation.StateEnergy}\footref{fn:molecularstate}
     \item[returnables]   
-      \xsref{AtomicStateEnergy},\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atomstateenergy}}
-      \xsref{MolecularStateEnergy},\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atomstateenergy}}  
-      \xsref{RadTransLowerStateRef},
+      \xsref{AtomicStateEnergy},\footref{fn:astateenergy}  
+      \xsref{MolecularStateEnergy},\footref{fn:mstateenergy}\xsref{RadTransLowerStateRef},
       \xsref{AtomStateID},
       \xsref{MoleculeStateID}
     \item[constraints]  \xsref{RadTransLowerStateRef} must be equal to
     either \xsref{AtomStateID} or \xsref{MoleculeStateID};
-    The wave number in $\textrm{cm}^{-1}$ has to be converted to
-    Joule.
+    The wave number in $\textrm{cm}^{-1}$ has to be converted to Joule.
   \end{xsamsbridge}
 
 \item [einstein\_a]
