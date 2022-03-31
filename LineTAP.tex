@@ -555,7 +555,7 @@ Listed below are the mappings for the LineTAP quantities defined in section
     \xsref{RadTransWavelengthAirToVac},
     \xsref{RadTransWavelengthUnit}
   \item[constraints] if \xsref{RadTransWavelengthVacuum} is not true, use
-    \xsref{RadTransWavelengthAirToVac}.
+    \xsref{RadTransWavelengthAirToVac} to convert.
   \end{xsamsbridge}
   
 \item [vacuuml\_wavelength\_error]
@@ -581,6 +581,7 @@ Listed below are the mappings for the LineTAP quantities defined in section
   \item[constraints]
     \xsref{Methods.Method.MethodID} must be equal to
     \xsref{RadTransWavelength.EnergyWavelength.Wavelength.methodRef}.
+    \xsref{Values should be \texttt{Experiment} or \texttt{Theory}.  If different they must be mapped to one of these values.}
   \end{xsamsbridge}
 
 \item [inchi]
@@ -688,6 +689,7 @@ Listed below are the mappings for the LineTAP quantities defined in section
        \xsref{RadTransUpperStateRef} must be equal to either
        \xsref{AtomStateID} or \xsref{MoleculeStateID};
        The wave number in $\textrm{cm}^{-1}$ has to be converted to  Joule.
+       Some states have a reference to a GroundStateEnergy.\todo{substract this energy from state energy?}
   \end{xsamsbridge}
 
 \item [lower\_state\_energy]
@@ -703,6 +705,7 @@ Listed below are the mappings for the LineTAP quantities defined in section
     \item[constraints]  \xsref{RadTransLowerStateRef} must be equal to
     either \xsref{AtomStateID} or \xsref{MoleculeStateID};
     The wave number in $\textrm{cm}^{-1}$ has to be converted to Joule.
+    Some states have a reference to a GroundStateEnergy\todo{substract this energy from state energy?}.
   \end{xsamsbridge}
 
 \item [einstein\_a]
@@ -726,7 +729,7 @@ Listed below are the mappings for the LineTAP quantities defined in section
 \item [weighted\_oscillator\_strength]
   \begin{xsamsbridge}
     \item[data model]
-      \xsref{RadiativeTransition.Probability.TransitionWeightedOscillatorStrength}    \footref{fn:radtrans}
+      \xsref{RadiativeTransition.Probability.TransitionWeightedOscillatorStrength}  \footref{fn:radtrans}
     \item[returnables]
       \xsref{RadTransProbabilityWeightedOscillatorStrength}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#radtransprobabilityweightedoscillatorstrength}}
     \item[constraints] None
@@ -758,9 +761,8 @@ Listed below are the mappings for the LineTAP quantities defined in section
   \end{xsamsbridge}
 
 \item [title]
-      a human readable string composed by the values of \texttt{stoichiometric\_formula} and
-     \texttt{ion\_charge}. This quantity is not part of XSAMS (but part of SSLDM).\todo{Done. Not in XSAMS?What about Molecules?}
-          
+      a human readable string for information. Can be composed by the values of \texttt{stoichiometric\_formula} and
+     \texttt{ion\_charge}, and\/or other information that might be useful. This quantity is not part of XSAMS (but part of SSLDM).          
 \end{bigdescription}
 
 \section{LineTAP and the VO Registry}
