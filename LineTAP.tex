@@ -1,14 +1,15 @@
 \documentclass[11pt,a4paper]{ivoa}
 \input tthdefs
-\usepackage{float}
 \usepackage{todonotes}
-%\usepackage{hyperref}
 
 \newcommand{\footref}[1]{\textsuperscript{\ref{#1}}}
 
 \lstloadlanguages{SQL,XML}
 \lstset{flexiblecolumns=true,numberstyle=\small,showstringspaces=False,
   identifierstyle=\texttt}
+
+\definecolor{lightgray}{rgb}{0.8,0.8,0.8}
+\def\rowsep{\noalign{\vspace{2pt}}}
 
 % since we don't do a lot of UCDs here and XSAMS references share a lot
 % of the typesetting issues of UCDs, we'll re-use the ucd macro for now
@@ -216,74 +217,75 @@ high-precision atmosphere models.
 \end{itemize}
 
 
-\section{Spectral Line Data}\label{sect:quantities}
+\begin{table}[hpt]
+\hskip -0.05\linewidth
+\begin{tabular}{p{0.43\linewidth}cp{0.5\linewidth}}
+\sptablerule
+\textbf{Name [Unit]} \ucd{UCD}&\textbf{Type}&\textbf{Description}\\
+\sptablerule
+% GENERATED: python3 make-columns-table.py
+\texttt{title} \hfil\break\ucd{meta.id} & \textbf{text} & \raggedright Human-readable line designation.\tabularnewline\rowsep
+\texttt{vacuum\_wavelength} [Å] \hfil\break\ucd{em.wl} & \textbf{float} & \raggedright Vacuum wavelength of the transition\tabularnewline
+\rowsep vacuum\_wavelength\_error [Å] \hfil\break\ucd{stat.error;em.wl} & float & \raggedright Total error in vacuum\_wavelength\tabularnewline
+\rowsep
+\texttt{method} \hfil\break\ucd{meta.code.class} & text & \raggedright Method the wavelength was obtained with (observed/theory/ritz)\tabularnewline
+\rowsep
+\texttt{ion\_charge} \hfil\break\ucd{phys.electCharge} & integer & \raggedright Total charge (ionisation level) of the emitting particle.\tabularnewline
+\rowsep
+\texttt{mass\_number} \hfil\break\ucd{phys.atmol.weight} & integer & \raggedright Number of nucleons in the atom or molecule\tabularnewline
+\rowsep
+\texttt{upper\_energy} [J] \hfil\break\ucd{phys.energy;phys.atmol.initial} & float & \raggedright Energy of the upper state\tabularnewline
+\rowsep
+\texttt{lower\_energy} [J] \hfil\break\ucd{phys.energy;phys.atmol.final} & float & \raggedright Energy of the lower state\tabularnewline
+\rowsep
+\texttt{inchi} \hfil\break\ucd{meta.id;phys.atmol;meta.main} & \textbf{text} & \raggedright International Chemical Identifier InChI.\tabularnewline
+\rowsep
+\texttt{inchikey} \hfil\break\ucd{meta.id;phys.atmol} & \textbf{text} & \raggedright The InChi key (hash) generated from inchi.\tabularnewline
+\rowsep
+\texttt{einstein\_a} \hfil\break\ucd{phys.atmol.wOscStrength} & float & \raggedright Einstein A coefficient of the radiative transition.\tabularnewline
+\rowsep
+\texttt{oscillator\_strength} \hfil\break\ucd{phys.atmol.oscStrength} & float & \raggedright Oscillator strength of the radiative transition.\tabularnewline
+\rowsep
+\texttt{weighted\_oscillator\_strength} \hfil\break\ucd{phys.atmol.wOscStrength} & float & \raggedright Weighted oscillator strength of the radiative transition\tabularnewline
+\rowsep
+\texttt{line\_strength} \hfil\break\ucd{spect.line.strength} & float & \raggedright Total absorption by a spectra line\tabularnewline
+\rowsep
+\texttt{xsams\_uri} \hfil\break\ucd{meta.ref} & text & \raggedright A URI for a full XSAMS description of this line.\tabularnewline
+\rowsep
+\texttt{line\_reference} \hfil\break\ucd{meta.ref} & text & \raggedright Reference to the source of the line data; this could be a bibcode, a DOI, or a plain URI.\tabularnewline
 
-The following table shows the database columns that make up the LineTAP
-relation model, together with their units and data types and whether
-NULLs are allowed within them.
-
-\begin{table}[H]
-\small
-%\begin{center}
-\begin{tabular}{|l|l|l|p{0.8cm}|p{4cm}|}%{l l}% p{0.4\linewidth}}
-\hline
-\textbf{column name} & \textbf{unit} & \textbf{type} & \textbf{non null} &
-\textbf{description} \\
-\hline
-\hline
-\texttt{title} & & string & & name of the species originating  the line.  \\
-\hline
-\texttt{vacuum\_wavelength} & Angstrom & float & yes &  wavelength in vacuum \\
-\hline
-\texttt{vacuum\_wavelength\_error} & & float & & integrated error for the spectral location \\
-\hline
-\texttt{method} && string& & method the wavelength was obtained with:
-\textit{experiment},  \textit{theory} \\ %, or \textit{ritz} \\
-\hline
-\texttt{stoichiometric\_formula} & & string & &  the symbol of the chemical element or the
-molecule formula\\
-\hline
-\texttt{ion\_charge} & & integer & yes & ionisation level\\
-\hline
-\texttt{mass\_number} & & integer &  & atomic or molecular mass number\\
-\hline
-\texttt{upper\_state\_configuration} & & string & & upper state configuration\\
-\hline
-\texttt{lower\_state\_configuration} & & string & & lower state configuration\\
-\hline
-\texttt{upper\_energy} & J  & float & & energy of the upper state \\
-\hline
-\texttt{lower\_energy} & J & float & & energy of the lower state\\
-\hline
-\texttt{inchi} & & string & yes & chemical species inchi \\
-\hline
-\texttt{inchikey} & & string & yes & chemical species inchikey \\
-\hline
-\texttt{einstein\_a} & & float  & &  Einstein A coefficient\\
-\hline
-\texttt{oscillator\_strength} & & float & & oscillator strength of radiative transition \\
-\hline
-\texttt{weighted\_oscillator\_strength} & & float  & &  Weighted oscillator strength of
-radiative transition \\
-\hline
-\texttt{line\_strength} & & string & & Total absorption by a spectra line \\
-\hline
-\texttt{line\_reference\_doi} & & string & & Digital Object Identifier of bibliography source \\
-\hline
-\texttt{line\_reference\_uri} & & string & & Web link to the publication\\
-\hline
+% /GENERATED
+\sptablerule
 \end{tabular}
-
-%\end{center}
-
+\caption{The columns that make up the LineTAP data model.  Column names
+and units are mandatory, columns with types in \textbf{bold face} must
+not be NULL.}
+\label{tab:ltcols}
 \end{table}
 
-Implementations MUST use the column names as given and declare the units
-in both TAP\_SCHEMA and in VOTables returned.  They MAY change or improve
-the descriptions.  Column types can be adjusted to local needs; in the
+
+\section{Spectral Line Data}\label{sect:quantities}
+
+Table~\ref{tab:ltcols} gives the columns that make up the LineTAP
+relational model.  Implementations MUST have all columns given in this
+table, MUST exactly declare the units as given there, and MUST NOT have
+NULL values in columns with types printed in bold face in the table.
+Implementations are free to adapt the UCDs and descriptions given in the
+table, but they SHOULD give UCDs and descriptions for all columns.
+
+Column types can be adjusted to local needs; in the
 above table, ``float'' is to be understood as any suitable
 floating-point number, ``integer'' as any integral type, and ``string''
 some sort of character sequence.
+
+Implementors are free to add additional, custom columns.
+
+Implementors wishing to communicate the quantum numbers of the two
+states participating in the transition SHOULD use the column names
+\textit{lower\_state\_configuration} and 
+\textit{upper\_state\_configuration}.  This specification does not
+constrain the content of these columns, and hence these cannot be
+queried or interpreted interoperably.
 
 The following additional notes apply to individual columns:
 
@@ -306,30 +308,20 @@ error profile, or simply employ the larger error as an upper limit.
 \item \texttt{method} describes which method was used to obtain the
 wavelength value. Possible methods are \textit{experiment} or \textit{theory}.
 
-\item \texttt{stoichiometric\_formula} is the chemical element symbol
-for atoms. For molecules it is an alphabetical suite of the atomic
-constituents followed by the total number of their occurrences (e.g.
-HCOOH $\to$ CH2O2).\todo{If this is intended to be searchable, we need
-to fix the sequence of the elements.}
-
 \item \texttt{ion\_charge} is the ionization level of the species.
 
 \item \texttt{inchi} is the The IUPAC International Chemical Identifier
 (InChI), which  provides unique labels for well-defined chemical
 substances (\cite{INCHI}). It is meant to be human readable, but
-depending of the molecule it can be very long.
+depending of the molecule it can be very long.  Here, the main layer is
+mandatory, the charge, stereochemical, and isotopic layers are optional.
+Only standard InChIs may be used in LineTAP.
 
 \item \texttt{inchiKey} is a character signature based on a hash code of
 the InChI string. It will be used to uniquely identify species.
 
 \item \texttt{mass\_number} The mass number of an atom or the sum of
 each atomic mass numbers of the elements forming a molecule.
-
-\item \texttt{upper\_state\_configuration} is a text string describing the
-quantum state of the state with higher energy (e.g. $3d^{6}4s^{2}$ )
-
-\item \texttt{lower\_state\_configuration} is a text string describing the
-quantum state of the state with lower energy
 
 \item \texttt{upper\_energy} The energy  in J of the quantum state
 with higher energy
@@ -338,14 +330,20 @@ with lower energy
 
 \item \texttt{einstein\_a} Einstein coefficient, or transition probability.
 
-\item \texttt{oscillator\_strength} Oscillator strength (dimensionless). Whether it is absorption or emission, is determined from the initial and final states of the transition.
+\item \texttt{oscillator\_strength} Oscillator strength (dimensionless).
+Whether it is absorption or emission, is determined from the initial and
+final states of the transition.\todo{Delete?}
 
-\item \texttt{weighted\_oscillator\_strength} Product of the oscillator strength and statistical weight of the initial state.
+\item \texttt{weighted\_oscillator\_strength} Product of the oscillator strength and statistical weight of the initial state.\todo{Delete?}
 
-\item \texttt{line\_strengh} A symmetric quantity with respect to initial and final states of the transition.
+\item \texttt{line\_strengh} A symmetric quantity with respect to initial and final states of the transition.\todo{Delete?}
 
-\item \texttt{title} This is a human readable string representing the element or molecule producing the line. It consists 
-of the element symbol or molecule formula (stoichiometric formula)   and the ion charge (e.g. Fe 2)
+\item \texttt{title} This is a human readable string representing the
+element or molecule producing the line.  Implementors are free to choose
+titles as they see it, but they should keep in mind that these titles
+should work in cramped places (i.e., they should not exceed 20
+characters or so) and that they should speak to astronomers.  ``21 cm
+HI'' or ``[NII]6583'' would be good examples.
 
 \end{itemize}
 
@@ -650,7 +648,7 @@ Listed below are the mappings for the LineTAP quantities defined in section
           \xsref{Molecule.MolecularState.Description}\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesMolecules.html\#molecularstate}\label{fn:molecularstate}},
     \item[returnables]
       \xsref{AtomStateDescription}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atomstatedescription}\label{fn:adescr}},
-      \xsref{MoleculeStateDescription}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#moleculestatedescription}\label{fn:adescr}}
+      \xsref{MoleculeStateDescription}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#moleculestatedescription}\label{fn:mdescr}}
       \xsref{RadTransUpperStateRef},
       \xsref{AtomStateID},
       \xsref{MoleculeStateID},
