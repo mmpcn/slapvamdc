@@ -31,7 +31,12 @@ VECTORFIGURES =
 # Additional files to distribute (e.g., CSS, schema files, examples...)
 AUX_FILES = example-record.xml
 
-include ivoatex/Makefile
+-include ivoatex/Makefile
+
+ivoatex/Makefile:
+	@echo "*** ivoatex submodule not found.  Initialising submodules."
+	@echo
+	git submodule update --init
 
 test:
 	python3 check-queries.py
