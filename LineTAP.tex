@@ -846,7 +846,7 @@ FROM rr.res_table
   NATURAL JOIN rr.capability
   NATURAL JOIN rr.interface
 WHERE
-  table_utype='ivo://ivoa.net/std/linetap#table-1.%'
+  table_utype LIKE 'ivo://ivoa.net/std/linetap#table-1.%'
   AND standard_id LIKE 'ivo://ivoa.net/std/tap%'
   AND intf_role='std'
 \end{lstlisting}
