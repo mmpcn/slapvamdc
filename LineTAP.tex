@@ -295,7 +295,7 @@ All wavelengths in LineTAP are given for the vacuum,
 and  they are stored in the database in
 Angstrom.  An  ADQL user-defined function is provided to convert these
 wavelengths to other units. They will be described in
-\ref{sec:Protocol}.\todo{explain about conversion function?}
+sect.~\ref{sect:udfs}.
 
 \item \texttt{vacuum\_wavelength\_error} is the integrated error for the 
 \texttt{vacuum\_wavelength}.  This subsumes the complex error model of
@@ -349,10 +349,11 @@ HI'' or ``[NII]6583'' would be good examples.
 
 
 \section{Protocol}
-\label{sec:Protocol}
+\label{sect:protocol}
 \subsection{Queries: LineTAP}
 
 \subsection{User-defined functions}
+\label{sect:udfs}
 
 LineTAP services MUST implement the \texttt{ivo\_specconv} user defined
 function as defined by the Catalogue of ADQL User Defined Functions
@@ -365,7 +366,7 @@ units, as in
 \begin{lstlisting}[language=SQL]
 SELECT 
   title,
-  ivo_specconv(vacuum_wavelength, 'GHz') as freq,
+  ivo_specconv(vacuum_wavelength, 'GHz') as freq
 WHERE
   vacuum_wavelength BETWEEN ivo_specconv(200, 'GHz', 'Angstrom') 
     AND ivo_specconv(300, 'GHz', 'Angstrom')
@@ -470,22 +471,27 @@ WHERE
   inchikey='XLYOFNOQVPJJNP-NJFSPNSNSA-N'
 \end{lstlisting}
 
--- for water with one Hydrogen substituted with Deuterium, the InChI key
+\noindent -- for water with one Hydrogen substituted 
+with Deuterium, the InChI key
 would be XLYOFNOQVPJJNP-DYCDLGHINA-N.
 
-\subsubsection{Cutting off Weak Lines}
+\subsubsection{Selecting Candidate Lines}
 
 To only retrieve the 10 lines with the highest Einstein A for a given
-species (in this case, CN), one would write
+species (in this case, CN) and having an upper level about
+$1.5\,\textrm{meV}$ above the ground state, one would write
 
 % please-run-a-test
 \begin{lstlisting}[language=SQL]
 SELECT TOP 10
   title, vacuum_wavelength, einstein_a, line_reference,
-  inchi
+  gavo_specconv(upper_energy, 'J', 'eV') as ue, inchi
 FROM casa_lines.line_tap
 WHERE
   inchikey='JEVCWSUVFOYBFI-UHFFFAOYSA-N'
+  and upper_energy between
+    gavo_specconv(1, 'meV', 'J')
+    AND gavo_specconv(2, 'meV', 'J')
 ORDER BY einstein_a DESC
 \end{lstlisting}
 
