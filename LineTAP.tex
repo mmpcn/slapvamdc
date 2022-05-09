@@ -224,9 +224,11 @@ high-precision atmosphere models.
 \textbf{Name [Unit]} \ucd{UCD}&\textbf{Type}&\textbf{Description}\\
 \sptablerule
 % GENERATED: python3 make-columns-table.py
-\texttt{title} \hfil\break\ucd{meta.id} & \textbf{text} & \raggedright Human-readable line designation.\tabularnewline\rowsep
+\texttt{title} \hfil\break\ucd{meta.id} & \textbf{text} & \raggedright Human-readable line designation.\tabularnewline
+\rowsep
 \texttt{vacuum\_wavelength} [Å] \hfil\break\ucd{em.wl} & \textbf{float} & \raggedright Vacuum wavelength of the transition\tabularnewline
-\rowsep vacuum\_wavelength\_error [Å] \hfil\break\ucd{stat.error;em.wl} & float & \raggedright Total error in vacuum\_wavelength\tabularnewline
+\rowsep
+\texttt{vacuum\_wavelength\_error} [Å] \hfil\break\ucd{stat.error;em.wl} & float & \raggedright Total error in vacuum\_wavelength\tabularnewline
 \rowsep
 \texttt{method} \hfil\break\ucd{meta.code.class} & text & \raggedright Method the wavelength was obtained with (observed/theory/ritz)\tabularnewline
 \rowsep
@@ -243,12 +245,6 @@ high-precision atmosphere models.
 \texttt{inchikey} \hfil\break\ucd{meta.id;phys.atmol} & \textbf{text} & \raggedright The InChi key (hash) generated from inchi.\tabularnewline
 \rowsep
 \texttt{einstein\_a} \hfil\break\ucd{phys.atmol.wOscStrength} & float & \raggedright Einstein A coefficient of the radiative transition.\tabularnewline
-\rowsep
-\texttt{oscillator\_strength} \hfil\break\ucd{phys.atmol.oscStrength} & float & \raggedright Oscillator strength of the radiative transition.\tabularnewline
-\rowsep
-\texttt{weighted\_oscillator\_strength} \hfil\break\ucd{phys.atmol.wOscStrength} & float & \raggedright Weighted oscillator strength of the radiative transition\tabularnewline
-\rowsep
-\texttt{line\_strength} \hfil\break\ucd{spect.line.strength} & float & \raggedright Total absorption by a spectra line\tabularnewline
 \rowsep
 \texttt{xsams\_uri} \hfil\break\ucd{meta.ref} & text & \raggedright A URI for a full XSAMS description of this line.\tabularnewline
 \rowsep

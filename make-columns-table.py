@@ -50,7 +50,7 @@ def main():
 			select column_name, description, unit, ucd, datatype, arraysize
 			from tap_schema.columns
 			where 
-  			table_name='toss.line_tap'
+  			table_name='casa_lines.line_tap'
   			and std=1
 			order by column_index"""):
 
