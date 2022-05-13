@@ -1,6 +1,7 @@
 \documentclass[11pt,a4paper]{ivoa}
 \input tthdefs
 \usepackage{todonotes}
+\usepackage{textcomp}
 
 \newcommand{\footref}[1]{\textsuperscript{\ref{#1}}}
 
@@ -326,13 +327,13 @@ with lower energy
 
 \item \texttt{einstein\_a} Einstein coefficient, or transition probability.
 
-\item \texttt{oscillator\_strength} Oscillator strength (dimensionless).
-Whether it is absorption or emission, is determined from the initial and
-final states of the transition.\todo{Delete?}
+%\item \texttt{oscillator\_strength} Oscillator strength (dimensionless).
+%Whether it is absorption or emission, is determined from the initial and
+%final states of the transition.\todo{Delete?}
 
-\item \texttt{weighted\_oscillator\_strength} Product of the oscillator strength and statistical weight of the initial state.\todo{Delete?}
+%\item \texttt{weighted\_oscillator\_strength} Product of the oscillator strength and statistical weight of the initial state.\todo{Delete?}
 
-\item \texttt{line\_strengh} A symmetric quantity with respect to initial and final states of the transition.\todo{Delete?}
+%\item \texttt{line\_strengh} A symmetric quantity with respect to initial and final states of the transition.\todo{Delete?}
 
 \item \texttt{title} This is a human readable string representing the
 element or molecule producing the line.  Implementors are free to choose
@@ -410,7 +411,7 @@ While we suggest it is in general preferable to do unit conversion
 client-side, here is how to express such a query in
 frequency\todo{replace gavo\_specconv with ivo\_specconv when it's time}.
 Note that you will have to swap lower and upper limits when converting
-from energy or frequency to wavelangth.
+from energy or frequency to wavelength.
 
 %please-run-a-test
 \begin{lstlisting}[language=SQL]
@@ -520,8 +521,6 @@ Schema\footnote{\url{https://vamdc.org/documents/vamdc-xsams-doc-1.0/}\label{fn:
 \begin{itemize}
 \item \xsref{XSAMSData.Species.Atoms.Atom}
 \footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesAtoms.html\#atom}\label{fn:atom}},
-%\item \xsref{XSAMSData.Species.Atoms.Atom.Isotope.Ion.AtomicState}
-%\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesAtoms.html\#atomicstate}\label{fn:atomicstate}},
 \item \xsref{XSAMSData.Species.Molecules.Molecule}
 \footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesMolecules.html\#molecule}\label{fn:molecule}},
 \item \xsref{XSAMSData.Processes.Radiative.RadiativeTransition}
@@ -530,46 +529,34 @@ Schema\footnote{\url{https://vamdc.org/documents/vamdc-xsams-doc-1.0/}\label{fn:
 \footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/sources.html}\label{fn:source}}
 \end{itemize}
 
-The VAMDC-TAP query language defines a list of keywords, the
-\textit{returnables}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html}},
-listing the quantities that can be returned by a service. They correspond
-to an element in the XSAMS data model.  The returnables supported by a
-service are declared by service managers when they deploy the software
-on its database, and they are saved in the VAMDC registry.
+%The VAMDC-TAP query language defines a list of keywords, the
+%\textit{returnables}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html}},
+%listing the quantities that can be returned by a service. They correspond
+%to an element in the XSAMS data model.  The returnables supported by a
+%service are declared by service managers when they deploy the software
+%on its database, and they are saved in the VAMDC registry.
 
-The \textbf{data model} item refers to the corresponding element in the XSAMS Schema
-\footref{fn:schema}.
-The \textbf{returnables} item lists the returnables needed to obtain the LineTAP quantity
-\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/index.html\#vamdcxsamslanguageindex}}. 
+%The \textbf{data model} item refers to the corresponding element in the XSAMS Schema
+%\footref{fn:schema}.
+%The \textbf{returnables} item lists the returnables needed to obtain the LineTAP quantity
+%\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/index.html\#vamdcxsamslanguageindex}}. 
 
-Listed below are the mappings for the LineTAP quantities defined in section
-\ref{sect:quantities}:% (at the moment only atoms, not molecules):
+Listed below are the LineTAP quantities defined in section \ref{sect:quantities} and the corresponding elements from the XSAMS schema:
+% (at the moment only atoms, not molecules):
 
 \begin{bigdescription}
 \item [vacuum\_wavelength]
   \begin{xsamsbridge}
   \item[data model] \xsref{RadiativeTransition.EnergyWavelength}\footref{fn:radtrans}
-  \item[returnables] \xsref{RadTransWavelength}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#radtranswavelength}},
-  \todo{if RadTransWavelength always returns in Angstrom in Vacuum (as described), then the other returnables should be obsolete}
-    \xsref{RadTransWavelengthVacuum},
-    \xsref{RadTransWavelengthAirToVac},
-    \xsref{RadTransWavelengthUnit}
-  \item[constraints] if \xsref{RadTransWavelengthVacuum} is not true, use
-    \xsref{RadTransWavelengthAirToVac} to convert.
+  \todo{ add AirToVac, Unit, Vacuum?}
+  \item[constraints] if \xsref{vacuum} is not true, use
+    \xsref{AirToVac} to convert.
   \end{xsamsbridge}
   
 \item [vacuuml\_wavelength\_error]
   \begin{xsamsbridge}
    \item[data model] \xsref{RadiativeTransition.EnergyWavelength}, \xsref{DataType.Accuracy} \footnote{%
   \url{https://standards.vamdc.eu/dataModel/vamdcxsams/types.html\#accuracytype}}
-   \todo{Wavelength error? How to use these returnables to get one accuracy value? Description needed}
-   \item[returnables]
-    \xsref{RadTransWavelength},
-    \xsref{RadTransWavelengthAccuracy}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#implicit-returnables}\label{fn:implicit}},
-    \xsref{RadTransWavelengthAccuracyType},
-    \xsref{RadTransWavelengthAccuracyConfidence},
-    \xsref{RadTransWavelengthAccuracyRelative}, 
-  \item[constraints]
  
   \end{xsamsbridge}
   
@@ -577,12 +564,11 @@ Listed below are the mappings for the LineTAP quantities defined in section
  \begin{xsamsbridge}
   \item[data model] \xsref{RadiativeTransition.EnergyWavelength.Method}
      \footref{fn:radtrans} \footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/methods.html\#method}}
-  \item[returnables] \xsref{RadTransWavelengthMethod}\footref{fn:implicit}
-  \item[constraints]
-    \xsref{Methods.Method.MethodID} must be equal to
-    \xsref{RadTransWavelength.EnergyWavelength.Wavelength.methodRef}.
-    \xsref{Values should be \texttt{Experiment} or \texttt{Theory}.  If different they must be mapped to one of these values.}
-  \end{xsamsbridge}
+ \item[constraints]
+    \xsref{MethodID} must be equal to
+    \xsref{MethodRef} of the respective energy wavelength.
+    \todo{write  about possible values - experiment, theory, etc?}
+   \end{xsamsbridge}
 
 \item [inchi]
   \begin{xsamsbridge}
@@ -590,87 +576,58 @@ Listed below are the mappings for the LineTAP quantities defined in section
     \footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesAtoms.html\#atomicion}\label{fn:ion}} or
     \xsref{Molecule.MolecularChemicalSpecies.InChI}
     \footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesMolecules.html\#molecularchemicalspecies}\label{fn:moleculespecies}}
-  \item[returnables] \xsref{AtomInchi}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atominchi}}, 
-    \xsref{MoleculeInChi}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#moleculeinchi}}
-  \item[constraints] \xsref{RadTrans.SpeciesRef} must be equal to
-    \xsref{Atom.SpeciesID or MoleculeSpeciesID}.
+  \item[constraints] 
+    \xsref{SpeciesRef} of radiative transition must be equal
+      to \xsref{SpeciesID} of  the respective atom or molecule.
+
   \end{xsamsbridge}
   
 \item [inchikey]
   \begin{xsamsbridge}
     \item[data model] \xsref{Atom.Isotope.Ion.InChiKey}\footref{fn:ion},
       \xsref{Molecule.MolecularChemicalSpecies.InChIKey}\footref{fn:moleculespecies},
-    \item[returnables] \xsref{AtomInchiKey}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atominchikey}},
-      \xsref{MoleculeInChiKey}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#moleculeinchikey}}
-    \item[constraints] \xsref{RadTrans.SpeciesRef} must be equal to
-      either \xsref{Atom.SpeciesID} or \xsref{Molecule.SpeciesID}.
-  \end{xsamsbridge}
-
-\item [stoichiometric\_formula]
-  \begin{xsamsbridge}
-    \item[data model] \xsref{Atom.ChemicalElement.ElementSymbol}\footref{fn:atom},
-      \xsref{Molecule.MolecularChemicalSpecies.StoichiometricFormula}\footref{fn:moleculespecies}
-    \item[returnables]
-      \xsref{Atom.Symbol}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atomsymbol}},
-      \xsref{Molecule.MoleculeStoichiometricFormula}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#moleculestoichiometricformula}}
-        \xsref{RadTrans.SpeciesRef},
-      \xsref{Atom.SpeciesID},
-      \xsref{Molecule.SpeciesID},
-    \item[constraints]
-      \xsref{RadTrans.SpeciesRef} must be equal to either
-      \xsref{Atom.SpeciesID} or  \xsref{Molecule.SpeciesID}.
+    \item[constraints] 
+      \xsref{SpeciesRef} of radiative transition must be equal
+      to \xsref{SpeciesID} of  the respective atom or molecule.
   \end{xsamsbridge}
 
 \item [ion\_charge]
   \begin{xsamsbridge}
     \item[data model] \xsref{Atom.Isotope.Ion.IonCharge}\footref{fn:ion} or
       \xsref{Molecule.MolecularChemicalSpecies.IonCharge}\footref{fn:moleculespecies}
-    \item[returnables]
-      \xsref{RadTransSpeciesRef},
-      \xsref{AtomSpeciesID},
-      \xsref{AtomIonCharge}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atomioncharge}},
-      \xsref{MoleculeSpeciesID},
-      \xsref{MoleculeIonCharge}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#moleculeioncharge}}
+
     \item[constraints]
-      \xsref{RadTransSpeciesRef} must be equal to either
-      \xsref{AtomSpeciesID} or \xsref{Molecule.SpeciesID}.
+      \xsref{SpeciesRef} of radiative transition must be equal
+      to \xsref{SpeciesID} of  the respective atom or molecule.
   \end{xsamsbridge}
 
 \item [mass\_number (atoms)]
   \begin{xsamsbridge}
     \item[data model] \xsref{Atom.Isotope.IsotopeParameters.MassNumber}\footref{fn:atom}
-    \item[returnables] \xsref{AtomMassNumber}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atommassnumber}}
-    \item[constraints] \xsref{RadTransSpeciesRef} must be equal
-      to \xsref{AtomSpeciesID}
+
+    \item[constraints] \xsref{SpeciesRef} of radiative transition must be equal
+      to \xsref{SpeciesID} of  the respective atom or molecule.
   \end{xsamsbridge}
 
 \item [upper\_state\_configuration]
   \begin{xsamsbridge}
     \item[data model] \xsref{Atom.Isotope.Ion.AtomicState.Description}\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesAtoms.html\#atomicstate}\label{fn:atomicstate}},
           \xsref{Molecule.MolecularState.Description}\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesMolecules.html\#molecularstate}\label{fn:molecularstate}},
-    \item[returnables]
-      \xsref{AtomStateDescription}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atomstatedescription}\label{fn:adescr}},
-      \xsref{MoleculeStateDescription}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#moleculestatedescription}\label{fn:mdescr}}
-      \xsref{RadTransUpperStateRef},
-      \xsref{AtomStateID},
-      \xsref{MoleculeStateID},
-     \item[constraints]  \xsref{RadTransUpperStateRef} must be
-      equal to \xsref{AtomStateID} or  \xsref{MoleculeStateID}.
+     \item[constraints]  
+       \xsref{UpperStateRef} must be equal to 
+ 	    \xsref{StateID}  of the respective molecular state or atomic state.
+
   \end{xsamsbridge}
 
 \item [lower\_state\_configuration]
   \begin{xsamsbridge}
     \item[data model] \xsref{Atom.Isotope.Ion.AtomicState.Description}\footref{fn:atomicstate} or
       \xsref{Molecule.MolecularState.Description}\footref{fn:molecularstate}    
-    \item[returnables]
-      \xsref{AtomStateDescription},
-      \xsref{MoleculeStateDescription}
-      \xsref{RadTransUpperStateRef},
-      \xsref{AtomStateID},
-      \xsref{MoleculeStateID},
+
     \item[constraints]
-      \xsref{RadTransUpperStateRef} must be equal to either
-      \xsref{AtomStateID} or \xsref{MolecularStateID}
+           \xsref{LowerStateRef} must be equal to 
+ 	    \xsref{StateID}  of the respective molecular state or atomic state.
+
   \end{xsamsbridge}
 
 \item [upper\_state\_energy]
@@ -678,18 +635,9 @@ Listed below are the mappings for the LineTAP quantities defined in section
     \item[data model]
       \xsref{Atom.Isotope.Ion.AtomicState.AtomicNumericalData.StateEnergy}\footref{fn:atomicstate}  or
       \xsref{Molecule.MolecularState.MolecularStateCharacterisation.StateEnergy}\footref{fn:molecularstate}     
-     \item[returnables]
-     \xsref{AtomicStateEnergy},\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#atomstateenergy}\label{fn:astateenergy}}
-      \xsref{MolecularStateEnergy},\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#molecularstateenergy}\label{fn:mstateenergy}}
-
-      \xsref{RadTransUpperStateRef},
-      \xsref{AtomStateID},
-      \xsref{MoleculeStateID}
     \item[constraints]
-       \xsref{RadTransUpperStateRef} must be equal to either
-       \xsref{AtomStateID} or \xsref{MoleculeStateID};
-       The wave number in $\textrm{cm}^{-1}$ has to be converted to  Joule.
-       Some states have a reference to a GroundStateEnergy.\todo{substract this energy from state energy?}
+       \xsref{UpperStateRef} must be equal to 
+    \xsref{StateID}  of the respective molecular state or atomic state.
   \end{xsamsbridge}
 
 \item [lower\_state\_energy]
@@ -697,72 +645,26 @@ Listed below are the mappings for the LineTAP quantities defined in section
     \item[data model]
       \xsref{Atom.Isotope.Ion.AtomicState.AtomicNumericalData.StateEnergy} \footref{fn:atomicstate} or
       \xsref{Molecule.MolecularState.MolecularStateCharacterisation.StateEnergy}\footref{fn:molecularstate}
-    \item[returnables]   
-      \xsref{AtomicStateEnergy},\footref{fn:astateenergy}  
-      \xsref{MolecularStateEnergy},\footref{fn:mstateenergy}\xsref{RadTransLowerStateRef},
-      \xsref{AtomStateID},
-      \xsref{MoleculeStateID}
-    \item[constraints]  \xsref{RadTransLowerStateRef} must be equal to
-    either \xsref{AtomStateID} or \xsref{MoleculeStateID};
-    The wave number in $\textrm{cm}^{-1}$ has to be converted to Joule.
-    Some states have a reference to a GroundStateEnergy\todo{substract this energy from state energy?}.
+    \item[constraints]  \xsref{LowerStateRef} must be equal to
+    \xsref{StateID}  of the respective molecular state or atomic state.
+
   \end{xsamsbridge}
 
 \item [einstein\_a]
   \begin{xsamsbridge}
     \item[data model]
       \xsref{RadiativeTransition.Probability.TransitionProbabilityA} \footref{fn:radtrans}
-    \item[returnables]
-     \xsref{RadTransProbabilityA}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#radtransprobabilitya}}
-    \item[constraints] None
   \end{xsamsbridge}
 
-\item [oscillator\_strength]
+\item [line\_reference]
   \begin{xsamsbridge}
-    \item[data model]
-      \xsref{RadiativeTransition.Probability.TransitionOscillatorStrength}\footref{fn:radtrans}
-    \item[returnables]
-      \xsref{RadTransProbabilityOscillatorStrength}\footnote{\url{ https://standards.vamdc.eu/dictionary/returnables.html\#radtransprobabilityoscillatorstrength}}
-    \item[constraints] None
-  \end{xsamsbridge}
-
-\item [weighted\_oscillator\_strength]
-  \begin{xsamsbridge}
-    \item[data model]
-      \xsref{RadiativeTransition.Probability.TransitionWeightedOscillatorStrength}  \footref{fn:radtrans}
-    \item[returnables]
-      \xsref{RadTransProbabilityWeightedOscillatorStrength}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#radtransprobabilityweightedoscillatorstrength}}
-    \item[constraints] None
-  \end{xsamsbridge}
-  
-  \item [line\_strength]
-  \begin{xsamsbridge}
-    \item[data model]
-      \xsref{RadiativeTransition.Probability.TransitionLineStrength}\footref{fn:radtrans}
-    \item[returnables]
-      \xsref{RadTransProbabilityLineStrength}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#radtransprobabilitylinestrength}}
-    \item[constraints]
-  \end{xsamsbridge}
-
-\item [line\_reference\_doi]
-  \begin{xsamsbridge}
-    \item[data model] \xsref{Sources.Source.DigitalObjectIdentifier}\footref{fn:source}
-    \item[returnables] \xsref{SourceDOI}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#sourcedoi}}
-    \item[constraints] None
-  \end{xsamsbridge}
-
-\item [line\_reference\_uri]
-  \begin{xsamsbridge}
-    \item[data model]
+    \item[data model] \xsref{Sources.Source.DigitalObjectIdentifier}\footref{fn:source},
       \xsref{Sources.Source.UniformResourceIdentifier}\footref{fn:source}
-    \item[returnables]
-      \xsref{SourceURI}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html\#sourceuri}}
-    \item[constraints] None
   \end{xsamsbridge}
+
 
 \item [title]
-      a human readable string for information. Can be composed by the values of \texttt{stoichiometric\_formula} and
-     \texttt{ion\_charge}, and\/or other information that might be useful. This quantity is not part of XSAMS (but part of SSLDM).          
+      a human readable string for information. Can be composed by the species name  and\/or other information that might be useful. This quantity is not part of XSAMS (but part of SSLDM).          
 \end{bigdescription}
 
 \section{LineTAP and the VO Registry}
