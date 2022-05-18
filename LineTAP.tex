@@ -295,7 +295,7 @@ wavelengths to other units. They will be described in
 sect.~\ref{sect:udfs}.
 
 \item \texttt{vacuum\_wavelength\_error} is the integrated error for the 
-\texttt{vacuum\_wavelength}.  This subsumes the complex error model of
+\texttt{vacuum\_wave\-length}.  This subsumes the complex error model of
 VAMDC and is obviously not intended to replace it for precise analyses.
 Data providers should, where necessary, combine systematic and
 statistical errors.  Where the original errors are asymmetric, this
@@ -379,7 +379,7 @@ WHERE
   ivo_specconv(vacuum_wavelength, 'GHz') BETWEEN 200 AND 300
 \end{lstlisting}
 
-would work as well but will probably put a significantly higher load on
+\noindent would work as well but will probably put a significantly higher load on
 the server machine.  It is therefore discouraged.
 
 Also note that since unit conversions may be non-linear, it is generally
@@ -475,7 +475,8 @@ would be XLYOFNOQVPJJNP-DYCDLGHINA-N.
 \subsubsection{Selecting Candidate Lines}
 
 To only retrieve the 10 lines with the highest Einstein A for a given
-species (in this case, CN) and having an upper level about
+species (in this case, CN) and having an upper level in the octave
+around
 $1.5\,\textrm{meV}$ above the ground state, one would write
 
 % please-run-a-test
@@ -567,7 +568,8 @@ Listed below are the LineTAP quantities defined in section \ref{sect:quantities}
  \item[constraints]
     \xsref{MethodID} must be equal to
     \xsref{MethodRef} of the respective energy wavelength.
-    \todo{write  about possible values - experiment, theory, etc?}
+    \todo{write  about possible values - experiment, theory, etc?\\MD:
+    not here; when people look here, they can read it up in VAMDC.}
    \end{xsamsbridge}
 
 \item [inchi]
@@ -664,7 +666,7 @@ Listed below are the LineTAP quantities defined in section \ref{sect:quantities}
 
 
 \item [title]
-      a human readable string for information. Can be composed by the species name  and\/or other information that might be useful. This quantity is not part of XSAMS (but part of SSLDM).          
+      a human readable string for information. Can be composed by the species name  and/or other information that might be useful. This quantity is not part of XSAMS (but part of SSLDM).          
 \end{bigdescription}
 
 \section{LineTAP and the VO Registry}
@@ -720,7 +722,7 @@ clients discover that this particular table contains LineTAP data:
 <table>
   <name>toss.ivoa_lines</name>
   <title>TOSS</title>
-  <description> The EPN-TAP 2.0 version of...</description>
+  <description> The LineTAP version of...</description>
   <utype>ivo://ivoa.net/std/linetap#table-1.0</utype>
   ...
 </table>
@@ -737,7 +739,7 @@ are advised to use the resource description for full text searches.
 \subsection{Discovering LineTAP services}
 
 LineTAP consumers in general are interested in TAP endpoints and table names for
-lineTAP services.  By our registration pattern, this translates into
+LineTAP services.  By our registration pattern, this translates into
 resources with TAP capabilities that have a standard key for version 1
 LineTAP in a table utype.
 
@@ -763,7 +765,7 @@ The regular expression in the utype match is to make sure minor version
 increments do not prevent service discovery; by IVOA versioning rules,
 all LineTAP services of minor version 1 can be operated by all LineTAP
 clients of version 1.  We do not constrain the version of the TAP
-service; clients may want to adapt the TAP discovery pattern to match
+service. Clients may want to adapt the TAP discovery pattern to match
 their specific needs.
 
 
