@@ -92,7 +92,7 @@ be the result of a (radiative) transition between two energy levels.
 More than ten years after the protocol's definition, there are still
 very few SLAP services registred in the VO.
 On the other hand, the Virtual Atomic and Molecular Data Center
-VAMDC\todo{reference?} offers a great amount of spectral line
+VAMDC \citep{atoms8040076} offers a great amount of spectral line
 data.  Making this data available to VO clients without major extra
 tooling is certainly desirable.
 
@@ -294,7 +294,7 @@ Angstrom.  An  ADQL user-defined function is provided to convert these
 wavelengths to other units. They will be described in
 sect.~\ref{sect:udfs}.
 
-\item \texttt{vacuum\_wavelength\_error} is the integrated error for the 
+\item \texttt{vacuum\_wavelength\_error} The integrated error for the 
 \texttt{vacuum\_wave\-length}.  This subsumes the complex error model of
 VAMDC and is obviously not intended to replace it for precise analyses.
 Data providers should, where necessary, combine systematic and
@@ -302,27 +302,27 @@ statistical errors.  Where the original errors are asymmetric, this
 quantity should ideally reflect the FWHM of a Gaussian fit of the true
 error profile, or simply employ the larger error as an upper limit.
 
-\item \texttt{method} describes which method was used to obtain the
+\item \texttt{method} Describes which method was used to obtain the
 wavelength value. Possible methods are \textit{experiment} or \textit{theory}.
 
-\item \texttt{ion\_charge} is the ionization level of the species.
+\item \texttt{ion\_charge} Ionization level of the species.
 
-\item \texttt{inchi} is the The IUPAC International Chemical Identifier
+\item \texttt{inchi} The IUPAC International Chemical Identifier
 (InChI), which  provides unique labels for well-defined chemical
 substances (\cite{INCHI}). It is meant to be human readable, but
 depending of the molecule it can be very long.  Here, the main layer is
 mandatory, the charge, stereochemical, and isotopic layers are optional.
 Only standard InChIs may be used in LineTAP.
 
-\item \texttt{inchiKey} is a character signature based on a hash code of
+\item \texttt{inchiKey} Character signature based on a hash code of
 the InChI string. It will be used to uniquely identify species.
 
 \item \texttt{mass\_number} The mass number of an atom or the sum of
 each atomic mass numbers of the elements forming a molecule.
 
-\item \texttt{upper\_energy} The energy  in J of the quantum state
+\item \texttt{upper\_energy} Energy  in J of the quantum state
 with higher energy
-\item \texttt{lower\_energy} The energy  in J of the quantum state
+\item \texttt{lower\_energy} Energy  in J of the quantum state
 with lower energy
 
 \item \texttt{einstein\_a} Einstein coefficient, or transition probability.
