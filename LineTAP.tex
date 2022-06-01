@@ -231,7 +231,7 @@ high-precision atmosphere models.
 \rowsep
 \texttt{vacuum\_wavelength\_error} [Å] \hfil\break\ucd{stat.error;em.wl} & float & \raggedright Total error in vacuum\_wavelength\tabularnewline
 \rowsep
-\texttt{method} \hfil\break\ucd{meta.code.class} & text & \raggedright Method the wavelength was obtained with (observed/theory/ritz)\tabularnewline
+\texttt{method} \hfil\break\ucd{meta.code.class} & text & \raggedright Method the wavelength was obtained with\tabularnewline
 \rowsep
 \texttt{ion\_charge} \hfil\break\ucd{phys.electCharge} & integer & \raggedright Total charge (ionisation level) of the emitting particle.\tabularnewline
 \rowsep
@@ -303,7 +303,9 @@ quantity should ideally reflect the FWHM of a Gaussian fit of the true
 error profile, or simply employ the larger error as an upper limit.
 
 \item \texttt{method} Describes which method was used to obtain the
-wavelength value. Possible methods are \textit{experiment} or \textit{theory}.
+wavelength value. Possible methods are listed in the XSAMS
+Schema
+\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/methods.html\#method}}.
 
 \item \texttt{ion\_charge} Ionization level of the species.
 
@@ -567,7 +569,7 @@ Listed below are the LineTAP quantities defined in section \ref{sect:quantities}
      \footref{fn:radtrans} \footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/methods.html\#method}}
  \item[constraints]
     \xsref{MethodID} must be equal to
-    \xsref{MethodRef} of the respective energy wavelength.
+    \xsref{MethodRef} of the respective energy wavelength. Possible values are given in the VAMDC standard.
     \todo{write  about possible values - experiment, theory, etc?\\MD:
     not here; when people look here, they can read it up in VAMDC.}
    \end{xsamsbridge}
