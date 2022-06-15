@@ -49,13 +49,6 @@ rooted in the widely-deployed VAMDC, and the intent is that at least the
 atomic and molecular data from VAMDC can easily be re-published using
 LineTAP.
 
-%Among the existing services, SSLDM/SLAP has very few services deployed
-%and is not being used. On the other side, VAMDC is has plenty of
-%services and spectral line information, but its data model, which is
-%very detailed, is also very complex.  Therefore the need of a  simpler
-%model, using already established protocols like TAP for querying and
-%retrieving the information. Besides the proposed set of parameters, a
-%mapping from VAMDC data model to LineTAP model is also provided.
 
 \end{abstract}
 
@@ -329,14 +322,6 @@ with lower energy
 
 \item \texttt{einstein\_a} Einstein coefficient, or transition probability.
 
-%\item \texttt{oscillator\_strength} Oscillator strength (dimensionless).
-%Whether it is absorption or emission, is determined from the initial and
-%final states of the transition.\todo{Delete?}
-
-%\item \texttt{weighted\_oscillator\_strength} Product of the oscillator strength and statistical weight of the initial state.\todo{Delete?}
-
-%\item \texttt{line\_strengh} A symmetric quantity with respect to initial and final states of the transition.\todo{Delete?}
-
 \item \texttt{title} This is a human readable string representing the
 element or molecule producing the line.  Implementors are free to choose
 titles as they see it, but they should keep in mind that these titles
@@ -532,20 +517,7 @@ Schema\footnote{\url{https://vamdc.org/documents/vamdc-xsams-doc-1.0/}\label{fn:
 \footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/sources.html}\label{fn:source}}
 \end{itemize}
 
-%The VAMDC-TAP query language defines a list of keywords, the
-%\textit{returnables}\footnote{\url{https://standards.vamdc.eu/dictionary/returnables.html}},
-%listing the quantities that can be returned by a service. They correspond
-%to an element in the XSAMS data model.  The returnables supported by a
-%service are declared by service managers when they deploy the software
-%on its database, and they are saved in the VAMDC registry.
-
-%The \textbf{data model} item refers to the corresponding element in the XSAMS Schema
-%\footref{fn:schema}.
-%The \textbf{returnables} item lists the returnables needed to obtain the LineTAP quantity
-%\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/index.html\#vamdcxsamslanguageindex}}. 
-
 Listed below are the LineTAP quantities defined in section \ref{sect:quantities} and the corresponding elements from the XSAMS schema:
-% (at the moment only atoms, not molecules):
 
 \begin{bigdescription}
 \item [vacuum\_wavelength]
@@ -570,8 +542,6 @@ Listed below are the LineTAP quantities defined in section \ref{sect:quantities}
  \item[constraints]
     \xsref{MethodID} must be equal to
     \xsref{MethodRef} of the respective energy wavelength. Possible values are given in the VAMDC standard.
-    \todo{write  about possible values - experiment, theory, etc?\\MD:
-    not here; when people look here, they can read it up in VAMDC.}
    \end{xsamsbridge}
 
 \item [inchi]
@@ -611,27 +581,6 @@ Listed below are the LineTAP quantities defined in section \ref{sect:quantities}
 
     \item[constraints] \xsref{SpeciesRef} of radiative transition must be equal
       to \xsref{SpeciesID} of  the respective atom or molecule.
-  \end{xsamsbridge}
-
-\item [upper\_state\_configuration]
-  \begin{xsamsbridge}
-    \item[data model] \xsref{Atom.Isotope.Ion.AtomicState.Description}\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesAtoms.html\#atomicstate}\label{fn:atomicstate}},
-          \xsref{Molecule.MolecularState.Description}\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesMolecules.html\#molecularstate}\label{fn:molecularstate}},
-     \item[constraints]  
-       \xsref{UpperStateRef} must be equal to 
- 	    \xsref{StateID}  of the respective molecular state or atomic state.
-
-  \end{xsamsbridge}
-
-\item [lower\_state\_configuration]
-  \begin{xsamsbridge}
-    \item[data model] \xsref{Atom.Isotope.Ion.AtomicState.Description}\footref{fn:atomicstate} or
-      \xsref{Molecule.MolecularState.Description}\footref{fn:molecularstate}    
-
-    \item[constraints]
-           \xsref{LowerStateRef} must be equal to 
- 	    \xsref{StateID}  of the respective molecular state or atomic state.
-
   \end{xsamsbridge}
 
 \item [upper\_state\_energy]
