@@ -175,7 +175,7 @@ to plot more than a hundred or so.  Hence, careful selection of lines
 can reduce the volume of data transferred and processed by the client by
 several orders of magnitude.
 
-To make good on this promise, the tables need to be queriable such that
+To make good on this promise, the tables need to be queryable such that
 lines suspected to be strong for some combination of chemistry,
 temperature, and pressure can be filtered out with some accuracy.
 
@@ -280,6 +280,14 @@ queried or interpreted interoperably.
 The following additional notes apply to individual columns:
 
 \begin{itemize}
+
+\item \texttt{title} This is a human readable string representing the
+element or molecule producing the line.  Implementors are free to choose
+titles as they see it, but they should keep in mind that these titles
+should work in cramped places (i.e., they should not exceed 20
+characters or so) and that they should speak to astronomers.  ``21 cm
+HI'' or ``[NII]6583'' would be good examples.
+
 \item \texttt{vacuum\_wavelength}
 All wavelengths in LineTAP are given for the vacuum,
 and  they are stored in the database in
@@ -302,6 +310,15 @@ Schema
 
 \item \texttt{ion\_charge} Ionization level of the species.
 
+\item \texttt{mass\_number} The mass number of an atom or the sum of
+each atomic mass numbers of the elements forming a molecule.
+
+\item \texttt{upper\_energy} Energy  in J of the quantum state
+with higher energy
+
+\item \texttt{lower\_energy} Energy  in J of the quantum state
+with lower energy
+
 \item \texttt{inchi} The IUPAC International Chemical Identifier
 (InChI), which  provides unique labels for well-defined chemical
 substances (\cite{INCHI}). It is meant to be human readable, but
@@ -312,22 +329,15 @@ Only standard InChIs may be used in LineTAP.
 \item \texttt{inchiKey} Character signature based on a hash code of
 the InChI string. It will be used to uniquely identify species.
 
-\item \texttt{mass\_number} The mass number of an atom or the sum of
-each atomic mass numbers of the elements forming a molecule.
-
-\item \texttt{upper\_energy} Energy  in J of the quantum state
-with higher energy
-\item \texttt{lower\_energy} Energy  in J of the quantum state
-with lower energy
-
 \item \texttt{einstein\_a} Einstein coefficient, or transition probability.
 
-\item \texttt{title} This is a human readable string representing the
-element or molecule producing the line.  Implementors are free to choose
-titles as they see it, but they should keep in mind that these titles
-should work in cramped places (i.e., they should not exceed 20
-characters or so) and that they should speak to astronomers.  ``21 cm
-HI'' or ``[NII]6583'' would be good examples.
+\item \texttt{xsams\_uri} \todo{elaborate description?} Where full XSAMS
+ metadata is available for a 
+transition, this link resolves to that document. What is returned MUST 
+return exactly one transition, and it MUST be in XSAMS version 1.
+
+\item \texttt{line\_reference} Information about the source of the line data, 
+like an URI, DOI or bibcode.
 
 \end{itemize}
 
@@ -586,8 +596,8 @@ Listed below are the LineTAP quantities defined in section \ref{sect:quantities}
 \item [upper\_state\_energy]
   \begin{xsamsbridge}
     \item[data model]
-      \xsref{Atom.Isotope.Ion.AtomicState.AtomicNumericalData.StateEnergy}\footref{fn:atomicstate}  or
-      \xsref{Molecule.MolecularState.MolecularStateCharacterisation.StateEnergy}\footref{fn:molecularstate}     
+      \xsref{Atom.Isotope.Ion.AtomicState.AtomicNumericalData.StateEnergy}\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesAtoms.html\#atomicstate}\label{fn:atomicstate}} or
+      \xsref{Molecule.MolecularState.MolecularStateCharacterisation.StateEnergy}\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/speciesMolecules.html\#molecularstate}\label{fn:molecularstate}}     
     \item[constraints]
        \xsref{UpperStateRef} must be equal to 
     \xsref{StateID}  of the respective molecular state or atomic state.
