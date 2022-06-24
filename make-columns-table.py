@@ -9,7 +9,7 @@ Dependency: python3-pyvo (and hence astropy).
 
 import pyvo
 
-NON_NULL_COLUMNS = {'title', 'vacuum_wavelength', 'inchi', 'inchikey'}
+NON_NULL_COLUMNS = {'title', 'vacuum_wavelength'}
 TYPE_MAP = {
 	("char", "*"): "text",
 	("int", ""): "integer",
