@@ -224,7 +224,9 @@ high-precision atmosphere models.
 \rowsep
 \texttt{vacuum\_wavelength\_error} [Å] \hfil\break\ucd{stat.error;em.wl} & float & \raggedright Total error in vacuum\_wavelength\tabularnewline
 \rowsep
-\texttt{method} \hfil\break\ucd{meta.code.class} & text & \raggedright Method the wavelength was obtained with\tabularnewline
+\texttt{method} \hfil\break\ucd{meta.code.class} & text & \raggedright Method the wavelength was obtained with (XSAMS controlled vocabulary)\tabularnewline
+\rowsep
+\texttt{element} \hfil\break\ucd{phys.atmol.element} & text & \raggedright Element name for atomic transitions, NULL otherwise.\tabularnewline
 \rowsep
 \texttt{ion\_charge} \hfil\break\ucd{phys.electCharge} & integer & \raggedright Total charge (ionisation level) of the emitting particle.\tabularnewline
 \rowsep
@@ -234,9 +236,9 @@ high-precision atmosphere models.
 \rowsep
 \texttt{lower\_energy} [J] \hfil\break\ucd{phys.energy;phys.atmol.final} & float & \raggedright Energy of the lower state\tabularnewline
 \rowsep
-\texttt{inchi} \hfil\break\ucd{meta.id;phys.atmol;meta.main} & \textbf{text} & \raggedright International Chemical Identifier InChI.\tabularnewline
+\texttt{inchi} \hfil\break\ucd{meta.id;phys.atmol;meta.main} & text & \raggedright International Chemical Identifier InChI.\tabularnewline
 \rowsep
-\texttt{inchikey} \hfil\break\ucd{meta.id;phys.atmol} & \textbf{text} & \raggedright The InChi key (hash) generated from inchi.\tabularnewline
+\texttt{inchikey} \hfil\break\ucd{meta.id;phys.atmol} & text & \raggedright The InChi key (hash) generated from inchi.\tabularnewline
 \rowsep
 \texttt{einstein\_a} \hfil\break\ucd{phys.atmol.transProb} & float & \raggedright Einstein A coefficient of the radiative transition.\tabularnewline
 \rowsep
@@ -304,9 +306,17 @@ quantity should ideally reflect the FWHM of a Gaussian fit of the true
 error profile, or simply employ the larger error as an upper limit.
 
 \item \texttt{method} Describes which method was used to obtain the
-wavelength value. Possible methods are listed in the XSAMS
-Schema
-\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/methods.html\#method}}.
+wavelength value. The method names admitted here are listed in the XSAMS
+Schema\footnote{\url{https://standards.vamdc.eu/dataModel/vamdcxsams/methods.html\#method}}.
+
+\item \texttt{element} For atomic lines, this column gives the
+conventional IUPAC element symbol (e.g., H, He, or Rn), using the
+conventional capitalisation (i.e., uppercase first letter, lowercase
+second letter where present).  No additional qualifications are admitted
+here; use \texttt{ion\_charge} to denote ionisation levels and
+\texttt{mass\_number} to distinguish isotopes.  Molecular transitions
+have NULL here; use \texttt{inchi} and \texttt{inchikey} to identify
+those.  For atomic transitions, \texttt{element} is mandatory.
 
 \item \texttt{ion\_charge} Ionization level of the species.
 
@@ -321,13 +331,18 @@ with lower energy
 
 \item \texttt{inchi} The IUPAC International Chemical Identifier
 (InChI), which  provides unique labels for well-defined chemical
-substances (\cite{INCHI}). It is meant to be human readable, but
+substances \citep{INCHI}. It is meant to be human readable, but
 depending of the molecule it can be very long.  Here, the main layer is
 mandatory, the charge, stereochemical, and isotopic layers are optional.
-Only standard InChIs may be used in LineTAP.
+Only standard InChIs may be used in LineTAP.  This is optional for
+atomic transitions (hence, query using \texttt{element},
+\texttt{ion\_charge}, and \texttt{mass\_number} for those) but mandatory
+for molecules.
 
-\item \texttt{inchiKey} Character signature based on a hash code of
-the InChI string. It will be used to uniquely identify species.
+\item \texttt{inchikey} Character signature based on a hash code of
+the InChI string. It will be used to uniquely identify species.  As with
+\texttt{inchi}, this is optional for atomic transitions but mandatory
+for molecules.
 
 \item \texttt{einstein\_a} Einstein coefficient, or transition probability.
 
